@@ -16,10 +16,11 @@
   "publishConfig": {
     "access": "public"
   },
-  "devDependencies": {
+  "dependencies": {
     "@middle/plugin-lowcode-module": "^0.0.2",
     "@middle/plugin-tabs": "^0.0.4",
     "@middle/plugin-watermark": "^0.0.7",
     "@umijs/max": "^4.0.67"
-  }
+  },
+  "devDependencies": {}
 }
