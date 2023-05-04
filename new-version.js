@@ -33,14 +33,14 @@ fs.readdir(dir, function (err, paths) {
         packageJson.version = nextVersion;
         if (packageJson.devDependencies) {
           Object.keys(packageJson.devDependencies).forEach(function (key) {
-            if (/^\@designable/.test(key)) {
+            if (/^\@middle/.test(key)) {
               packageJson.devDependencies[key] = nextVersion;
             }
           });
         }
         if (packageJson.dependencies) {
           Object.keys(packageJson.dependencies).forEach(function (key) {
-            if (/^\@designable/.test(key)) {
+            if (/^\@middle/.test(key)) {
               packageJson.dependencies[key] = nextVersion;
             }
           });
