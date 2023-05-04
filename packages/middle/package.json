@@ -1,6 +1,6 @@
 {
   "name": "@middle/middle",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "lib/index.js",
   "files": [
     "lib",
@@ -16,11 +16,10 @@
   "publishConfig": {
     "access": "public"
   },
-  "dependencies": {},
   "devDependencies": {
-    "@umijs/max": "*",
-    "@middle/plugin-watermark": "0.0.6",
-    "@middle/plugin-tabs": "0.0.3",
-    "@middle/plugin-lowcode-module": "0.0.1"
+    "@middle/plugin-lowcode-module": "^0.0.2",
+    "@middle/plugin-tabs": "^0.0.4",
+    "@middle/plugin-watermark": "^0.0.7",
+    "@umijs/max": "*"
   }
 }

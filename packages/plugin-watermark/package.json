@@ -1,7 +1,7 @@
 {
   "name": "@middle/plugin-watermark",
   "author": "yanxlg <yanxlg2@yonghui.cn>",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
@@ -19,11 +19,11 @@
     "tmp"
   ],
   "devDependencies": {
-    "father": "^4.1.8",
-    "umi": "^4.0.66",
     "@types/node": "^18.15.11",
-    "typescript": "^5.0.3",
+    "@types/react": "*",
+    "father": "^4.1.8",
     "react": "*",
-    "@types/react": "*"
+    "typescript": "^5.0.3",
+    "umi": "^4.0.66"
   }
 }
