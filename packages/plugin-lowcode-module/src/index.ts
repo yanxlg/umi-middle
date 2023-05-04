@@ -167,7 +167,7 @@ export { ${components.join(", ")} };
     api.writeTmpFile({
       path: `.fatherrc.ts`,
       content: Mustache.render(
-        fs.readFileSync(path.join(__dirname, ".fatherrc.ts.tpl"), "utf-8"),
+        fs.readFileSync(path.join(__dirname, "fatherrc.ts.tpl"), "utf-8"),
         {
           hasEditView,
           pluginKey: api.plugin.key,
