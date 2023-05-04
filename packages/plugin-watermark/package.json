@@ -1,0 +1,29 @@
+{
+  "name": "@middle/plugin-watermark",
+  "author": "yanxlg <yanxlg2@yonghui.cn>",
+  "version": "0.0.6",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "dev": "father dev",
+    "build": "father build"
+  },
+  "keywords": [],
+  "authors": {
+    "name": "yanxlg <yanxlg2@yonghui.cn>",
+    "email": "yanxlg2@yonghui.cn"
+  },
+  "license": "MIT",
+  "files": [
+    "lib",
+    "tmp"
+  ],
+  "devDependencies": {
+    "father": "^4.1.8",
+    "umi": "^4.0.66",
+    "@types/node": "^18.15.11",
+    "typescript": "^5.0.3",
+    "react": "*",
+    "@types/react": "*"
+  }
+}

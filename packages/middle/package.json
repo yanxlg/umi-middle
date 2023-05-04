@@ -1,0 +1,26 @@
+{
+  "name": "@middle/middle",
+  "version": "0.0.1",
+  "main": "lib/index.js",
+  "files": [
+    "lib",
+    "bin"
+  ],
+  "bin": {
+    "middle": "bin/middle.js"
+  },
+  "description": "工程化启动包",
+  "scripts": {
+    "build": "father build"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@umijs/max": "*",
+    "@middle/plugin-watermark": "0.0.6",
+    "@middle/plugin-tabs": "0.0.3",
+    "@middle/plugin-lowcode-module": "0.0.1"
+  }
+}

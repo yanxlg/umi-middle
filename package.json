@@ -1,0 +1,35 @@
+{
+  "name": "middle-modules",
+  "version": "0.0.1",
+  "private": true,
+  "description": "",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "father dev",
+    "build": "lerna run build",
+    "build:deps": "father prebundle",
+    "release": "lerna publish"
+  },
+  "keywords": [],
+  "authors": [],
+  "license": "MIT",
+  "files": [
+    "dist",
+    "compiled"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "father": "4.2.0",
+    "lerna": "6.0.1",
+    "babel-plugin-import": "*"
+  },
+  "resolutions": {
+    "coa": "2.0.2"
+  }
+}

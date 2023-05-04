@@ -1,0 +1,35 @@
+{
+  "name": "@middle/plugin-tabs",
+  "author": "yanxlg <yanxlg2@yonghui.cn>",
+  "version": "0.0.3",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "dev": "father dev",
+    "build": "father build"
+  },
+  "keywords": [],
+  "authors": {
+    "name": "yanxlg <yanxlg2@yonghui.cn>",
+    "email": "yanxlg2@yonghui.cn"
+  },
+  "license": "MIT",
+  "files": [
+    "lib"
+  ],
+  "dependencies": {
+    "react-activation": "0.12.1",
+    "react-contexify": "6.0.0",
+    "ahooks": "*",
+    "lodash": "*",
+    "@tanem/react-nprogress": "^5.0.0"
+  },
+  "devDependencies": {
+    "father": "^4.1.8",
+    "umi": "^4.0.66",
+    "@types/node": "^18.15.11",
+    "typescript": "^5.0.3",
+    "react": "*",
+    "@types/react": "*"
+  }
+}

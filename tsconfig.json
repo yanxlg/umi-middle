@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "lib": ["dom", "es2017"],
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "importHelpers": true,
+    "jsx": "preserve",
+    "esModuleInterop": true,
+    "sourceMap": true,
+    "baseUrl": "./",
+    "strict": false,
+    "skipLibCheck": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "declaration": true,
+    "paths": {
+      "@designable/react": ["packages/react/src"],
+      "@designable/core": ["packages/core/src"],
+      "@designable/formily-transformer": ["packages/formily-transformer/src"],
+      "@designable/parser": ["packages/parser/src"],
+      "@designable/runtime": ["packages/runtime/src"],
+      "@designable/react-sandbox": ["packages/react-sandbox/src"],
+      "@designable/react-settings-form": ["packages/react-settings-form/src"],
+      "@designable/setters": ["packages/setters/src"],
+      "@designable/shared": ["packages/shared/src"],
+      "@designable/transformer": ["packages/transformer/src"]
+    }
+  },
+  "exclude": ["lib", "es"]
+}

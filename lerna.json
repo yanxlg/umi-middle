@@ -1,0 +1,21 @@
+{
+  "changelog": {
+    "labels": {
+      "pr(enhancement)": ":rocket: Enhancement",
+      "pr(bug)": ":bug: Bug Fix",
+      "pr(documentation)": ":book: Documentation",
+      "pr(dependency)": ":deciduous_tree: Dependency",
+      "pr(chore)": ":turtle: Chore"
+    },
+    "repo": " lowcode modules",
+    "cacheDir": ".changelog"
+  },
+  "command": {
+    "publish": {
+      "graphType": "all",
+      "registry": "http://npm.yonghuivip.com"
+    }
+  },
+  "npmClient": "npm",
+  "version": "independent"
+}
