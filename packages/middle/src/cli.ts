@@ -9,7 +9,7 @@
  *
  * Copyright (c) 2023 by yanxlg, All Rights Reserved.
  */
-import { logger, printHelp } from "@umijs/utils";
+import { logger, printHelp, yParser } from "@umijs/utils";
 import { program } from "commander";
 import { join } from "path";
 import { run } from "umi";
@@ -24,10 +24,17 @@ program.command("asset").action(async () => {
   process.env.NODE_ENV = "development";
   // @1 调用 umi setup 生成相关文件。
   try {
+    const args = yParser(process.argv.slice(2), {
+      alias: {
+        version: ["v"],
+        help: ["h"],
+      },
+      boolean: ["version"],
+    });
     await new Service().run2({
       name: "setup",
+      args,
     });
-
     // @2 调用 father build 编译
     // 配置根目录
     const cwd = process.cwd();
@@ -35,6 +42,7 @@ program.command("asset").action(async () => {
     const service = new FatherService();
     await service.run2({
       name: "build",
+      args,
     });
   } catch (e: any) {
     logger.fatal(e);
