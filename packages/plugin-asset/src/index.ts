@@ -171,7 +171,7 @@ export { ${components.join(", ")} };
         {
           hasEditView,
           pluginKey: api.plugin.key,
-          output: `dist/${packageJson.version}`,
+          output: path.join(cwdPath, "dist", packageJson.version), // 修改为项目根目录
         }
       ),
     });
