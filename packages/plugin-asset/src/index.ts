@@ -43,7 +43,7 @@ function toCamelCase(str: string): string {
 }
 
 function getEditFile(dir: string) {
-  const files = ["edit.tsx", "edit.jsx"];
+  const files = ["edit.tsx", "edit.jsx", "edit.js"];
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
     const editComponentFile = path.join(dir, file);
@@ -55,12 +55,25 @@ function getEditFile(dir: string) {
 }
 
 function getMainFile(dir: string) {
-  const files = ["index.tsx", "index.jsx"];
+  const files = ["index.tsx", "index.jsx", "index.js"];
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
     const editComponentFile = path.join(dir, file);
     if (fs.existsSync(editComponentFile)) {
       return editComponentFile;
+    }
+  }
+  return undefined;
+}
+
+function getMetaFile(dir: string) {
+  const files = ["meta.json", "meta.tsx", "meta.ts", "meta.jsx", "meta.js"];
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i];
+    const metaFile = path.join(dir, file);
+    if (fs.existsSync(metaFile)) {
+      // 存在文件
+      return metaFile;
     }
   }
   return undefined;
@@ -107,8 +120,8 @@ export default (api: IApi) => {
       const isDirectory = fs.statSync(dirPath).isDirectory();
       if (isDirectory) {
         const componentFile = getMainFile(dirPath);
-        const schemaFile = path.join(dirPath, "meta.json");
-        if (componentFile && fs.existsSync(schemaFile)) {
+        const schemaFile = getMetaFile(dirPath);
+        if (componentFile && schemaFile) {
           const componentName = toCamelCase(dir);
           components.push(componentName);
           api.writeTmpFile({
