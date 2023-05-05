@@ -20,6 +20,8 @@
     "@middle/plugin-lowcode-module": "^0.0.4",
     "@middle/plugin-tabs": "^0.0.4",
     "@middle/plugin-watermark": "^0.0.7",
-    "@umijs/max": "^4.0.67"
+    "@umijs/max": "^4.0.67",
+    "commander": "^9.4.0",
+    "father": "^4.1.8"
   }
 }
