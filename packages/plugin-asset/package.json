@@ -1,5 +1,5 @@
 {
-  "name": "@middle/plugin-lowcode-module",
+  "name": "@middle/plugin-asset",
   "author": "yanxlg <yanxlg2@yonghui.cn>",
   "version": "0.0.4",
   "main": "lib/index.js",

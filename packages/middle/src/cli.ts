@@ -31,6 +31,7 @@ program.command("asset").action(async () => {
       },
       boolean: ["version"],
     });
+    process.env.UMI_PRESETS = require.resolve("./middle-preset");
     await new Service().run2({
       name: "setup",
       args,
