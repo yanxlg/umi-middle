@@ -2,7 +2,7 @@
  * @Author: yanxlg
  * @Date: 2023-05-01 21:15:00
  * @LastEditors: yanxlg
- * @LastEditTime: 2023-05-05 11:21:28
+ * @LastEditTime: 2023-05-05 21:57:37
  * @Description:
  * 检查是不是存在view.tsx|view.jsx 如果支持，表示组件在编辑器中和。view.js 支持。  __editMode 属性。如果有的话原属性直接传过来，不处理（editable、children等）。
  * meta.json | meta.ts | meta.tsx  支持default导出，支持 meta 属性导出。
@@ -66,6 +66,11 @@ function getMainFile(dir: string) {
   return undefined;
 }
 
+export const tmpPath = path.join(
+  require.resolve("@middle/plugin-asset"),
+  "../../tmp"
+);
+
 export default (api: IApi) => {
   api.describe({
     key: "asset",
@@ -75,11 +80,16 @@ export default (api: IApi) => {
       },
       onChange: api.ConfigChangeType.regenerateTmpFiles, // 发生变化之后重新生成文件
     },
-    enableBy: api.EnableBy.config,
+    enableBy: api.EnableBy.register,
   });
 
   const cwdPath = cwd();
   const componentsDir = path.join(cwdPath, "components");
+
+  const tmpRelativePath = path.relative(
+    withTmpPath({ api, path: "" }),
+    tmpPath
+  );
 
   api.onGenerateFiles(() => {
     // 遍历 components 目录，生成对应的入口。
@@ -138,7 +148,7 @@ export default ${componentName};
     });
 
     api.writeTmpFile({
-      path: `view.tsx`,
+      path: `${tmpRelativePath}/view.tsx`,
       content: `
 ${components
   .map((component) => `import ${component} from './components/${component}';`)
@@ -149,7 +159,7 @@ export { ${components.join(", ")} };
 
     if (hasEditView) {
       api.writeTmpFile({
-        path: `edit.tsx`,
+        path: `${tmpRelativePath}/edit.tsx`,
         content: `
   ${components
     .map((component) => `import ${component} from './edit/${component}';`)
@@ -165,7 +175,7 @@ export { ${components.join(", ")} };
     );
 
     api.writeTmpFile({
-      path: `.fatherrc.ts`,
+      path: `${tmpRelativePath}/.fatherrc.ts`,
       content: Mustache.render(
         fs.readFileSync(path.join(__dirname, "fatherrc.ts.tpl"), "utf-8"),
         {
