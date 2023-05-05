@@ -66,14 +66,11 @@ function getMainFile(dir: string) {
   return undefined;
 }
 
-export const tmpPath = path.join(
-  require.resolve("@middle/plugin-asset"),
-  "../../tmp"
-);
+export const pluginKey = "asset";
 
 export default (api: IApi) => {
   api.describe({
-    key: "asset",
+    key: pluginKey,
     config: {
       schema({ zod }) {
         return zod.boolean();
@@ -85,11 +82,6 @@ export default (api: IApi) => {
 
   const cwdPath = cwd();
   const componentsDir = path.join(cwdPath, "components");
-
-  const tmpRelativePath = path.relative(
-    withTmpPath({ api, path: "" }),
-    tmpPath
-  );
 
   api.onGenerateFiles(() => {
     // 遍历 components 目录，生成对应的入口。
@@ -108,6 +100,9 @@ export default (api: IApi) => {
     });
 
     componentDirs.forEach((dir) => {
+      if (dir === "demo") {
+        return;
+      }
       const dirPath = path.join(componentsDir, dir);
       const isDirectory = fs.statSync(dirPath).isDirectory();
       if (isDirectory) {
@@ -148,7 +143,7 @@ export default ${componentName};
     });
 
     api.writeTmpFile({
-      path: `${tmpRelativePath}/view.tsx`,
+      path: `view.tsx`,
       content: `
 ${components
   .map((component) => `import ${component} from './components/${component}';`)
@@ -159,7 +154,7 @@ export { ${components.join(", ")} };
 
     if (hasEditView) {
       api.writeTmpFile({
-        path: `${tmpRelativePath}/edit.tsx`,
+        path: `edit.tsx`,
         content: `
   ${components
     .map((component) => `import ${component} from './edit/${component}';`)
@@ -175,7 +170,7 @@ export { ${components.join(", ")} };
     );
 
     api.writeTmpFile({
-      path: `${tmpRelativePath}/.fatherrc.ts`,
+      path: `.fatherrc.ts`,
       content: Mustache.render(
         fs.readFileSync(path.join(__dirname, "fatherrc.ts.tpl"), "utf-8"),
         {

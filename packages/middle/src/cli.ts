@@ -9,10 +9,11 @@
  *
  * Copyright (c) 2023 by yanxlg, All Rights Reserved.
  */
-import { tmpPath } from "@middle/plugin-asset";
+import { pluginKey } from "@middle/plugin-asset";
 import { logger, printHelp, yParser } from "@umijs/utils";
 import { program } from "commander";
 import { Service as FatherService } from "father/dist/service/service";
+import { join } from "path";
 import { run } from "umi";
 import { Service } from "umi/dist/service/service";
 
@@ -30,7 +31,10 @@ program.command("asset").action(async () => {
       },
       boolean: ["version"],
     });
-    process.env.UMI_PRESETS = require.resolve("./asset-preset");
+    process.env.UMI_PRESETS = process.env.UMI_PRESETS = [
+      require.resolve("@umijs/max/dist/preset"),
+      require.resolve("./asset-preset"),
+    ].join(",");
     await new Service().run2({
       name: "setup",
       args,
@@ -38,7 +42,7 @@ program.command("asset").action(async () => {
     // @2 调用 father build 编译
     // 配置根目录
     const cwd = process.cwd();
-    process.chdir(tmpPath); // 修改执行地址，影响编译使用的fatherrc配置文件
+    process.chdir(join(cwd, `src/.umi/plugin-${pluginKey}/`)); // 修改执行地址，影响编译使用的fatherrc配置文件
     const service = new FatherService();
     await service.run2({
       name: "build",
