@@ -3,7 +3,7 @@ import { defineConfig } from "father";
 export default defineConfig({
   umd: {
     entry: {
-      "./src/.umi/plugin-{{{pluginKey}}}/view": {
+      "view": {
         externals: {
           react: "React",
           "react-dom": "ReactDOM",
@@ -23,7 +23,7 @@ export default defineConfig({
         name: "BaseLowComponents", // 导出的全局变量名
       },
       {{#hasEditView}}
-      "./src/.umi/plugin-{{{pluginKey}}}/edit": {
+      "edit": {
         externals: {
           react: "React",
           "react-dom": "ReactDOM",
