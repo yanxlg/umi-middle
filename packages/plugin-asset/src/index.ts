@@ -2,7 +2,7 @@
  * @Author: yanxlg
  * @Date: 2023-05-01 21:15:00
  * @LastEditors: yanxlg
- * @LastEditTime: 2023-05-06 10:24:55
+ * @LastEditTime: 2023-05-06 10:57:29
  * @Description:
  * 检查是不是存在view.tsx|view.jsx 如果支持，表示组件在编辑器中和。view.js 支持。  __editMode 属性。如果有的话原属性直接传过来，不处理（editable、children等）。
  * meta.json | meta.ts | meta.tsx  支持default导出，支持 meta 属性导出。
@@ -96,33 +96,23 @@ export default (api: IApi) => {
   const cwdPath = cwd();
   const componentsDir = path.join(cwdPath, "components");
 
-  api.onGenerateFiles(() => {
-    // 遍历 components 目录，生成对应的入口。
+  function generateComponentFile(
+    componentsDir: string,
+    components: string[],
+    hasEditView: boolean,
+    parentDir?: string // 父目录名，如果需要拼接的话内部需要拼接成真实的组件名
+  ) {
     const componentDirs = fs.readdirSync(componentsDir);
-    const components: string[] = [];
-    let hasEditView = componentDirs.find((dir) => {
-      const dirPath = path.join(componentsDir, dir);
-      const isDirectory = fs.statSync(dirPath).isDirectory();
-      if (isDirectory) {
-        const editComponentFile = getEditFile(dirPath);
-        if (editComponentFile) {
-          return true;
-        }
-      }
-      return false;
-    });
-
     componentDirs.forEach((dir) => {
-      if (dir === "demo") {
-        return;
-      }
       const dirPath = path.join(componentsDir, dir);
       const isDirectory = fs.statSync(dirPath).isDirectory();
       if (isDirectory) {
         const componentFile = getMainFile(dirPath);
         const schemaFile = getMetaFile(dirPath);
         if (componentFile && schemaFile) {
-          const componentName = toCamelCase(dir);
+          const componentName = toCamelCase(
+            parentDir ? `${parentDir}-${dir}` : dir
+          );
           components.push(componentName);
           api.writeTmpFile({
             path: `components/${componentName}.tsx`,
@@ -152,8 +142,90 @@ export default ${componentName};
             });
           }
         }
+
+        // 对于子文件夹，自动进行关联处理。
+        fs.readdirSync(dirPath).forEach((subPath) => {
+          const fullPath = path.join(dirPath, subPath);
+          if (fs.statSync(fullPath).isDirectory()) {
+            // 存在子文件夹
+            const _parentDir = parentDir ? `${parentDir}-${subPath}` : subPath;
+            generateComponentFile(dirPath, components, hasEditView, _parentDir);
+          }
+        });
       }
     });
+  }
+
+  api.onGenerateFiles(() => {
+    // 遍历 components 目录，生成对应的入口。
+    // const componentDirs = fs.readdirSync(componentsDir);
+    const components: string[] = [];
+
+    // // 检测是否有edit.tsx文件存在，如果有，需要生成不同的文件
+    // let hasEditView = componentDirs.find((dir) => {
+    //   const dirPath = path.join(componentsDir, dir);
+    //   const isDirectory = fs.statSync(dirPath).isDirectory();
+    //   if (isDirectory) {
+    //     const editComponentFile = getEditFile(dirPath);
+    //     if (editComponentFile) {
+    //       return true;
+    //     }
+    //   }
+    //   return false;
+    // });
+
+    // 强制生成edit和view两个不同的文件，view中需要对meta对象属性进行剔除，保留必要属性，减少包体积。
+    const hasEditView = true;
+
+    generateComponentFile(componentsDir, components, hasEditView);
+    //     componentDirs.forEach((dir) => {
+    //       const dirPath = path.join(componentsDir, dir);
+    //       const isDirectory = fs.statSync(dirPath).isDirectory();
+    //       if (isDirectory) {
+    //         const componentFile = getMainFile(dirPath);
+    //         const schemaFile = getMetaFile(dirPath);
+    //         if (componentFile && schemaFile) {
+    //           const componentName = toCamelCase(dir);
+    //           components.push(componentName);
+    //           api.writeTmpFile({
+    //             path: `components/${componentName}.tsx`,
+    //             content: `
+    // import ${componentName} from '${componentFile}';
+    // import schema from '${schemaFile}';
+
+    // ${componentName}.__meta__ = schema;
+    // export default ${componentName};
+    //             `,
+    //           });
+
+    //           if (hasEditView) {
+    //             // 是不是有
+    //             const editFile = getEditFile(dirPath);
+    //             const _componentFile = editFile || componentFile;
+    //             api.writeTmpFile({
+    //               path: `edit/${componentName}.tsx`,
+    //               content: `
+    //   import ${componentName} from '${_componentFile}';
+    //   import schema from '${schemaFile}';
+
+    //   ${componentName}.__meta__ = schema;
+    //   ${editFile ? `${componentName}.__designMode__ = true;` : ""}
+    //   export default ${componentName};
+    //               `,
+    //             });
+    //           }
+    //         }
+
+    //         // 对于子文件夹，自动进行关联处理。
+
+    //         const extraFIles = fs.readdirSync(dirPath).filter((subPath) => {
+    //           const fullPath = path.join(dirPath, subPath);
+    //           if (fs.statSync(dirPath).isDirectory()) {
+    //             // 存在子文件夹
+    //           }
+    //         });
+    //       }
+    //     });
 
     api.writeTmpFile({
       path: `view.tsx`,
