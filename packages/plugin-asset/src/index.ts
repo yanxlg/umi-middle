@@ -2,7 +2,7 @@
  * @Author: yanxlg
  * @Date: 2023-05-01 21:15:00
  * @LastEditors: yanxlg
- * @LastEditTime: 2023-05-06 10:57:29
+ * @LastEditTime: 2023-05-06 11:06:01
  * @Description:
  * 检查是不是存在view.tsx|view.jsx 如果支持，表示组件在编辑器中和。view.js 支持。  __editMode 属性。如果有的话原属性直接传过来，不处理（editable、children等）。
  * meta.json | meta.ts | meta.tsx  支持default导出，支持 meta 属性导出。
@@ -148,7 +148,7 @@ export default ${componentName};
           const fullPath = path.join(dirPath, subPath);
           if (fs.statSync(fullPath).isDirectory()) {
             // 存在子文件夹
-            const _parentDir = parentDir ? `${parentDir}-${subPath}` : subPath;
+            const _parentDir = parentDir ? `${parentDir}-${dir}` : dir;
             generateComponentFile(dirPath, components, hasEditView, _parentDir);
           }
         });
