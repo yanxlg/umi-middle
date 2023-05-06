@@ -94,5 +94,9 @@ export default defineConfig({
       },
       "@ant-design/icons",
     ],
+    {{{babelPlugins}}}
   ],
+  {{#babelPresets}}
+  extraBabelPresets: [{{{babelPresets}}}]
+  {{/babelPresets}}
 });

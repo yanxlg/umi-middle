@@ -2,7 +2,7 @@
  * @Author: yanxlg
  * @Date: 2023-05-01 21:15:00
  * @LastEditors: yanxlg
- * @LastEditTime: 2023-05-05 21:57:37
+ * @LastEditTime: 2023-05-06 10:17:58
  * @Description:
  * 检查是不是存在view.tsx|view.jsx 如果支持，表示组件在编辑器中和。view.js 支持。  __editMode 属性。如果有的话原属性直接传过来，不处理（editable、children等）。
  * meta.json | meta.ts | meta.tsx  支持default导出，支持 meta 属性导出。
@@ -182,6 +182,24 @@ export { ${components.join(", ")} };
       fs.readFileSync(path.join(cwd(), "package.json"), "utf-8")
     );
 
+    // 支持项目自定义.babelrc
+    const customBabelRcFile = path.join(cwd(), ".babelrc");
+    let babelPresets = undefined;
+    let babelPlugins = undefined;
+    if (fs.existsSync(customBabelRcFile)) {
+      try {
+        const configJson = JSON.parse(
+          fs.readFileSync(customBabelRcFile, "utf-8")
+        );
+        babelPresets = configJson.presets
+          ?.map((_: string | object) => JSON.stringify(_))
+          ?.join(",");
+        babelPlugins = configJson.plugins
+          ?.map((_: string | object) => JSON.stringify(_))
+          ?.join(",");
+      } catch (e) {}
+    }
+
     api.writeTmpFile({
       path: `.fatherrc.ts`,
       content: Mustache.render(
@@ -190,6 +208,8 @@ export { ${components.join(", ")} };
           hasEditView,
           pluginKey: api.plugin.key,
           output: path.join(cwdPath, "dist", packageJson.version), // 修改为项目根目录
+          babelPresets,
+          babelPlugins,
         }
       ),
     });
