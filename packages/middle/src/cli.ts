@@ -42,7 +42,15 @@ program.command("asset").action(async () => {
     // @2 调用 father build 编译
     // 配置根目录
     const cwd = process.cwd();
-    process.chdir(join(cwd, `src/.umi/plugin-${pluginKey}/`)); // 修改执行地址，影响编译使用的fatherrc配置文件
+    // 开发模式是.umi。production 模式是.umi-production
+    process.chdir(
+      join(
+        cwd,
+        process.env.NODE_ENV === "production"
+          ? `src/.umi-production/plugin-${pluginKey}/`
+          : `src/.umi/plugin-${pluginKey}/`
+      )
+    ); // 修改执行地址，影响编译使用的fatherrc配置文件
     const service = new FatherService();
     await service.run2({
       name: "build",
