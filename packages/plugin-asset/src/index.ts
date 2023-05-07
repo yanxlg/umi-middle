@@ -42,6 +42,10 @@ function toCamelCase(str: string): string {
     .replace(/^\w/, (_) => (_ ? _.toUpperCase() : ""));
 }
 
+function removeSymbol(str: string): string {
+  return str.replace(/\@/g, "").replace(/\//g, "-");
+}
+
 function getEditFile(dir: string) {
   const files = ["edit.tsx", "edit.jsx", "edit.js"];
   for (let i = 0; i < files.length; i++) {
@@ -282,6 +286,7 @@ export { ${components.join(", ")} };
           output: path.join(cwdPath, "dist", packageJson.version), // 修改为项目根目录
           babelPresets,
           babelPlugins,
+          name: toCamelCase(removeSymbol(packageJson.name)),
         }
       ),
     });

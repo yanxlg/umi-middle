@@ -20,7 +20,7 @@ export default defineConfig({
           "@designable/transformer": "DesignableTransformer"
         },
         postcssOptions: undefined,
-        name: "BaseLowComponents", // 导出的全局变量名
+        name: "{{{name}}}", // 导出的全局变量名
       },
       {{#hasEditView}}
       "edit": {
@@ -40,7 +40,7 @@ export default defineConfig({
           "@designable/transformer": "DesignableTransformer"
         },
         postcssOptions: undefined,
-        name: "BaseLowComponents", // 导出的全局变量名
+        name: "{{{name}}}", // 导出的全局变量名
       },
       {{/hasEditView}}
     },
