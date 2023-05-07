@@ -13,6 +13,7 @@ import { pluginKey } from "@middle/plugin-asset";
 import { logger, printHelp, yParser } from "@umijs/utils";
 import { program } from "commander";
 import { Service as FatherService } from "father/dist/service/service";
+import * as fs from "fs";
 import { join } from "path";
 import { run } from "umi";
 import { Service } from "umi/dist/service/service";
@@ -43,12 +44,19 @@ program.command("asset").action(async () => {
     // 配置根目录
     const cwd = process.cwd();
     // 开发模式是.umi。production 模式是.umi-production
+    // 检查文件夹是否存在
+    const devDir = `src/.umi/plugin-${pluginKey}`;
+    const prodDir = `src/.umi-production/plugin-${pluginKey}`;
+    const devDirExist = fs.existsSync(join(cwd, devDir));
+
     process.chdir(
       join(
         cwd,
         process.env.NODE_ENV === "production"
-          ? `src/.umi-production/plugin-${pluginKey}/`
-          : `src/.umi/plugin-${pluginKey}/`
+          ? prodDir
+          : devDirExist
+          ? devDir
+          : prodDir
       )
     ); // 修改执行地址，影响编译使用的fatherrc配置文件
     const service = new FatherService();
