@@ -17,7 +17,10 @@ export default defineConfig({
           "@designable/react": "DesignableReact",
           "@designable/setters": "DesignableSetters",
           "@designable/shared": "DesignableShared",
-          "@designable/transformer": "DesignableTransformer"
+          "@designable/transformer": "DesignableTransformer",
+          "@formily/react": "FormilyReact",
+          "@formily/reactive": "FormilyReactive",
+          "@formily/reactive-react": "FormilyReactiveReact"
         },
         postcssOptions: undefined,
         name: "{{{name}}}", // 导出的全局变量名
@@ -37,21 +40,15 @@ export default defineConfig({
           "@designable/react": "DesignableReact",
           "@designable/setters": "DesignableSetters",
           "@designable/shared": "DesignableShared",
-          "@designable/transformer": "DesignableTransformer"
+          "@designable/transformer": "DesignableTransformer",
+          "@formily/react": "FormilyReact",
+          "@formily/reactive": "FormilyReactive",
+          "@formily/reactive-react": "FormilyReactiveReact"
         },
         postcssOptions: undefined,
         name: "{{{name}}}", // 导出的全局变量名
       },
       {{/hasEditView}}
-    },
-    externals: {
-      react: "React",
-      "react-dom": "ReactDOM",
-      "@middle/runner": "Runner", // 从umi 导出了部分值。比如history，编译会报错，后面修改，或者外部处理
-      lodash: "Lodash",
-      "react-router": "ReactRouter",
-      "react-router-dom": "ReactRouterDom",
-       "@designable/react": "DesignableReact"
     },
     postcssOptions: undefined,
     output: "{{{output}}}",
