@@ -1,6 +1,6 @@
 {
   "name": "@middle/middle",
-  "version": "0.0.25",
+  "version": "0.0.26",
   "main": "lib/index.js",
   "files": [
     "lib",
@@ -17,7 +17,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@middle/plugin-asset": "^0.0.17",
+    "@middle/plugin-asset": "^0.0.18",
     "@middle/plugin-tabs": "^0.0.4",
     "@middle/plugin-watermark": "^0.0.7",
     "@umijs/max": "^4.0.67",
