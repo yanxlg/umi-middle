@@ -22,8 +22,7 @@ program.name("middle");
 
 program.command("asset").action(async () => {
   // 生成低代码资产包
-  process.env.NODE_ENV = "development";
-  // @1 调用 umi setup 生成相关文件。
+  process.env.NODE_ENV = "production";
   try {
     const args = yParser(process.argv.slice(2), {
       alias: {
@@ -36,6 +35,7 @@ program.command("asset").action(async () => {
       require.resolve("@umijs/max/dist/preset"),
       require.resolve("./asset-preset"),
     ].join(",");
+
     await new Service().run2({
       name: "setup",
       args,
