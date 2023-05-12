@@ -20,7 +20,8 @@ export default defineConfig({
           "@designable/transformer": "DesignableTransformer",
           "@formily/react": "FormilyReact",
           "@formily/reactive": "FormilyReactive",
-          "@formily/reactive-react": "FormilyReactiveReact"
+          "@formily/reactive-react": "FormilyReactiveReact",
+          "@middle/request": "MiddleRequest"
         },
         postcssOptions: undefined,
         name: "{{{name}}}", // 导出的全局变量名
@@ -43,7 +44,8 @@ export default defineConfig({
           "@designable/transformer": "DesignableTransformer",
           "@formily/react": "FormilyReact",
           "@formily/reactive": "FormilyReactive",
-          "@formily/reactive-react": "FormilyReactiveReact"
+          "@formily/reactive-react": "FormilyReactiveReact",
+          "@middle/request": "MiddleRequest", // 目前需要在系统中配置代理自动转发，因此需要从请求库中添加拦截器处理
         },
         postcssOptions: undefined,
         name: "{{{name}}}", // 导出的全局变量名
