@@ -2,7 +2,7 @@
  * @Author: yanxlg
  * @Date: 2023-05-01 21:15:00
  * @LastEditors: yanxlg
- * @LastEditTime: 2023-05-08 23:11:50
+ * @LastEditTime: 2023-05-15 23:42:27
  * @Description:
  * 检查是不是存在view.tsx|view.jsx 如果支持，表示组件在编辑器中和。view.js 支持。  __editMode 属性。如果有的话原属性直接传过来，不处理（editable、children等）。
  * meta.json | meta.ts | meta.tsx  支持default导出，支持 meta 属性导出。
@@ -298,7 +298,8 @@ export { ${components.join(", ")} };
         {
           hasEditView,
           pluginKey: api.plugin.key,
-          output: path.join(cwdPath, "dist", packageJson.version), // 修改为项目根目录
+          output: path.join(cwdPath, "umd"), // 修改为项目根目录
+          // output: path.join(cwdPath, "dist", packageJson.version), // 修改为项目根目录
           babelPresets,
           babelPlugins,
           name: toCamelCase(removeSymbol(packageJson.name)),
