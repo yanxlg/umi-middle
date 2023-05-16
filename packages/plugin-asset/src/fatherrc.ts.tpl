@@ -10,7 +10,7 @@ export default defineConfig({
           "@middle/runner": "Runner", // 从umi 导出了部分值。比如history，编译会报错，后面修改，或者外部处理
           lodash: "Lodash",
           "react-router": "ReactRouter",
-          "react-router-dom": "ReactRouterDom",
+          "react-router-dom": "ReactRouterDOM",
           "@designable/core": "DesignableCore",
           "@designable/react-sandbox": "DesignableReactSandbox",
           "@designable/react-settings-form": "DesignableReactSettingsForm",
@@ -18,10 +18,10 @@ export default defineConfig({
           "@designable/setters": "DesignableSetters",
           "@designable/shared": "DesignableShared",
           "@designable/transformer": "DesignableTransformer",
-          "@formily/react": "FormilyReact",
-          "@formily/reactive": "FormilyReactive",
-          "@formily/reactive-react": "FormilyReactiveReact",
-          "@middle/request": "MiddleRequest"
+          "@formily/react": "Formily.React",
+          "@formily/reactive": "Formily.Reactive",
+          "@formily/reactive-react": "Formily.ReactiveReact",
+          "@middle/request": "MiddleRequest", // 目前需要在系统中配置代理自动转发，因此需要从请求库中添加拦截器处理
         },
         postcssOptions: undefined,
         name: "{{{name}}}", // 导出的全局变量名
@@ -34,7 +34,7 @@ export default defineConfig({
           "@middle/runner": "Runner", // 从umi 导出了部分值。比如history，编译会报错，后面修改，或者外部处理
           lodash: "Lodash",
           "react-router": "ReactRouter",
-          "react-router-dom": "ReactRouterDom",
+          "react-router-dom": "ReactRouterDOM",
           "@designable/core": "DesignableCore",
           "@designable/react-sandbox": "DesignableReactSandbox",
           "@designable/react-settings-form": "DesignableReactSettingsForm",
@@ -42,9 +42,9 @@ export default defineConfig({
           "@designable/setters": "DesignableSetters",
           "@designable/shared": "DesignableShared",
           "@designable/transformer": "DesignableTransformer",
-          "@formily/react": "FormilyReact",
-          "@formily/reactive": "FormilyReactive",
-          "@formily/reactive-react": "FormilyReactiveReact",
+          "@formily/react": "Formily.React",
+          "@formily/reactive": "Formily.Reactive",
+          "@formily/reactive-react": "Formily.ReactiveReact",
           "@middle/request": "MiddleRequest", // 目前需要在系统中配置代理自动转发，因此需要从请求库中添加拦截器处理
         },
         postcssOptions: undefined,
