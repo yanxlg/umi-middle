@@ -11,14 +11,54 @@ export default defineConfig({
           lodash: "Lodash",
           "react-router": "ReactRouter",
           "react-router-dom": "ReactRouterDOM",
-          "@designable/core": "Designable.Core",
-          "@designable/react": "Designable.React",
-          "@designable/setters": "Designable.Setters",
-          "@designable/shared": "Designable.Shared",
-          "@designable/transformer": "Designable.Transformer",
-          "@formily/react": "Formily.React",
-          "@formily/reactive": "Formily.Reactive",
-          "@formily/reactive-react": "Formily.ReactiveReact",
+          "@designable/core": {
+            amd: '@designable/core',
+            commonjs: '@designable/core',
+            commonjs2: '@designable/core',
+            root: ['Designable', 'Core']
+          },
+          "@designable/react": {
+            amd: '@designable/react',
+            commonjs: '@designable/react',
+            commonjs2: '@designable/react',
+            root: ['Designable', 'React']
+          },
+          "@designable/setters": {
+            amd: '@designable/setters',
+            commonjs: '@designable/setters',
+            commonjs2: '@designable/setters',
+            root: ['Designable', 'Setters']
+          },
+          "@designable/shared": {
+            amd: '@designable/shared',
+            commonjs: '@designable/shared',
+            commonjs2: '@designable/shared',
+            root: ['Designable', 'Shared']
+          },
+          "@designable/transformer": {
+            amd: '@designable/transformer',
+            commonjs: '@designable/transformer',
+            commonjs2: '@designable/transformer',
+            root: ['Designable', 'Transformer']
+          },
+          "@formily/react": {
+            amd: '@formily/react',
+            commonjs: '@formily/react',
+            commonjs2: '@formily/react',
+            root: ['Formily', 'React']
+          },
+          "@formily/reactive": {
+            amd: '@formily/reactive',
+            commonjs: '@formily/reactive',
+            commonjs2: '@formily/reactive',
+            root: ['Formily', 'Reactive']
+          },
+          "@formily/reactive-react": {
+            amd: '@formily/reactive-react',
+            commonjs: '@formily/reactive-react',
+            commonjs2: '@formily/reactive-react',
+            root: ['Formily', 'ReactiveReact']
+          },
           "@middle/request": "MiddleRequest", // 目前需要在系统中配置代理自动转发，因此需要从请求库中添加拦截器处理
         },
         postcssOptions: undefined,
@@ -33,14 +73,54 @@ export default defineConfig({
           lodash: "Lodash",
           "react-router": "ReactRouter",
           "react-router-dom": "ReactRouterDOM",
-          "@designable/core": "Designable.Core",
-          "@designable/react": "Designable.React",
-          "@designable/setters": "Designable.Setters",
-          "@designable/shared": "Designable.Shared",
-          "@designable/transformer": "Designable.Transformer",
-          "@formily/react": "Formily.React",
-          "@formily/reactive": "Formily.Reactive",
-          "@formily/reactive-react": "Formily.ReactiveReact",
+          "@designable/core": {
+            amd: '@designable/core',
+            commonjs: '@designable/core',
+            commonjs2: '@designable/core',
+            root: ['Designable', 'Core']
+          },
+          "@designable/react": {
+            amd: '@designable/react',
+            commonjs: '@designable/react',
+            commonjs2: '@designable/react',
+            root: ['Designable', 'React']
+          },
+          "@designable/setters": {
+            amd: '@designable/setters',
+            commonjs: '@designable/setters',
+            commonjs2: '@designable/setters',
+            root: ['Designable', 'Setters']
+          },
+          "@designable/shared": {
+            amd: '@designable/shared',
+            commonjs: '@designable/shared',
+            commonjs2: '@designable/shared',
+            root: ['Designable', 'Shared']
+          },
+          "@designable/transformer": {
+            amd: '@designable/transformer',
+            commonjs: '@designable/transformer',
+            commonjs2: '@designable/transformer',
+            root: ['Designable', 'Transformer']
+          },
+          "@formily/react": {
+            amd: '@formily/react',
+            commonjs: '@formily/react',
+            commonjs2: '@formily/react',
+            root: ['Formily', 'React']
+          },
+          "@formily/reactive": {
+            amd: '@formily/reactive',
+            commonjs: '@formily/reactive',
+            commonjs2: '@formily/reactive',
+            root: ['Formily', 'Reactive']
+          },
+          "@formily/reactive-react": {
+            amd: '@formily/reactive-react',
+            commonjs: '@formily/reactive-react',
+            commonjs2: '@formily/reactive-react',
+            root: ['Formily', 'ReactiveReact']
+          },
           "@middle/request": "MiddleRequest", // 目前需要在系统中配置代理自动转发，因此需要从请求库中添加拦截器处理
         },
         postcssOptions: undefined,
