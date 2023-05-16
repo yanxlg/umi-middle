@@ -2,7 +2,7 @@
  * @Author: yanxlg
  * @Date: 2023-05-04 23:18:33
  * @LastEditors: yanxlg
- * @LastEditTime: 2023-05-05 21:58:13
+ * @LastEditTime: 2023-05-16 23:48:38
  * @Description:
  *  TODO:
  *    asset包build 进行工程化，配合father完成，直接指定内部.fatherrc.ts作为配置文件，外部不提供新的配置文件。
@@ -40,6 +40,20 @@ program.command("asset").action(async () => {
       name: "setup",
       args,
     });
+
+    // antd 语言包处理 locale/zh_CN.js 覆盖locale/en_US
+    const antPkgPath = require.resolve("antd");
+    if (antPkgPath) {
+      fs.writeFileSync(
+        require.resolve("antd/es/locale/en_US.js"),
+        fs.readFileSync(require.resolve("antd/es/locale/zh_CN.js"), "utf8")
+      );
+      fs.writeFileSync(
+        require.resolve("antd/lib/locale/en_US.js"),
+        fs.readFileSync(require.resolve("antd/lib/locale/zh_CN.js"), "utf8")
+      );
+    }
+
     // @2 调用 father build 编译
     // 配置根目录
     const cwd = process.cwd();
@@ -64,6 +78,8 @@ program.command("asset").action(async () => {
       name: "build",
       args,
     });
+
+    // 恢复文件内容
   } catch (e: any) {
     logger.fatal(e);
     printHelp.exit();
