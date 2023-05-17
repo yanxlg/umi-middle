@@ -1,5 +1,4 @@
 import { defineConfig } from "father";
-// const webpack = require('webpack');
 
 export default defineConfig({
   umd: {
@@ -13,6 +12,7 @@ export default defineConfig({
           "react-router": "ReactRouter",
           "react-router-dom": "ReactRouterDOM",
           "dayjs": "dayjs",
+          "moment": "dayjs",
           "@designable/core": {
             amd: '@designable/core',
             commonjs: '@designable/core',
@@ -76,6 +76,7 @@ export default defineConfig({
           "react-router": "ReactRouter",
           "react-router-dom": "ReactRouterDOM",
           "dayjs": "dayjs",
+          "moment": "dayjs",
           "@designable/core": {
             amd: '@designable/core',
             commonjs: '@designable/core',
@@ -131,17 +132,17 @@ export default defineConfig({
       },
       {{/hasEditView}}
     },
-    // chainWebpack:(mero)=>{
-    //   mero.plugin('AntLocaleReplacementPlugin').use(webpack.NormalModuleReplacementPlugin,[/\/(es|lib)\/(locale|locale-provider)\/(en_US|default)\.js/,function(resource){
-    //     resource.request = resource.request.replace('en_US','zh_CN').replace('default','zh_CN');
-    //     // console.log(resource.request); // 所有的语言包都替换调
-    //   }]);
-    //   return mero;
-    // },
     postcssOptions: undefined,
     output: "{{{output}}}",
   },
   extraBabelPlugins: [
+    ["babel-plugin-replace-imports", 
+      {
+        "test": /\/locale\/en_US/i,
+        "replacer": "/locale/zh_CN"
+      },
+      "locale-replace-imports"
+    ],
     [
       "babel-plugin-import",
       {
