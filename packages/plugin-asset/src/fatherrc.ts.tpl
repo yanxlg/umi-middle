@@ -128,6 +128,13 @@ export default defineConfig({
       },
       {{/hasEditView}}
     },
+    // chainWebpack:(mero)=>{
+    //   mero.plugin('AntLocaleReplacementPlugin').use(webpack.NormalModuleReplacementPlugin,[/\/(es|lib)\/(locale|locale-provider)\/(en_US|default)\.js/,function(resource){
+    //     resource.request = resource.request.replace('en_US','zh_CN').replace('default','zh_CN');
+    //     console.log(resource.request); // 所有的语言包都替换调
+    //   }]);
+    //   return mero;
+    // },
     postcssOptions: undefined,
     output: "{{{output}}}",
   },
