@@ -2,7 +2,7 @@
  * @Author: yanxlg
  * @Date: 2023-05-04 23:18:33
  * @LastEditors: yanxlg
- * @LastEditTime: 2023-05-17 13:18:15
+ * @LastEditTime: 2023-05-17 22:47:22
  * @Description:
  *  TODO:
  *    asset包build 进行工程化，配合father完成，直接指定内部.fatherrc.ts作为配置文件，外部不提供新的配置文件。
@@ -87,6 +87,53 @@ program.command("asset").action(async () => {
       args,
     });
 
+    // 恢复文件内容
+  } catch (e: any) {
+    logger.fatal(e);
+    printHelp.exit();
+    process.exit(1);
+  }
+});
+
+program.command("asset-dev").action(async () => {
+  // 生成低代码资产包
+  process.env.NODE_ENV = "development";
+  try {
+    const args = yParser(process.argv.slice(2), {
+      alias: {
+        version: ["v"],
+        help: ["h"],
+      },
+      boolean: ["version"],
+    });
+    process.env.UMI_PRESETS = process.env.UMI_PRESETS = [
+      require.resolve("@umijs/max/dist/preset"),
+      require.resolve("./asset-preset"),
+    ].join(",");
+    // antd 语言包处理 locale/zh_CN.js 覆盖locale/en_US
+    const antPkgPath = require.resolve("antd");
+    if (antPkgPath) {
+      fs.writeFileSync(
+        require.resolve("antd/es/locale/en_US.js"),
+        fs.readFileSync(require.resolve("antd/es/locale/zh_CN.js"), "utf8")
+      );
+      fs.writeFileSync(
+        require.resolve("antd/es/locale/default.js"),
+        fs.readFileSync(require.resolve("antd/es/locale/zh_CN.js"), "utf8")
+      );
+      fs.writeFileSync(
+        require.resolve("antd/lib/locale/en_US.js"),
+        fs.readFileSync(require.resolve("antd/lib/locale/zh_CN.js"), "utf8")
+      );
+      fs.writeFileSync(
+        require.resolve("antd/lib/locale/default.js"),
+        fs.readFileSync(require.resolve("antd/lib/locale/zh_CN.js"), "utf8")
+      );
+    }
+    await new Service().run2({
+      name: "dev",
+      args,
+    });
     // 恢复文件内容
   } catch (e: any) {
     logger.fatal(e);
