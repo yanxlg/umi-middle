@@ -76,7 +76,7 @@ export default defineConfig({
           "react-router": "ReactRouter",
           "react-router-dom": "ReactRouterDOM",
           "dayjs": "dayjs",
-          "moment": "dayjs",
+          "moment": "dayjs", // moment强制转换成dayjs
           "@designable/core": {
             amd: '@designable/core',
             commonjs: '@designable/core',
