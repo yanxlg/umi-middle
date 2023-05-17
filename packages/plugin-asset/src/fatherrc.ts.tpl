@@ -12,6 +12,7 @@ export default defineConfig({
           lodash: "Lodash",
           "react-router": "ReactRouter",
           "react-router-dom": "ReactRouterDOM",
+          "dayjs": "dayjs",
           "@designable/core": {
             amd: '@designable/core',
             commonjs: '@designable/core',
@@ -74,6 +75,7 @@ export default defineConfig({
           lodash: "Lodash",
           "react-router": "ReactRouter",
           "react-router-dom": "ReactRouterDOM",
+          "dayjs": "dayjs",
           "@designable/core": {
             amd: '@designable/core',
             commonjs: '@designable/core',
