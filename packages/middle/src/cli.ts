@@ -2,7 +2,7 @@
  * @Author: yanxlg
  * @Date: 2023-05-04 23:18:33
  * @LastEditors: yanxlg
- * @LastEditTime: 2023-05-16 23:48:38
+ * @LastEditTime: 2023-05-17 13:18:15
  * @Description:
  *  TODO:
  *    asset包build 进行工程化，配合father完成，直接指定内部.fatherrc.ts作为配置文件，外部不提供新的配置文件。
@@ -49,7 +49,15 @@ program.command("asset").action(async () => {
         fs.readFileSync(require.resolve("antd/es/locale/zh_CN.js"), "utf8")
       );
       fs.writeFileSync(
+        require.resolve("antd/es/locale/default.js"),
+        fs.readFileSync(require.resolve("antd/es/locale/zh_CN.js"), "utf8")
+      );
+      fs.writeFileSync(
         require.resolve("antd/lib/locale/en_US.js"),
+        fs.readFileSync(require.resolve("antd/lib/locale/zh_CN.js"), "utf8")
+      );
+      fs.writeFileSync(
+        require.resolve("antd/lib/locale/default.js"),
         fs.readFileSync(require.resolve("antd/lib/locale/zh_CN.js"), "utf8")
       );
     }
