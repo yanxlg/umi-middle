@@ -19,7 +19,7 @@
   ],
   "dependencies": {
     "babel-plugin-import": "^1.13.3",
-    "babel-plugin-replace-imports": "1.2.0"
+    "babel-plugin-replace-imports": "1.0.2"
   },
   "gitHead": "d3ee06165a39453e5fbea967fe8fb9515fbdcfe4"
 }
