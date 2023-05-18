@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@middle/plugin-asset": "^0.0.33",
+    "@middle/plugin-asset-dev": "^0.0.2",
     "@middle/plugin-tabs": "^0.0.4",
     "@middle/plugin-watermark": "^0.0.7",
     "@umijs/max": "^4.0.67",
