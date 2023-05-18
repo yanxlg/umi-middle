@@ -1,0 +1,24 @@
+{
+  "name": "@middle/plugin-asset-dev",
+  "author": "yanxlg <yanxlg2@yonghui.cn>",
+  "version": "0.0.1",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "dev": "father dev",
+    "build": "father build"
+  },
+  "keywords": [],
+  "authors": {
+    "name": "yanxlg <yanxlg2@yonghui.cn>",
+    "email": "yanxlg2@yonghui.cn"
+  },
+  "license": "MIT",
+  "files": [
+    "lib"
+  ],
+  "dependencies": {
+    "monaco-editor-webpack-plugin": "4.*.*"
+  },
+  "gitHead": "d3ee06165a39453e5fbea967fe8fb9515fbdcfe4"
+}
