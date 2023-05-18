@@ -2,7 +2,7 @@
  * @Author: yanxlg
  * @Date: 2023-05-01 21:15:00
  * @LastEditors: yanxlg
- * @LastEditTime: 2023-05-18 23:12:13
+ * @LastEditTime: 2023-05-18 23:25:22
  * @Description:
  * 检查是不是存在view.tsx|view.jsx 如果支持，表示组件在编辑器中和。view.js 支持。  __editMode 属性。如果有的话原属性直接传过来，不处理（editable、children等）。
  * meta.json | meta.ts | meta.tsx  支持default导出，支持 meta 属性导出。
@@ -36,6 +36,13 @@ export default (api: IApi) => {
       `//unpkg.com/@formily/reactive@2.2.13/dist/formily.reactive.umd.${
         isDev ? "development" : "production"
       }.js`,
+    ];
+    // 地址
+    memo.routes = [
+      {
+        path: "/",
+        component: require.resolve("@designable/designer/es/devtools/index.js"),
+      },
     ];
     return memo;
   });
