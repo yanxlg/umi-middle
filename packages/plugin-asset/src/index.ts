@@ -2,7 +2,7 @@
  * @Author: yanxlg
  * @Date: 2023-05-01 21:15:00
  * @LastEditors: yanxlg
- * @LastEditTime: 2023-05-18 21:43:18
+ * @LastEditTime: 2023-05-19 09:50:38
  * @Description:
  * 检查是不是存在view.tsx|view.jsx 如果支持，表示组件在编辑器中和。view.js 支持。  __editMode 属性。如果有的话原属性直接传过来，不处理（editable、children等）。
  * meta.json | meta.ts | meta.tsx  支持default导出，支持 meta 属性导出。
@@ -16,7 +16,7 @@ import * as fs from "fs";
 import * as path from "path";
 import { cwd } from "process";
 import { IApi } from "umi";
-import { Mustache, winPath } from "umi/plugin-utils";
+import { winPath } from "umi/plugin-utils";
 
 export function withTmpPath(opts: {
   api: IApi;
@@ -293,23 +293,83 @@ export { ${components.join(", ")} };
     const libraryName = toCamelCase(removeSymbol(packageJson.name));
     api.writeTmpFile({
       path: `.fatherrc.ts`,
-      content: Mustache.render(
-        fs.readFileSync(path.join(__dirname, "fatherrc.ts.tpl"), "utf-8"),
-        {
-          hasEditView,
-          pluginKey: api.plugin.key,
-          output: path.join(cwdPath, "umd"), // 修改为项目根目录
-          // output: path.join(cwdPath, "dist", packageJson.version), // 修改为项目根目录
-          babelPresets,
-          babelPlugins,
-          name: toCamelCase(removeSymbol(packageJson.name)),
-        }
-      ),
+      tplPath: path.join(__dirname, "fatherrc.ts.tpl"),
+      context: {
+        hasEditView,
+        pluginKey: api.plugin.key,
+        output: path.join(cwdPath, "umd"), // 修改为项目根目录
+        // output: path.join(cwdPath, "dist", packageJson.version), // 修改为项目根目录
+        babelPresets,
+        babelPlugins,
+        name: libraryName,
+      },
     });
-    
+
     api.writeTmpFile({
       path: "index.ts",
       content: `export const assetPackageName = "${libraryName}"`,
     });
+
+    const devPlugin = api.isPluginEnable("asset-dev");
+    if (devPlugin) {
+      // 生成asset.json文件
+      // 读取当前已经存在的json文件
+      const destPath = path.join(cwdPath, "src/asset.json");
+      // 组合修改json
+      if (fs.existsSync(destPath)) {
+        try {
+          const assetJson = JSON.parse(fs.readFileSync(destPath, "utf-8"));
+          components.forEach((name) => {
+            if (
+              assetJson.components &&
+              Array.isArray(assetJson.components) &&
+              assetJson.components.find((_: any) => _.name === name)
+            ) {
+              return;
+            }
+            assetJson.components = assetJson.components || [];
+            assetJson.components.push({
+              name: name,
+              npm: {
+                package: packageJson.name,
+                version: packageJson.version,
+              },
+              group: "调试物料",
+              category: "",
+            });
+          });
+          fs.writeFileSync(destPath, JSON.stringify(assetJson, null, 2));
+        } catch (e) {}
+      } else {
+        const initJson = {
+          version: "1.0.0",
+          packages: [
+            {
+              name: packageJson.name,
+              library: libraryName,
+              version: packageJson.version,
+            },
+          ],
+          components: components.map((_) => {
+            return {
+              name: _,
+              npm: {
+                package: packageJson.name,
+                version: packageJson.version,
+              },
+              group: "调试物料",
+              category: "",
+            };
+          }),
+          sort: [
+            {
+              group: "调试物料",
+              categories: [""],
+            },
+          ],
+        };
+        fs.writeFileSync(destPath, JSON.stringify(initJson, null, 2));
+      }
+    }
   });
 };
