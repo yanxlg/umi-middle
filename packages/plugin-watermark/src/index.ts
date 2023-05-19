@@ -2,7 +2,7 @@
  * @Author: yanxlg
  * @Date: 2023-04-25 09:23:46
  * @LastEditors: yanxlg
- * @LastEditTime: 2023-04-28 01:18:28
+ * @LastEditTime: 2023-05-19 10:43:46
  * @Description:
  *
  * Copyright (c) 2023 by yanxlg, All Rights Reserved.
@@ -10,7 +10,7 @@
 import * as fs from "fs";
 import { join } from "path";
 import { IApi, RUNTIME_TYPE_FILE_NAME } from "umi";
-import { Mustache, winPath } from "umi/plugin-utils";
+import { winPath } from "umi/plugin-utils";
 
 // 生成的模版文件地址。
 export function withTmpPath(opts: {
@@ -105,11 +105,8 @@ export default (api: IApi) => {
     const watermarkContentPath = join(tmpDir, "Watermark.tsx");
     const watermarkContent = fs.readFileSync(watermarkContentPath, "utf-8");
     const layoutContentPath = join(tmpDir, "Container.tsx.tpl");
-    const layoutContent = fs.readFileSync(layoutContentPath, "utf-8");
     const layoutLessPath = join(tmpDir, "Container.less");
-    const layoutLess = fs.readFileSync(layoutLessPath, "utf-8");
     const indexPath = join(tmpDir, "index.tpl");
-    const indexContent = fs.readFileSync(indexPath, "utf-8");
 
     const hasInitialStatePlugin = api.config.initialState;
 
@@ -122,20 +119,23 @@ export default (api: IApi) => {
     // Layout.tsx
     api.writeTmpFile({
       path: "Container.tsx",
-      content: Mustache.render(layoutContent, {
+      tplPath: layoutContentPath,
+      context: {
         userConfig: JSON.stringify(api.config.watermark, null, 2),
         base: api.config.base || "/",
-      }),
+      },
     });
     // WatermarkLayout.tsx
     api.writeTmpFile({
       path: "Container.less",
-      content: layoutLess,
+      tplPath: layoutLessPath,
+      context: {},
     });
 
     api.writeTmpFile({
       path: "index.ts",
-      content: indexContent,
+      tplPath: indexPath,
+      context: {},
     });
     // 写入类型, RunTimeLayoutConfig 是 app.tsx 中 layout 配置的类型
     // 对于动态 layout 配置很有用
@@ -197,10 +197,8 @@ export interface IRuntimeConfig {
 
     api.writeTmpFile({
       path: "runtime.tsx",
-      content: Mustache.render(
-        fs.readFileSync(join(tmpDir, "runtime.tsx.tpl"), "utf-8"),
-        {}
-      ),
+      tplPath: join(tmpDir, "runtime.tsx.tpl"),
+      context: {},
     });
   });
 

@@ -2,15 +2,14 @@
  * @Author: yanxlg
  * @Date: 2023-04-27 11:38:53
  * @LastEditors: yanxlg
- * @LastEditTime: 2023-04-29 12:32:36
+ * @LastEditTime: 2023-05-19 10:41:11
  * @Description:
  *
  * Copyright (c) 2023 by yanxlg, All Rights Reserved.
  */
-import * as fs from "fs";
 import { join } from "path";
 import { IApi } from "umi";
-import { Mustache, winPath } from "umi/plugin-utils";
+import { winPath } from "umi/plugin-utils";
 
 export function withTmpPath(opts: {
   api: IApi;
@@ -59,44 +58,34 @@ export default (api: IApi) => {
     // 支持import { KeepAlive } from 'umi';
     api.writeTmpFile({
       path: "index.tsx",
-      content: Mustache.render(
-        fs.readFileSync(join(__dirname, "index.tsx.tpl"), "utf-8"),
-        {}
-      ),
+      tplPath: join(__dirname, "index.tsx.tpl"),
+      context: {},
     });
 
     api.writeTmpFile({
       path: "babel.js",
-      content: Mustache.render(
-        fs.readFileSync(join(__dirname, "babel.js"), "utf-8"),
-        {}
-      ),
+      tplPath: join(__dirname, "babel.js"),
+      context: {},
     });
     api.writeTmpFile({
       path: "babel.d.ts",
-      content: Mustache.render(
-        fs.readFileSync(join(__dirname, "babel.d.ts"), "utf-8"),
-        {}
-      ),
+      tplPath: join(__dirname, "babel.d.ts"),
+      context: {},
     });
 
     api.writeTmpFile({
       path: "KeepAliveWrapper.tsx",
-      content: Mustache.render(
-        fs.readFileSync(join(__dirname, "KeepAliveWrapper.tsx.tpl"), "utf-8"),
-        {}
-      ),
+      tplPath: join(__dirname, "KeepAliveWrapper.tsx.tpl"),
+      context: {},
     });
 
     const reactExternal = api.config.externals?.react; // umd 加载React
     api.writeTmpFile({
       path: "runtime.tsx",
-      content: Mustache.render(
-        fs.readFileSync(join(__dirname, "runtime.tsx.tpl"), "utf-8"),
-        {
-          reactExternal: reactExternal,
-        }
-      ),
+      tplPath: join(__dirname, "runtime.tsx.tpl"),
+      context: {
+        reactExternal: reactExternal,
+      },
     });
 
     // windowTabs 组件生成
@@ -106,35 +95,26 @@ export default (api: IApi) => {
     // 配置
     api.writeTmpFile({
       path: "WindowTabs/index.tsx",
-      content: Mustache.render(
-        fs.readFileSync(join(__dirname, "WindowTabs/index.tsx.tpl"), "utf-8"),
-        {
-          antdPrefix,
-        }
-      ),
+      tplPath: join(__dirname, "WindowTabs/index.tsx.tpl"),
+      context: {
+        antdPrefix,
+      },
     });
     const base = api.config.base || "/";
     api.writeTmpFile({
       path: "WindowTabs/useTabs.ts",
-      content: Mustache.render(
-        fs.readFileSync(join(__dirname, "WindowTabs/useTabs.ts.tpl"), "utf-8"),
-        {
-          base,
-        }
-      ),
+      tplPath: join(__dirname, "WindowTabs/useTabs.ts.tpl"),
+      context: {
+        base,
+      },
     });
 
     api.writeTmpFile({
       path: "WindowTabs/themes/otb/index.less",
-      content: Mustache.render(
-        fs.readFileSync(
-          join(__dirname, "WindowTabs/themes/otb/index.less.tpl"),
-          "utf-8"
-        ),
-        {
-          antdPrefix,
-        }
-      ),
+      tplPath: join(__dirname, "WindowTabs/themes/otb/index.less.tpl"),
+      context: {
+        antdPrefix,
+      },
     });
   });
 };
