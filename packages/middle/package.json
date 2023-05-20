@@ -1,6 +1,6 @@
 {
   "name": "@middle/middle",
-  "version": "0.0.54",
+  "version": "0.0.55",
   "main": "lib/index.js",
   "files": [
     "lib",
@@ -17,7 +17,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@middle/plugin-asset": "^0.0.38",
+    "@middle/plugin-asset": "^0.0.39",
     "@middle/plugin-asset-dev": "^0.0.5",
     "@middle/plugin-tabs": "^0.0.5",
     "@middle/plugin-watermark": "^0.0.8",
