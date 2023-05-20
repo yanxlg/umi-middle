@@ -1,6 +1,9 @@
 import { defineConfig } from "father";
 
 export default defineConfig({
+  alias: {
+    "@@/core/history": "{{{historyAlias}}}"
+  },
   umd: {
     entry: {
       "view": {
@@ -13,7 +16,6 @@ export default defineConfig({
           "react-router-dom": "ReactRouterDOM",
           "dayjs": "dayjs",
           "moment": "dayjs", // moment强制转换成dayjs
-          "umi": "__umi__",
           "@designable/core": {
             amd: '@designable/core',
             commonjs: '@designable/core',
@@ -78,7 +80,6 @@ export default defineConfig({
           "react-router-dom": "ReactRouterDOM",
           "dayjs": "dayjs",
           "moment": "dayjs", // moment强制转换成dayjs
-          "umi": "__umi__",
           "@designable/core": {
             amd: '@designable/core',
             commonjs: '@designable/core',
