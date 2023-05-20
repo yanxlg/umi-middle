@@ -2,7 +2,7 @@
  * @Author: yanxlg
  * @Date: 2023-05-01 21:15:00
  * @LastEditors: yanxlg
- * @LastEditTime: 2023-05-20 11:01:50
+ * @LastEditTime: 2023-05-20 11:11:04
  * @Description:
  * 检查是不是存在view.tsx|view.jsx 如果支持，表示组件在编辑器中和。view.js 支持。  __editMode 属性。如果有的话原属性直接传过来，不处理（editable、children等）。
  * meta.json | meta.ts | meta.tsx  支持default导出，支持 meta 属性导出。
@@ -276,7 +276,7 @@ export default widgets;
 
     api.writeTmpFile({
       path: `history.ts`,
-      content: "",
+      content: "export const history = undefined;",
     });
 
     api.writeTmpFile({
