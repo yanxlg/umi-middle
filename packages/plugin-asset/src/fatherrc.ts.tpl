@@ -16,34 +16,34 @@ export default defineConfig({
           "react-router-dom": "ReactRouterDOM",
           "dayjs": "dayjs",
           "moment": "dayjs", // moment强制转换成dayjs
-          "@designable/core": {
-            amd: '@designable/core',
-            commonjs: '@designable/core',
-            commonjs2: '@designable/core',
+          "@meditor/core": {
+            amd: '@meditor/core',
+            commonjs: '@meditor/core',
+            commonjs2: '@meditor/core',
             root: ['Designable', 'Core']
           },
-          "@designable/react": {
-            amd: '@designable/react',
-            commonjs: '@designable/react',
-            commonjs2: '@designable/react',
+          "@meditor/react": {
+            amd: '@meditor/react',
+            commonjs: '@meditor/react',
+            commonjs2: '@meditor/react',
             root: ['Designable', 'React']
           },
-          "@designable/setters": {
-            amd: '@designable/setters',
-            commonjs: '@designable/setters',
-            commonjs2: '@designable/setters',
+          "@meditor/setters": {
+            amd: '@meditor/setters',
+            commonjs: '@meditor/setters',
+            commonjs2: '@meditor/setters',
             root: ['Designable', 'Setters']
           },
-          "@designable/shared": {
-            amd: '@designable/shared',
-            commonjs: '@designable/shared',
-            commonjs2: '@designable/shared',
+          "@meditor/shared": {
+            amd: '@meditor/shared',
+            commonjs: '@meditor/shared',
+            commonjs2: '@meditor/shared',
             root: ['Designable', 'Shared']
           },
-          "@designable/transformer": {
-            amd: '@designable/transformer',
-            commonjs: '@designable/transformer',
-            commonjs2: '@designable/transformer',
+          "@meditor/transformer": {
+            amd: '@meditor/transformer',
+            commonjs: '@meditor/transformer',
+            commonjs2: '@meditor/transformer',
             root: ['Designable', 'Transformer']
           },
           "@formily/react": {
@@ -80,34 +80,34 @@ export default defineConfig({
           "react-router-dom": "ReactRouterDOM",
           "dayjs": "dayjs",
           "moment": "dayjs", // moment强制转换成dayjs
-          "@designable/core": {
-            amd: '@designable/core',
-            commonjs: '@designable/core',
-            commonjs2: '@designable/core',
+          "@meditor/core": {
+            amd: '@meditor/core',
+            commonjs: '@meditor/core',
+            commonjs2: '@meditor/core',
             root: ['Designable', 'Core']
           },
-          "@designable/react": {
-            amd: '@designable/react',
-            commonjs: '@designable/react',
-            commonjs2: '@designable/react',
+          "@meditor/react": {
+            amd: '@meditor/react',
+            commonjs: '@meditor/react',
+            commonjs2: '@meditor/react',
             root: ['Designable', 'React']
           },
-          "@designable/setters": {
-            amd: '@designable/setters',
-            commonjs: '@designable/setters',
-            commonjs2: '@designable/setters',
+          "@meditor/setters": {
+            amd: '@meditor/setters',
+            commonjs: '@meditor/setters',
+            commonjs2: '@meditor/setters',
             root: ['Designable', 'Setters']
           },
-          "@designable/shared": {
-            amd: '@designable/shared',
-            commonjs: '@designable/shared',
-            commonjs2: '@designable/shared',
+          "@meditor/shared": {
+            amd: '@meditor/shared',
+            commonjs: '@meditor/shared',
+            commonjs2: '@meditor/shared',
             root: ['Designable', 'Shared']
           },
-          "@designable/transformer": {
-            amd: '@designable/transformer',
-            commonjs: '@designable/transformer',
-            commonjs2: '@designable/transformer',
+          "@meditor/transformer": {
+            amd: '@meditor/transformer',
+            commonjs: '@meditor/transformer',
+            commonjs2: '@meditor/transformer',
             root: ['Designable', 'Transformer']
           },
           "@formily/react": {

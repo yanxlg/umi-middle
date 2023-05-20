@@ -44,7 +44,7 @@ export default (api: IApi) => {
     memo.routes = [
       {
         path: "/",
-        component: require.resolve("@designable/designer/es/devtools/index.js"),
+        component: require.resolve("@meditor/designer/es/devtools/index.js"),
       },
     ];
     return memo;
@@ -53,9 +53,7 @@ export default (api: IApi) => {
   api.chainWebpack((memo, { webpack, env }) => {
     memo
       .entry("sandbox")
-      .add(
-        require.resolve("@designable/designer/es/devtools/sandbox/index.js")
-      ); // sandbox 配置不同的externals
+      .add(require.resolve("@meditor/designer/es/devtools/sandbox/index.js")); // sandbox 配置不同的externals
     memo
       .plugin("MonacoEditorWebpackPlugin")
       .use(MonacoEditorWebpackPlugin, [

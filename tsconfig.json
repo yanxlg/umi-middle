@@ -15,19 +15,7 @@
     "suppressImplicitAnyIndexErrors": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
-    "declaration": true,
-    "paths": {
-      "@designable/react": ["packages/react/src"],
-      "@designable/core": ["packages/core/src"],
-      "@designable/formily-transformer": ["packages/formily-transformer/src"],
-      "@designable/parser": ["packages/parser/src"],
-      "@designable/runtime": ["packages/runtime/src"],
-      "@designable/react-sandbox": ["packages/react-sandbox/src"],
-      "@designable/react-settings-form": ["packages/react-settings-form/src"],
-      "@designable/setters": ["packages/setters/src"],
-      "@designable/shared": ["packages/shared/src"],
-      "@designable/transformer": ["packages/transformer/src"]
-    }
+    "declaration": true
   },
   "exclude": ["lib", "es"]
 }
