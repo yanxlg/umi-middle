@@ -10,7 +10,7 @@
 4 warn EWORKSPACES Workspaces exist in the root package.json, but Lerna is not configured to use them.
 4 warn EWORKSPACES To fix this and have Lerna use workspaces to resolve packages, set `useWorkspaces: true` in lerna.json.
 5 warn EPACKAGES No packages defined in lerna.json. Defaulting to packages in packages/*
-6 verbose session 133a79af57426945
+6 verbose session 2bcf34c2b86e750d
 7 verbose user-agent lerna/6.0.1/node@v16.17.0+x64 (darwin)
 8 silly argv { _: [ 'publish' ], composed: 'publish', lernaVersion: '6.0.1' }
 9 verbose rootPath /Users/yanxianliang/Desktop/yonghui/umi-middle
@@ -26,8 +26,8 @@
 18 silly isBehindUpstream main is behind origin/main by 0 commit(s) and ahead by 0
 19 silly hasTags
 20 verbose hasTags true
-21 silly git-describe.sync "@middle/middle@0.0.57-1-ge9ce022" => {"lastTagName":"@middle/middle@0.0.57","lastVersion":"0.0.57","refCount":"1","sha":"e9ce022","isDirty":false}
-22 info Looking for changed packages since @middle/middle@0.0.57
+21 silly git-describe.sync "@middle/middle@0.0.59-1-gc7b4c32" => {"lastTagName":"@middle/middle@0.0.59","lastVersion":"0.0.59","refCount":"1","sha":"c7b4c32","isDirty":false}
+22 info Looking for changed packages since @middle/middle@0.0.59
 23 silly checking diff packages/middle
 24 silly found diff in packages/middle/package.json
 25 verbose filtered diff [ 'packages/middle/package.json' ]
@@ -42,8 +42,8 @@
 34 silly no diff found in @middle/plugin-watermark
 35 verbose updated @middle/middle
 36 verbose updated @middle/plugin-tabs
-37 verbose git-describe undefined => "@middle/middle@0.0.57-1-ge9ce022"
-38 silly git-describe parsed => {"lastTagName":"@middle/middle@0.0.57","lastVersion":"0.0.57","refCount":"1","sha":"e9ce022","isDirty":false}
+37 verbose git-describe undefined => "@middle/middle@0.0.59-1-gc7b4c32"
+38 silly git-describe parsed => {"lastTagName":"@middle/middle@0.0.59","lastVersion":"0.0.59","refCount":"1","sha":"c7b4c32","isDirty":false}
 39 info execute Skipping releases
 40 silly lifecycle No script for "preversion" in "middle-modules", continuing
 41 silly lifecycle No script for "preversion" in "@middle/plugin-tabs", continuing
@@ -56,21 +56,21 @@
 48 silly gitAdd [ 'packages/plugin-tabs/package.json', 'packages/middle/package.json' ]
 49 silly gitCommit Publish
 49 silly gitCommit
-49 silly gitCommit  - @middle/middle@0.0.58
-49 silly gitCommit  - @middle/plugin-tabs@0.0.7
+49 silly gitCommit  - @middle/middle@0.0.60
+49 silly gitCommit  - @middle/plugin-tabs@0.0.9
 50 verbose git [
 50 verbose git   'commit',
 50 verbose git   '-F',
-50 verbose git   '/private/var/folders/7m/613md9hn64v2h3bfbb2pny4c0000gn/T/d99c6d44-804b-4960-9d06-c1799901075b/lerna-commit.txt'
+50 verbose git   '/private/var/folders/7m/613md9hn64v2h3bfbb2pny4c0000gn/T/b5e42f8a-45e7-4556-aedc-a204a2499cdc/lerna-commit.txt'
 50 verbose git ]
-51 silly gitTag @middle/middle@0.0.58
-52 verbose git [ 'tag', '@middle/middle@0.0.58', '-m', '@middle/middle@0.0.58' ]
-53 silly gitTag @middle/plugin-tabs@0.0.7
+51 silly gitTag @middle/middle@0.0.60
+52 verbose git [ 'tag', '@middle/middle@0.0.60', '-m', '@middle/middle@0.0.60' ]
+53 silly gitTag @middle/plugin-tabs@0.0.9
 54 verbose git [
 54 verbose git   'tag',
-54 verbose git   '@middle/plugin-tabs@0.0.7',
+54 verbose git   '@middle/plugin-tabs@0.0.9',
 54 verbose git   '-m',
-54 verbose git   '@middle/plugin-tabs@0.0.7'
+54 verbose git   '@middle/plugin-tabs@0.0.9'
 54 verbose git ]
 55 silly lifecycle No script for "postversion" in "@middle/middle", continuing
 56 silly lifecycle No script for "postversion" in "@middle/plugin-tabs", continuing
@@ -84,7 +84,7 @@
 63 warn ENOLICENSE One way to fix this is to add a LICENSE.md file to the root of this repository.
 63 warn ENOLICENSE See https://choosealicense.com for additional guidance.
 64 silly getCurrentSHA
-65 verbose getCurrentSHA 6dbc5acf62f5a5341e09d10a36b36373ee43a5bd
+65 verbose getCurrentSHA fe92396ded36c61d435f7966b179d5a8413cbf9e
 66 silly lifecycle No script for "prepublish" in "middle-modules", continuing
 67 silly lifecycle No script for "prepare" in "middle-modules", continuing
 68 silly lifecycle No script for "prepublishOnly" in "middle-modules", continuing
