@@ -31,5 +31,6 @@
     "react": "*",
     "typescript": "^5.0.3",
     "umi": "^4.0.66"
-  }
+  },
+  "gitHead": "3bdedb018974b02eaeae1faae1f4126e5354b7a2"
 }
