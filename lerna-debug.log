@@ -10,7 +10,7 @@
 4 warn EWORKSPACES Workspaces exist in the root package.json, but Lerna is not configured to use them.
 4 warn EWORKSPACES To fix this and have Lerna use workspaces to resolve packages, set `useWorkspaces: true` in lerna.json.
 5 warn EPACKAGES No packages defined in lerna.json. Defaulting to packages in packages/*
-6 verbose session 4bf09066d5458775
+6 verbose session f7d13895d6467fb7
 7 verbose user-agent lerna/6.0.1/node@v16.17.0+x64 (darwin)
 8 silly argv { _: [ 'publish' ], composed: 'publish', lernaVersion: '6.0.1' }
 9 verbose rootPath /Users/yanxianliang/Desktop/yonghui/umi-middle
@@ -26,172 +26,118 @@
 18 silly isBehindUpstream main is behind origin/main by 0 commit(s) and ahead by 0
 19 silly hasTags
 20 verbose hasTags true
-21 silly git-describe.sync "@middle/middle@0.0.60-1-g94249e4" => {"lastTagName":"@middle/middle@0.0.60","lastVersion":"0.0.60","refCount":"1","sha":"94249e4","isDirty":false}
-22 info Looking for changed packages since @middle/middle@0.0.60
+21 silly git-describe.sync "@middle/middle@0.0.66-1-g6f92d5f" => {"lastTagName":"@middle/middle@0.0.66","lastVersion":"0.0.66","refCount":"1","sha":"6f92d5f","isDirty":false}
+22 info Looking for changed packages since @middle/middle@0.0.66
 23 silly checking diff packages/middle
-24 silly found diff in packages/middle/LICENSE.md
 24 silly found diff in packages/middle/package.json
-25 verbose filtered diff [ 'packages/middle/LICENSE.md', 'packages/middle/package.json' ]
+24 silly found diff in packages/middle/src/middle-preset.ts
+25 verbose filtered diff [
+25 verbose filtered diff   'packages/middle/package.json',
+25 verbose filtered diff   'packages/middle/src/middle-preset.ts'
+25 verbose filtered diff ]
 26 silly checking diff packages/plugin-asset-dev
-27 silly found diff in packages/plugin-asset-dev/LICENSE.md
-28 verbose filtered diff [ 'packages/plugin-asset-dev/LICENSE.md' ]
-29 silly checking diff packages/plugin-asset
-30 silly found diff in packages/plugin-asset/LICENSE.md
-31 verbose filtered diff [ 'packages/plugin-asset/LICENSE.md' ]
-32 silly checking diff packages/plugin-tabs
-33 silly found diff in packages/plugin-tabs/LICENSE.md
-33 silly found diff in packages/plugin-tabs/package.json
-34 verbose filtered diff [
-34 verbose filtered diff   'packages/plugin-tabs/LICENSE.md',
-34 verbose filtered diff   'packages/plugin-tabs/package.json'
-34 verbose filtered diff ]
-35 silly checking diff packages/plugin-watermark
-36 silly found diff in packages/plugin-watermark/LICENSE.md
-37 verbose filtered diff [ 'packages/plugin-watermark/LICENSE.md' ]
-38 verbose updated @middle/middle
-39 verbose updated @middle/plugin-asset-dev
-40 verbose updated @middle/plugin-asset
-41 verbose updated @middle/plugin-tabs
-42 verbose updated @middle/plugin-watermark
-43 verbose git-describe undefined => "@middle/middle@0.0.60-1-g94249e4"
-44 silly git-describe parsed => {"lastTagName":"@middle/middle@0.0.60","lastVersion":"0.0.60","refCount":"1","sha":"94249e4","isDirty":false}
-45 info execute Skipping releases
-46 silly lifecycle No script for "preversion" in "middle-modules", continuing
-47 silly lifecycle No script for "preversion" in "@middle/plugin-asset-dev", continuing
-48 silly lifecycle No script for "preversion" in "@middle/plugin-asset", continuing
-49 silly lifecycle No script for "preversion" in "@middle/plugin-tabs", continuing
-50 silly lifecycle No script for "preversion" in "@middle/plugin-watermark", continuing
-51 verbose version @middle/plugin-tabs has no lockfile. Skipping lockfile update.
-52 verbose version @middle/plugin-watermark has no lockfile. Skipping lockfile update.
-53 verbose version @middle/plugin-asset-dev has no lockfile. Skipping lockfile update.
-54 verbose version @middle/plugin-asset has no lockfile. Skipping lockfile update.
-55 silly lifecycle No script for "version" in "@middle/plugin-tabs", continuing
-56 silly lifecycle No script for "version" in "@middle/plugin-asset-dev", continuing
-57 silly lifecycle No script for "version" in "@middle/plugin-asset", continuing
-58 silly lifecycle No script for "version" in "@middle/plugin-watermark", continuing
-59 silly lifecycle No script for "preversion" in "@middle/middle", continuing
-60 verbose version @middle/middle has no lockfile. Skipping lockfile update.
-61 silly lifecycle No script for "version" in "@middle/middle", continuing
-62 silly lifecycle No script for "version" in "middle-modules", continuing
-63 silly gitAdd [
-63 silly gitAdd   'packages/plugin-tabs/package.json',
-63 silly gitAdd   'packages/plugin-asset-dev/package.json',
-63 silly gitAdd   'packages/plugin-asset/package.json',
-63 silly gitAdd   'packages/plugin-watermark/package.json',
-63 silly gitAdd   'packages/middle/package.json'
-63 silly gitAdd ]
-64 silly gitCommit Publish
-64 silly gitCommit
-64 silly gitCommit  - @middle/middle@0.0.61
-64 silly gitCommit  - @middle/plugin-asset-dev@0.0.7
-64 silly gitCommit  - @middle/plugin-asset@0.0.41
-64 silly gitCommit  - @middle/plugin-tabs@0.0.10
-64 silly gitCommit  - @middle/plugin-watermark@0.0.9
-65 verbose git [
-65 verbose git   'commit',
-65 verbose git   '-F',
-65 verbose git   '/private/var/folders/7m/613md9hn64v2h3bfbb2pny4c0000gn/T/6dc63c33-2260-4fb0-b979-92f3422bc9b5/lerna-commit.txt'
-65 verbose git ]
-66 silly gitTag @middle/middle@0.0.61
-67 verbose git [ 'tag', '@middle/middle@0.0.61', '-m', '@middle/middle@0.0.61' ]
-68 silly gitTag @middle/plugin-asset-dev@0.0.7
-69 verbose git [
-69 verbose git   'tag',
-69 verbose git   '@middle/plugin-asset-dev@0.0.7',
-69 verbose git   '-m',
-69 verbose git   '@middle/plugin-asset-dev@0.0.7'
-69 verbose git ]
-70 silly gitTag @middle/plugin-asset@0.0.41
-71 verbose git [
-71 verbose git   'tag',
-71 verbose git   '@middle/plugin-asset@0.0.41',
-71 verbose git   '-m',
-71 verbose git   '@middle/plugin-asset@0.0.41'
-71 verbose git ]
-72 silly gitTag @middle/plugin-tabs@0.0.10
-73 verbose git [
-73 verbose git   'tag',
-73 verbose git   '@middle/plugin-tabs@0.0.10',
-73 verbose git   '-m',
-73 verbose git   '@middle/plugin-tabs@0.0.10'
-73 verbose git ]
-74 silly gitTag @middle/plugin-watermark@0.0.9
-75 verbose git [
-75 verbose git   'tag',
-75 verbose git   '@middle/plugin-watermark@0.0.9',
-75 verbose git   '-m',
-75 verbose git   '@middle/plugin-watermark@0.0.9'
-75 verbose git ]
-76 silly lifecycle No script for "postversion" in "@middle/middle", continuing
-77 silly lifecycle No script for "postversion" in "@middle/plugin-asset-dev", continuing
-78 silly lifecycle No script for "postversion" in "@middle/plugin-asset", continuing
-79 silly lifecycle No script for "postversion" in "@middle/plugin-tabs", continuing
-80 silly lifecycle No script for "postversion" in "@middle/plugin-watermark", continuing
-81 silly lifecycle No script for "postversion" in "middle-modules", continuing
-82 info git Pushing tags...
-83 silly gitPush origin main
-84 info publish Publishing packages to npm...
-85 notice Skipping all user and access validation due to third-party registry
-86 notice Make sure you're authenticated properly ¯\_(ツ)_/¯
-87 silly getCurrentSHA
-88 verbose getCurrentSHA 471dc8d5b6ee0bad26aab28bc25b38afda2cd15c
-89 silly lifecycle No script for "prepublish" in "middle-modules", continuing
-90 silly lifecycle No script for "prepare" in "middle-modules", continuing
-91 silly lifecycle No script for "prepublishOnly" in "middle-modules", continuing
-92 silly lifecycle No script for "prepack" in "middle-modules", continuing
-93 verbose pack-directory packages/plugin-asset-dev
-94 verbose pack-directory packages/plugin-asset
-95 verbose pack-directory packages/plugin-tabs
-96 verbose pack-directory packages/plugin-watermark
-97 silly lifecycle No script for "prepublish" in "@middle/plugin-asset-dev", continuing
-98 silly lifecycle No script for "prepublish" in "@middle/plugin-asset", continuing
-99 silly lifecycle No script for "prepublish" in "@middle/plugin-tabs", continuing
-100 silly lifecycle No script for "prepublish" in "@middle/plugin-watermark", continuing
-101 silly lifecycle No script for "prepare" in "@middle/plugin-asset-dev", continuing
-102 silly lifecycle No script for "prepare" in "@middle/plugin-asset", continuing
-103 silly lifecycle No script for "prepare" in "@middle/plugin-tabs", continuing
-104 silly lifecycle No script for "prepare" in "@middle/plugin-watermark", continuing
-105 silly lifecycle No script for "prepublishOnly" in "@middle/plugin-asset-dev", continuing
-106 silly lifecycle No script for "prepublishOnly" in "@middle/plugin-asset", continuing
-107 silly lifecycle No script for "prepublishOnly" in "@middle/plugin-tabs", continuing
-108 silly lifecycle No script for "prepublishOnly" in "@middle/plugin-watermark", continuing
-109 silly lifecycle No script for "prepack" in "@middle/plugin-asset-dev", continuing
-110 silly lifecycle No script for "prepack" in "@middle/plugin-asset", continuing
-111 silly lifecycle No script for "prepack" in "@middle/plugin-tabs", continuing
-112 silly lifecycle No script for "prepack" in "@middle/plugin-watermark", continuing
-113 silly lifecycle No script for "postpack" in "@middle/plugin-asset-dev", continuing
-114 verbose packed packages/plugin-asset-dev
-115 silly lifecycle No script for "postpack" in "@middle/plugin-asset", continuing
-116 verbose packed packages/plugin-asset
-117 silly lifecycle No script for "postpack" in "@middle/plugin-watermark", continuing
-118 verbose packed packages/plugin-watermark
-119 silly lifecycle No script for "postpack" in "@middle/plugin-tabs", continuing
-120 verbose packed packages/plugin-tabs
-121 verbose pack-directory packages/middle
-122 silly lifecycle No script for "prepublish" in "@middle/middle", continuing
-123 silly lifecycle No script for "prepare" in "@middle/middle", continuing
-124 silly lifecycle No script for "prepublishOnly" in "@middle/middle", continuing
-125 silly lifecycle No script for "prepack" in "@middle/middle", continuing
-126 silly lifecycle No script for "postpack" in "@middle/middle", continuing
-127 verbose packed packages/middle
-128 silly lifecycle No script for "postpack" in "middle-modules", continuing
-129 verbose publish @middle/plugin-asset-dev
-130 verbose publish @middle/plugin-asset
-131 verbose publish @middle/plugin-tabs
-132 verbose publish @middle/plugin-watermark
-133 silly FetchError: network timeout at: http://npm.yonghuivip.com/@middle%2fplugin-asset-dev
-133 silly     at Timeout.<anonymous> (/Users/yanxianliang/Desktop/yonghui/umi-middle/node_modules/minipass-fetch/lib/index.js:108:18)
-133 silly     at listOnTimeout (node:internal/timers:559:17)
-133 silly     at processTimers (node:internal/timers:502:7)
-133 silly  FetchError: network timeout at: http://npm.yonghuivip.com/@middle%2fplugin-asset-dev
-133 silly     at Timeout.<anonymous> (/Users/yanxianliang/Desktop/yonghui/umi-middle/node_modules/minipass-fetch/lib/index.js:108:18)
-133 silly     at listOnTimeout (node:internal/timers:559:17)
-133 silly     at processTimers (node:internal/timers:502:7) {
-133 silly   code: 'FETCH_ERROR',
-133 silly   errno: 'FETCH_ERROR',
-133 silly   type: 'request-timeout'
-133 silly }
-134 error FETCH_ERROR network timeout at: http://npm.yonghuivip.com/@middle%2fplugin-asset-dev
-135 error FetchError: network timeout at: http://npm.yonghuivip.com/@middle%2fplugin-asset-dev
-135 error     at Timeout.<anonymous> (/Users/yanxianliang/Desktop/yonghui/umi-middle/node_modules/minipass-fetch/lib/index.js:108:18)
-135 error     at listOnTimeout (node:internal/timers:559:17)
+27 silly no diff found in @middle/plugin-asset-dev
+28 silly checking diff packages/plugin-asset
+29 silly no diff found in @middle/plugin-asset
+30 silly checking diff packages/plugin-default-config
+31 silly found diff in packages/plugin-default-config/.fatherrc.ts
+31 silly found diff in packages/plugin-default-config/LICENSE.md
+31 silly found diff in packages/plugin-default-config/README.md
+31 silly found diff in packages/plugin-default-config/package.json
+31 silly found diff in packages/plugin-default-config/src/index.ts
+31 silly found diff in packages/plugin-default-config/tsconfig.json
+32 verbose filtered diff [
+32 verbose filtered diff   'packages/plugin-default-config/.fatherrc.ts',
+32 verbose filtered diff   'packages/plugin-default-config/LICENSE.md',
+32 verbose filtered diff   'packages/plugin-default-config/README.md',
+32 verbose filtered diff   'packages/plugin-default-config/package.json',
+32 verbose filtered diff   'packages/plugin-default-config/src/index.ts',
+32 verbose filtered diff   'packages/plugin-default-config/tsconfig.json'
+32 verbose filtered diff ]
+33 silly checking diff packages/plugin-dva-ts
+34 silly no diff found in @middle/plugin-dva-ts
+35 silly checking diff packages/plugin-tabs
+36 silly no diff found in @middle/plugin-tabs
+37 silly checking diff packages/plugin-watermark
+38 silly no diff found in @middle/plugin-watermark
+39 verbose updated @middle/middle
+40 verbose updated @middle/plugin-default-config
+41 verbose git-describe undefined => "@middle/middle@0.0.66-1-g6f92d5f"
+42 silly git-describe parsed => {"lastTagName":"@middle/middle@0.0.66","lastVersion":"0.0.66","refCount":"1","sha":"6f92d5f","isDirty":false}
+43 info execute Skipping releases
+44 silly lifecycle No script for "preversion" in "middle-modules", continuing
+45 silly lifecycle No script for "preversion" in "@middle/plugin-default-config", continuing
+46 verbose version @middle/plugin-default-config has no lockfile. Skipping lockfile update.
+47 silly lifecycle No script for "version" in "@middle/plugin-default-config", continuing
+48 silly lifecycle No script for "preversion" in "@middle/middle", continuing
+49 verbose version @middle/middle has no lockfile. Skipping lockfile update.
+50 silly lifecycle No script for "version" in "@middle/middle", continuing
+51 silly lifecycle No script for "version" in "middle-modules", continuing
+52 silly gitAdd [
+52 silly gitAdd   'packages/plugin-default-config/package.json',
+52 silly gitAdd   'packages/middle/package.json'
+52 silly gitAdd ]
+53 silly gitCommit Publish
+53 silly gitCommit
+53 silly gitCommit  - @middle/middle@0.0.67
+53 silly gitCommit  - @middle/plugin-default-config@0.0.2
+54 verbose git [
+54 verbose git   'commit',
+54 verbose git   '-F',
+54 verbose git   '/private/var/folders/7m/613md9hn64v2h3bfbb2pny4c0000gn/T/ff293522-f3b4-4c80-b27f-0a1527fa5c3f/lerna-commit.txt'
+54 verbose git ]
+55 silly gitTag @middle/middle@0.0.67
+56 verbose git [ 'tag', '@middle/middle@0.0.67', '-m', '@middle/middle@0.0.67' ]
+57 silly gitTag @middle/plugin-default-config@0.0.2
+58 verbose git [
+58 verbose git   'tag',
+58 verbose git   '@middle/plugin-default-config@0.0.2',
+58 verbose git   '-m',
+58 verbose git   '@middle/plugin-default-config@0.0.2'
+58 verbose git ]
+59 silly lifecycle No script for "postversion" in "@middle/middle", continuing
+60 silly lifecycle No script for "postversion" in "@middle/plugin-default-config", continuing
+61 silly lifecycle No script for "postversion" in "middle-modules", continuing
+62 info git Pushing tags...
+63 silly gitPush origin main
+64 info publish Publishing packages to npm...
+65 notice Skipping all user and access validation due to third-party registry
+66 notice Make sure you're authenticated properly ¯\_(ツ)_/¯
+67 silly getCurrentSHA
+68 verbose getCurrentSHA eeb702bed6f7edd0966cba1895f9ce706c436c72
+69 silly lifecycle No script for "prepublish" in "middle-modules", continuing
+70 silly lifecycle No script for "prepare" in "middle-modules", continuing
+71 silly lifecycle No script for "prepublishOnly" in "middle-modules", continuing
+72 silly lifecycle No script for "prepack" in "middle-modules", continuing
+73 verbose pack-directory packages/plugin-default-config
+74 silly lifecycle No script for "prepublish" in "@middle/plugin-default-config", continuing
+75 silly lifecycle No script for "prepare" in "@middle/plugin-default-config", continuing
+76 silly lifecycle No script for "prepublishOnly" in "@middle/plugin-default-config", continuing
+77 silly lifecycle No script for "prepack" in "@middle/plugin-default-config", continuing
+78 silly lifecycle No script for "postpack" in "@middle/plugin-default-config", continuing
+79 verbose packed packages/plugin-default-config
+80 verbose pack-directory packages/middle
+81 silly lifecycle No script for "prepublish" in "@middle/middle", continuing
+82 silly lifecycle No script for "prepare" in "@middle/middle", continuing
+83 silly lifecycle No script for "prepublishOnly" in "@middle/middle", continuing
+84 silly lifecycle No script for "prepack" in "@middle/middle", continuing
+85 silly lifecycle No script for "postpack" in "@middle/middle", continuing
+86 verbose packed packages/middle
+87 silly lifecycle No script for "postpack" in "middle-modules", continuing
+88 verbose publish @middle/plugin-default-config
+89 silly FetchError: network timeout at: http://npm.yonghuivip.com/@middle%2fplugin-default-config
+89 silly     at Timeout.<anonymous> (/Users/yanxianliang/Desktop/yonghui/umi-middle/node_modules/minipass-fetch/lib/index.js:108:18)
+89 silly     at listOnTimeout (node:internal/timers:559:17)
+89 silly     at processTimers (node:internal/timers:502:7)
+89 silly  FetchError: network timeout at: http://npm.yonghuivip.com/@middle%2fplugin-default-config
+89 silly     at Timeout.<anonymous> (/Users/yanxianliang/Desktop/yonghui/umi-middle/node_modules/minipass-fetch/lib/index.js:108:18)
+89 silly     at listOnTimeout (node:internal/timers:559:17)
+89 silly     at processTimers (node:internal/timers:502:7) {
+89 silly   code: 'FETCH_ERROR',
+89 silly   errno: 'FETCH_ERROR',
+89 silly   type: 'request-timeout'
+89 silly }
+90 error FETCH_ERROR network timeout at: http://npm.yonghuivip.com/@middle%2fplugin-default-config
+91 error FetchError: network timeout at: http://npm.yonghuivip.com/@middle%2fplugin-default-config
+91 error     at Timeout.<anonymous> (/Users/yanxianliang/Desktop/yonghui/umi-middle/node_modules/minipass-fetch/lib/index.js:108:18)
+91 error     at listOnTimeout (node:internal/timers:559:17)
