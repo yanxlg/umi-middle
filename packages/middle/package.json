@@ -24,7 +24,8 @@
     "@middle/plugin-watermark": "^0.0.10",
     "@umijs/max": "^4.0.67",
     "commander": "^9.4.0",
-    "father": "^4.1.8"
+    "father": "^4.1.8",
+    "@middle/plugin-default-config": "0.0.1"
   },
   "gitHead": "471dc8d5b6ee0bad26aab28bc25b38afda2cd15c"
 }
