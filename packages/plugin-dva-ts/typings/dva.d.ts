@@ -2,7 +2,7 @@
  * @Author: yanxlg
  * @Date: 2023-05-24 13:38:54
  * @LastEditors: yanxlg
- * @LastEditTime: 2023-05-24 15:45:43
+ * @LastEditTime: 2023-05-24 15:58:20
  * @Description: umi 中dva 类型支持
  *
  * Copyright (c) 2023 by yanxlg, All Rights Reserved.
@@ -73,10 +73,12 @@ declare module "dva" {
     [P in keyof Models]: Models[P]["state"];
   };
 
-  export function connect(
-    mapStateToProps?: (models: RegisterModels) => {},
+  export function connect<P>(
+    mapStateToProps?: (models: RegisterModels) => Partial<P>,
     mapDispatchToProps?: Function,
     mergeProps?: Function,
     options?: Object
-  ): Function;
+  ): (
+    ComponentType: (props: P & { dispatch: Dispatch<any> }) => React.JSX.Element
+  ) => React.ComponentType<P>;
 }
