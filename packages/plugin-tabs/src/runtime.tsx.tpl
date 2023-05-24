@@ -56,9 +56,13 @@ function wrapPageWithComponent(children: any) {
 
 export const patchClientRoutes = ({ routes }: any) => {
   routes.forEach((route: any) => {
-    const { children } = route;
-    children.forEach((child: any) => {
-      wrapPageWithComponent(child);
-    });
+    const { children, isLayout } = route;
+    if(isLayout){
+      children?.forEach((child: any) => {
+        wrapPageWithComponent(child);
+      });
+    }else{
+      wrapPageWithComponent(route);
+    }
   });
 };
