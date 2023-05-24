@@ -10,7 +10,7 @@
 4 warn EWORKSPACES Workspaces exist in the root package.json, but Lerna is not configured to use them.
 4 warn EWORKSPACES To fix this and have Lerna use workspaces to resolve packages, set `useWorkspaces: true` in lerna.json.
 5 warn EPACKAGES No packages defined in lerna.json. Defaulting to packages in packages/*
-6 verbose session 2bcf34c2b86e750d
+6 verbose session 4bf09066d5458775
 7 verbose user-agent lerna/6.0.1/node@v16.17.0+x64 (darwin)
 8 silly argv { _: [ 'publish' ], composed: 'publish', lernaVersion: '6.0.1' }
 9 verbose rootPath /Users/yanxianliang/Desktop/yonghui/umi-middle
@@ -26,98 +26,172 @@
 18 silly isBehindUpstream main is behind origin/main by 0 commit(s) and ahead by 0
 19 silly hasTags
 20 verbose hasTags true
-21 silly git-describe.sync "@middle/middle@0.0.59-1-gc7b4c32" => {"lastTagName":"@middle/middle@0.0.59","lastVersion":"0.0.59","refCount":"1","sha":"c7b4c32","isDirty":false}
-22 info Looking for changed packages since @middle/middle@0.0.59
+21 silly git-describe.sync "@middle/middle@0.0.60-1-g94249e4" => {"lastTagName":"@middle/middle@0.0.60","lastVersion":"0.0.60","refCount":"1","sha":"94249e4","isDirty":false}
+22 info Looking for changed packages since @middle/middle@0.0.60
 23 silly checking diff packages/middle
+24 silly found diff in packages/middle/LICENSE.md
 24 silly found diff in packages/middle/package.json
-25 verbose filtered diff [ 'packages/middle/package.json' ]
+25 verbose filtered diff [ 'packages/middle/LICENSE.md', 'packages/middle/package.json' ]
 26 silly checking diff packages/plugin-asset-dev
-27 silly no diff found in @middle/plugin-asset-dev
-28 silly checking diff packages/plugin-asset
-29 silly no diff found in @middle/plugin-asset
-30 silly checking diff packages/plugin-tabs
-31 silly found diff in packages/plugin-tabs/package.json
-32 verbose filtered diff [ 'packages/plugin-tabs/package.json' ]
-33 silly checking diff packages/plugin-watermark
-34 silly no diff found in @middle/plugin-watermark
-35 verbose updated @middle/middle
-36 verbose updated @middle/plugin-tabs
-37 verbose git-describe undefined => "@middle/middle@0.0.59-1-gc7b4c32"
-38 silly git-describe parsed => {"lastTagName":"@middle/middle@0.0.59","lastVersion":"0.0.59","refCount":"1","sha":"c7b4c32","isDirty":false}
-39 info execute Skipping releases
-40 silly lifecycle No script for "preversion" in "middle-modules", continuing
-41 silly lifecycle No script for "preversion" in "@middle/plugin-tabs", continuing
-42 verbose version @middle/plugin-tabs has no lockfile. Skipping lockfile update.
-43 silly lifecycle No script for "version" in "@middle/plugin-tabs", continuing
-44 silly lifecycle No script for "preversion" in "@middle/middle", continuing
-45 verbose version @middle/middle has no lockfile. Skipping lockfile update.
-46 silly lifecycle No script for "version" in "@middle/middle", continuing
-47 silly lifecycle No script for "version" in "middle-modules", continuing
-48 silly gitAdd [ 'packages/plugin-tabs/package.json', 'packages/middle/package.json' ]
-49 silly gitCommit Publish
-49 silly gitCommit
-49 silly gitCommit  - @middle/middle@0.0.60
-49 silly gitCommit  - @middle/plugin-tabs@0.0.9
-50 verbose git [
-50 verbose git   'commit',
-50 verbose git   '-F',
-50 verbose git   '/private/var/folders/7m/613md9hn64v2h3bfbb2pny4c0000gn/T/b5e42f8a-45e7-4556-aedc-a204a2499cdc/lerna-commit.txt'
-50 verbose git ]
-51 silly gitTag @middle/middle@0.0.60
-52 verbose git [ 'tag', '@middle/middle@0.0.60', '-m', '@middle/middle@0.0.60' ]
-53 silly gitTag @middle/plugin-tabs@0.0.9
-54 verbose git [
-54 verbose git   'tag',
-54 verbose git   '@middle/plugin-tabs@0.0.9',
-54 verbose git   '-m',
-54 verbose git   '@middle/plugin-tabs@0.0.9'
-54 verbose git ]
-55 silly lifecycle No script for "postversion" in "@middle/middle", continuing
-56 silly lifecycle No script for "postversion" in "@middle/plugin-tabs", continuing
-57 silly lifecycle No script for "postversion" in "middle-modules", continuing
-58 info git Pushing tags...
-59 silly gitPush origin main
-60 info publish Publishing packages to npm...
-61 notice Skipping all user and access validation due to third-party registry
-62 notice Make sure you're authenticated properly ¯\_(ツ)_/¯
-63 warn ENOLICENSE Packages @middle/middle and @middle/plugin-tabs are missing a license.
-63 warn ENOLICENSE One way to fix this is to add a LICENSE.md file to the root of this repository.
-63 warn ENOLICENSE See https://choosealicense.com for additional guidance.
-64 silly getCurrentSHA
-65 verbose getCurrentSHA fe92396ded36c61d435f7966b179d5a8413cbf9e
-66 silly lifecycle No script for "prepublish" in "middle-modules", continuing
-67 silly lifecycle No script for "prepare" in "middle-modules", continuing
-68 silly lifecycle No script for "prepublishOnly" in "middle-modules", continuing
-69 silly lifecycle No script for "prepack" in "middle-modules", continuing
-70 verbose pack-directory packages/plugin-tabs
-71 silly lifecycle No script for "prepublish" in "@middle/plugin-tabs", continuing
-72 silly lifecycle No script for "prepare" in "@middle/plugin-tabs", continuing
-73 silly lifecycle No script for "prepublishOnly" in "@middle/plugin-tabs", continuing
-74 silly lifecycle No script for "prepack" in "@middle/plugin-tabs", continuing
-75 silly lifecycle No script for "postpack" in "@middle/plugin-tabs", continuing
-76 verbose packed packages/plugin-tabs
-77 verbose pack-directory packages/middle
-78 silly lifecycle No script for "prepublish" in "@middle/middle", continuing
-79 silly lifecycle No script for "prepare" in "@middle/middle", continuing
-80 silly lifecycle No script for "prepublishOnly" in "@middle/middle", continuing
-81 silly lifecycle No script for "prepack" in "@middle/middle", continuing
-82 silly lifecycle No script for "postpack" in "@middle/middle", continuing
-83 verbose packed packages/middle
-84 silly lifecycle No script for "postpack" in "middle-modules", continuing
-85 verbose publish @middle/plugin-tabs
-86 silly FetchError: network timeout at: http://npm.yonghuivip.com/@middle%2fplugin-tabs
-86 silly     at Timeout.<anonymous> (/Users/yanxianliang/Desktop/yonghui/umi-middle/node_modules/minipass-fetch/lib/index.js:108:18)
-86 silly     at listOnTimeout (node:internal/timers:559:17)
-86 silly     at processTimers (node:internal/timers:502:7)
-86 silly  FetchError: network timeout at: http://npm.yonghuivip.com/@middle%2fplugin-tabs
-86 silly     at Timeout.<anonymous> (/Users/yanxianliang/Desktop/yonghui/umi-middle/node_modules/minipass-fetch/lib/index.js:108:18)
-86 silly     at listOnTimeout (node:internal/timers:559:17)
-86 silly     at processTimers (node:internal/timers:502:7) {
-86 silly   code: 'FETCH_ERROR',
-86 silly   errno: 'FETCH_ERROR',
-86 silly   type: 'request-timeout'
-86 silly }
-87 error FETCH_ERROR network timeout at: http://npm.yonghuivip.com/@middle%2fplugin-tabs
-88 error FetchError: network timeout at: http://npm.yonghuivip.com/@middle%2fplugin-tabs
-88 error     at Timeout.<anonymous> (/Users/yanxianliang/Desktop/yonghui/umi-middle/node_modules/minipass-fetch/lib/index.js:108:18)
-88 error     at listOnTimeout (node:internal/timers:559:17)
+27 silly found diff in packages/plugin-asset-dev/LICENSE.md
+28 verbose filtered diff [ 'packages/plugin-asset-dev/LICENSE.md' ]
+29 silly checking diff packages/plugin-asset
+30 silly found diff in packages/plugin-asset/LICENSE.md
+31 verbose filtered diff [ 'packages/plugin-asset/LICENSE.md' ]
+32 silly checking diff packages/plugin-tabs
+33 silly found diff in packages/plugin-tabs/LICENSE.md
+33 silly found diff in packages/plugin-tabs/package.json
+34 verbose filtered diff [
+34 verbose filtered diff   'packages/plugin-tabs/LICENSE.md',
+34 verbose filtered diff   'packages/plugin-tabs/package.json'
+34 verbose filtered diff ]
+35 silly checking diff packages/plugin-watermark
+36 silly found diff in packages/plugin-watermark/LICENSE.md
+37 verbose filtered diff [ 'packages/plugin-watermark/LICENSE.md' ]
+38 verbose updated @middle/middle
+39 verbose updated @middle/plugin-asset-dev
+40 verbose updated @middle/plugin-asset
+41 verbose updated @middle/plugin-tabs
+42 verbose updated @middle/plugin-watermark
+43 verbose git-describe undefined => "@middle/middle@0.0.60-1-g94249e4"
+44 silly git-describe parsed => {"lastTagName":"@middle/middle@0.0.60","lastVersion":"0.0.60","refCount":"1","sha":"94249e4","isDirty":false}
+45 info execute Skipping releases
+46 silly lifecycle No script for "preversion" in "middle-modules", continuing
+47 silly lifecycle No script for "preversion" in "@middle/plugin-asset-dev", continuing
+48 silly lifecycle No script for "preversion" in "@middle/plugin-asset", continuing
+49 silly lifecycle No script for "preversion" in "@middle/plugin-tabs", continuing
+50 silly lifecycle No script for "preversion" in "@middle/plugin-watermark", continuing
+51 verbose version @middle/plugin-tabs has no lockfile. Skipping lockfile update.
+52 verbose version @middle/plugin-watermark has no lockfile. Skipping lockfile update.
+53 verbose version @middle/plugin-asset-dev has no lockfile. Skipping lockfile update.
+54 verbose version @middle/plugin-asset has no lockfile. Skipping lockfile update.
+55 silly lifecycle No script for "version" in "@middle/plugin-tabs", continuing
+56 silly lifecycle No script for "version" in "@middle/plugin-asset-dev", continuing
+57 silly lifecycle No script for "version" in "@middle/plugin-asset", continuing
+58 silly lifecycle No script for "version" in "@middle/plugin-watermark", continuing
+59 silly lifecycle No script for "preversion" in "@middle/middle", continuing
+60 verbose version @middle/middle has no lockfile. Skipping lockfile update.
+61 silly lifecycle No script for "version" in "@middle/middle", continuing
+62 silly lifecycle No script for "version" in "middle-modules", continuing
+63 silly gitAdd [
+63 silly gitAdd   'packages/plugin-tabs/package.json',
+63 silly gitAdd   'packages/plugin-asset-dev/package.json',
+63 silly gitAdd   'packages/plugin-asset/package.json',
+63 silly gitAdd   'packages/plugin-watermark/package.json',
+63 silly gitAdd   'packages/middle/package.json'
+63 silly gitAdd ]
+64 silly gitCommit Publish
+64 silly gitCommit
+64 silly gitCommit  - @middle/middle@0.0.61
+64 silly gitCommit  - @middle/plugin-asset-dev@0.0.7
+64 silly gitCommit  - @middle/plugin-asset@0.0.41
+64 silly gitCommit  - @middle/plugin-tabs@0.0.10
+64 silly gitCommit  - @middle/plugin-watermark@0.0.9
+65 verbose git [
+65 verbose git   'commit',
+65 verbose git   '-F',
+65 verbose git   '/private/var/folders/7m/613md9hn64v2h3bfbb2pny4c0000gn/T/6dc63c33-2260-4fb0-b979-92f3422bc9b5/lerna-commit.txt'
+65 verbose git ]
+66 silly gitTag @middle/middle@0.0.61
+67 verbose git [ 'tag', '@middle/middle@0.0.61', '-m', '@middle/middle@0.0.61' ]
+68 silly gitTag @middle/plugin-asset-dev@0.0.7
+69 verbose git [
+69 verbose git   'tag',
+69 verbose git   '@middle/plugin-asset-dev@0.0.7',
+69 verbose git   '-m',
+69 verbose git   '@middle/plugin-asset-dev@0.0.7'
+69 verbose git ]
+70 silly gitTag @middle/plugin-asset@0.0.41
+71 verbose git [
+71 verbose git   'tag',
+71 verbose git   '@middle/plugin-asset@0.0.41',
+71 verbose git   '-m',
+71 verbose git   '@middle/plugin-asset@0.0.41'
+71 verbose git ]
+72 silly gitTag @middle/plugin-tabs@0.0.10
+73 verbose git [
+73 verbose git   'tag',
+73 verbose git   '@middle/plugin-tabs@0.0.10',
+73 verbose git   '-m',
+73 verbose git   '@middle/plugin-tabs@0.0.10'
+73 verbose git ]
+74 silly gitTag @middle/plugin-watermark@0.0.9
+75 verbose git [
+75 verbose git   'tag',
+75 verbose git   '@middle/plugin-watermark@0.0.9',
+75 verbose git   '-m',
+75 verbose git   '@middle/plugin-watermark@0.0.9'
+75 verbose git ]
+76 silly lifecycle No script for "postversion" in "@middle/middle", continuing
+77 silly lifecycle No script for "postversion" in "@middle/plugin-asset-dev", continuing
+78 silly lifecycle No script for "postversion" in "@middle/plugin-asset", continuing
+79 silly lifecycle No script for "postversion" in "@middle/plugin-tabs", continuing
+80 silly lifecycle No script for "postversion" in "@middle/plugin-watermark", continuing
+81 silly lifecycle No script for "postversion" in "middle-modules", continuing
+82 info git Pushing tags...
+83 silly gitPush origin main
+84 info publish Publishing packages to npm...
+85 notice Skipping all user and access validation due to third-party registry
+86 notice Make sure you're authenticated properly ¯\_(ツ)_/¯
+87 silly getCurrentSHA
+88 verbose getCurrentSHA 471dc8d5b6ee0bad26aab28bc25b38afda2cd15c
+89 silly lifecycle No script for "prepublish" in "middle-modules", continuing
+90 silly lifecycle No script for "prepare" in "middle-modules", continuing
+91 silly lifecycle No script for "prepublishOnly" in "middle-modules", continuing
+92 silly lifecycle No script for "prepack" in "middle-modules", continuing
+93 verbose pack-directory packages/plugin-asset-dev
+94 verbose pack-directory packages/plugin-asset
+95 verbose pack-directory packages/plugin-tabs
+96 verbose pack-directory packages/plugin-watermark
+97 silly lifecycle No script for "prepublish" in "@middle/plugin-asset-dev", continuing
+98 silly lifecycle No script for "prepublish" in "@middle/plugin-asset", continuing
+99 silly lifecycle No script for "prepublish" in "@middle/plugin-tabs", continuing
+100 silly lifecycle No script for "prepublish" in "@middle/plugin-watermark", continuing
+101 silly lifecycle No script for "prepare" in "@middle/plugin-asset-dev", continuing
+102 silly lifecycle No script for "prepare" in "@middle/plugin-asset", continuing
+103 silly lifecycle No script for "prepare" in "@middle/plugin-tabs", continuing
+104 silly lifecycle No script for "prepare" in "@middle/plugin-watermark", continuing
+105 silly lifecycle No script for "prepublishOnly" in "@middle/plugin-asset-dev", continuing
+106 silly lifecycle No script for "prepublishOnly" in "@middle/plugin-asset", continuing
+107 silly lifecycle No script for "prepublishOnly" in "@middle/plugin-tabs", continuing
+108 silly lifecycle No script for "prepublishOnly" in "@middle/plugin-watermark", continuing
+109 silly lifecycle No script for "prepack" in "@middle/plugin-asset-dev", continuing
+110 silly lifecycle No script for "prepack" in "@middle/plugin-asset", continuing
+111 silly lifecycle No script for "prepack" in "@middle/plugin-tabs", continuing
+112 silly lifecycle No script for "prepack" in "@middle/plugin-watermark", continuing
+113 silly lifecycle No script for "postpack" in "@middle/plugin-asset-dev", continuing
+114 verbose packed packages/plugin-asset-dev
+115 silly lifecycle No script for "postpack" in "@middle/plugin-asset", continuing
+116 verbose packed packages/plugin-asset
+117 silly lifecycle No script for "postpack" in "@middle/plugin-watermark", continuing
+118 verbose packed packages/plugin-watermark
+119 silly lifecycle No script for "postpack" in "@middle/plugin-tabs", continuing
+120 verbose packed packages/plugin-tabs
+121 verbose pack-directory packages/middle
+122 silly lifecycle No script for "prepublish" in "@middle/middle", continuing
+123 silly lifecycle No script for "prepare" in "@middle/middle", continuing
+124 silly lifecycle No script for "prepublishOnly" in "@middle/middle", continuing
+125 silly lifecycle No script for "prepack" in "@middle/middle", continuing
+126 silly lifecycle No script for "postpack" in "@middle/middle", continuing
+127 verbose packed packages/middle
+128 silly lifecycle No script for "postpack" in "middle-modules", continuing
+129 verbose publish @middle/plugin-asset-dev
+130 verbose publish @middle/plugin-asset
+131 verbose publish @middle/plugin-tabs
+132 verbose publish @middle/plugin-watermark
+133 silly FetchError: network timeout at: http://npm.yonghuivip.com/@middle%2fplugin-asset-dev
+133 silly     at Timeout.<anonymous> (/Users/yanxianliang/Desktop/yonghui/umi-middle/node_modules/minipass-fetch/lib/index.js:108:18)
+133 silly     at listOnTimeout (node:internal/timers:559:17)
+133 silly     at processTimers (node:internal/timers:502:7)
+133 silly  FetchError: network timeout at: http://npm.yonghuivip.com/@middle%2fplugin-asset-dev
+133 silly     at Timeout.<anonymous> (/Users/yanxianliang/Desktop/yonghui/umi-middle/node_modules/minipass-fetch/lib/index.js:108:18)
+133 silly     at listOnTimeout (node:internal/timers:559:17)
+133 silly     at processTimers (node:internal/timers:502:7) {
+133 silly   code: 'FETCH_ERROR',
+133 silly   errno: 'FETCH_ERROR',
+133 silly   type: 'request-timeout'
+133 silly }
+134 error FETCH_ERROR network timeout at: http://npm.yonghuivip.com/@middle%2fplugin-asset-dev
+135 error FetchError: network timeout at: http://npm.yonghuivip.com/@middle%2fplugin-asset-dev
+135 error     at Timeout.<anonymous> (/Users/yanxianliang/Desktop/yonghui/umi-middle/node_modules/minipass-fetch/lib/index.js:108:18)
+135 error     at listOnTimeout (node:internal/timers:559:17)
