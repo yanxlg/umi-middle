@@ -2,7 +2,7 @@
  * @Author: yanxlg
  * @Date: 2023-04-25 22:01:35
  * @LastEditors: yanxlg
- * @LastEditTime: 2023-04-28 01:19:56
+ * @LastEditTime: 2023-05-24 23:12:19
  * @Description: 水印布局文件
  *
  * Copyright (c) 2023 by yanxlg, All Rights Reserved.
@@ -12,7 +12,6 @@ import { history, matchRoutes, useAppData } from "umi";
 import "./Container.less";
 import WaterMark from "./Watermark";
 import type { WatermarkConfig } from './types.d.ts';
-import { useModel } from "@@/plugin-model";
 
 let globalWatermarkConfig: WatermarkConfig = {};
 let onRuntimeConfigChange = ()=>{};
@@ -56,17 +55,10 @@ export default (props: PropsWithChildren<any>) => {
     }
   },[]);
 
-  const initialInfo = (useModel && useModel("@@initialState")) || {
-    initialState: undefined,
-    setInitialState: null,
-  };
   const userConfig = {{{userConfig}}};// 传入参数
   const runtimeConfig = pluginManager.applyPlugins({
     key: "watermark",
     type: "modify",
-    initialValue: {
-      ...initialInfo,
-    },
   });
 
   return (
