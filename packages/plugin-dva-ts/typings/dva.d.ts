@@ -2,7 +2,7 @@
  * @Author: yanxlg
  * @Date: 2023-05-24 13:38:54
  * @LastEditors: yanxlg
- * @LastEditTime: 2023-05-24 13:39:09
+ * @LastEditTime: 2023-05-24 15:45:43
  * @Description: umi 中dva 类型支持
  *
  * Copyright (c) 2023 by yanxlg, All Rights Reserved.
@@ -66,4 +66,17 @@ declare module "dva" {
     effects?: EffectsMapObject;
     subscriptions?: SubscriptionsMapObject;
   }
+
+  type Models = typeof import("@@/plugin-dva-ts/models").models;
+
+  type RegisterModels = {
+    [P in keyof Models]: Models[P]["state"];
+  };
+
+  export function connect(
+    mapStateToProps?: (models: RegisterModels) => {},
+    mapDispatchToProps?: Function,
+    mergeProps?: Function,
+    options?: Object
+  ): Function;
 }

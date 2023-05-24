@@ -1,0 +1,24 @@
+{
+  "name": "@middle/plugin-dva-ts",
+  "author": "yanxlg <yanxlg2@yonghui.cn>",
+  "version": "0.0.1",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "description": "dva typescript 扩展，自动生成models限制，增加connect类型限制",
+  "scripts": {
+    "dev": "father dev",
+    "build": "father build"
+  },
+  "keywords": [],
+  "authors": {
+    "name": "yanxlg <yanxlg2@yonghui.cn>",
+    "email": "yanxlg2@yonghui.cn"
+  },
+  "license": "MIT",
+  "files": [
+    "lib",
+    "typings"
+  ],
+  "dependencies": {},
+  "gitHead": "471dc8d5b6ee0bad26aab28bc25b38afda2cd15c"
+}
