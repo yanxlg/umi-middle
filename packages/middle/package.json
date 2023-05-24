@@ -4,7 +4,8 @@
   "main": "lib/index.js",
   "files": [
     "lib",
-    "bin"
+    "bin",
+    "typings"
   ],
   "bin": {
     "middle": "bin/middle.js"
