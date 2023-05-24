@@ -8,11 +8,21 @@
  * Copyright (c) 2023 by yanxlg, All Rights Reserved.
  */
 declare module "dva" {
+  type AnyAction = import("redux").AnyAction;
+  type Dispatch<T> = import("redux").Dispatch;
+  type History = import("history").History;
+  type Action = import("redux").Action;
+
+  type Reducer<S = any, A extends Action = AnyAction> = (
+    state: S,
+    action: A
+  ) => S;
+
   interface ReducersMapObject<T> {
-    [key: string]: import("redux").Reducer<T>;
+    [key: string]: Reducer<T>;
   }
   interface ReducerEnhancer<T> {
-    (reducer: import("redux").Reducer<T>): void;
+    (reducer: Reducer<T>): void;
   }
 
   type ReducersMapObjectWithEnhancer<T> = [
@@ -21,8 +31,8 @@ declare module "dva" {
   ];
 
   interface SubscriptionAPI {
-    history: import("history").History;
-    dispatch: import("redux").Dispatch<any>;
+    history: History;
+    dispatch: Dispatch<any>;
   }
 
   type Subscription = (api: SubscriptionAPI, done: Function) => void;
@@ -32,7 +42,7 @@ declare module "dva" {
   }
 
   interface EffectsCommandMap {
-    put: <A extends import("redux").AnyAction>(action: A) => any;
+    put: <A extends AnyAction>(action: A) => any;
     call: Function;
     select: Function;
     take: Function;
@@ -40,10 +50,7 @@ declare module "dva" {
     [key: string]: any;
   }
 
-  type Effect = (
-    action: import("redux").AnyAction,
-    effects: EffectsCommandMap
-  ) => void;
+  type Effect = (action: AnyAction, effects: EffectsCommandMap) => void;
 
   type EffectType = "takeEvery" | "takeLatest" | "watcher" | "throttle";
   type EffectWithType = [Effect, { type: EffectType }];
