@@ -1,7 +1,7 @@
 {
   "name": "@middle/plugin-sentry",
   "author": "yanxlg <yanxlg2@yonghui.cn>",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "description": "sentry plugin for middle cli",
@@ -22,7 +22,7 @@
     "@sentry/react": "7.53.0"
   },
   "devDependencies": {
-    "simple-git": "3.19.0",
-    "@sentry/webpack-plugin": "^2.1.0"
+    "@sentry/webpack-plugin": "^2.1.0",
+    "simple-git": "3.19.0"
   }
 }
