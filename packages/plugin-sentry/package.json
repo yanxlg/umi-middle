@@ -24,5 +24,6 @@
   "devDependencies": {
     "@sentry/webpack-plugin": "^2.1.0",
     "simple-git": "3.19.0"
-  }
+  },
+  "gitHead": "6077489db33919fdf6ea37b46b0fc5fddeb74f57"
 }
