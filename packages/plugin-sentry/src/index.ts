@@ -28,11 +28,11 @@ export default async (api: IApi) => {
       schema({ zod }) {
         return zod.object({
           /** sentry org */
-          org: zod.string(),
+          org: zod.string().optional(),
           /** sentry project */
           project: zod.string(),
           /** sentry domain */
-          url: zod.string(),
+          url: zod.string().optional(),
           /** sentry auth token */
           authToken: zod.string(),
           /** sentry dsn */
@@ -47,14 +47,19 @@ export default async (api: IApi) => {
   const commitId = await simpleGit().revparse(["--short", "HEAD"]);
   api.chainWebpack((memo, { webpack, env }) => {
     // 本地build 不需要上传源码，怎么检测是否是本地。
-    const sentryConfig = api.config.sentry;
+    const {
+      org = "yonghui",
+      project,
+      url = "https://sentry.yonghuivip.com",
+      authToken,
+    } = api.config.sentry;
 
     memo.plugin("sentryWebpackPlugin").use(sentryWebpackPlugin, [
       {
-        org: sentryConfig.org,
-        project: sentryConfig.project,
-        url: sentryConfig.url,
-        authToken: sentryConfig.authToken,
+        org: org,
+        project: project,
+        url: url,
+        authToken: authToken,
         sourcemaps: {
           // Specify the directory containing build artifacts
           assets: "./**",
