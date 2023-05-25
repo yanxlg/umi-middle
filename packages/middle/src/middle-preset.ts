@@ -14,6 +14,7 @@ export default () => {
       require.resolve("@middle/plugin-tabs"),
       require.resolve("@middle/plugin-dva-ts"),
       require.resolve("@middle/plugin-default-config"),
+      require.resolve("@middle/plugin-sentry"),
     ],
   };
 };
