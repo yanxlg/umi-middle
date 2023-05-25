@@ -19,9 +19,7 @@
     "lib"
   ],
   "dependencies": {
-    "@sentry/react": "7.53.0"
-  },
-  "devDependencies": {
+    "@sentry/react": "7.53.0",
     "@sentry/webpack-plugin": "^2.1.0",
     "simple-git": "3.19.0"
   },
