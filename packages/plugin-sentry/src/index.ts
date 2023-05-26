@@ -13,7 +13,6 @@
  */
 // 读取本地目录，生成对应的入口文件。 index.ts 是不是也可以不需要了？？？或者
 import { join } from "path";
-import { simpleGit } from "simple-git";
 import { IApi } from "umi";
 import { winPath } from "umi/plugin-utils";
 
@@ -44,7 +43,7 @@ export default async (api: IApi) => {
     enableBy: api.EnableBy.config,
   });
 
-  const commitId = await simpleGit().revparse(["--short", "HEAD"]);
+  // const commitId = await simpleGit().revparse(["--short", "HEAD"]);
 
   api.chainWebpack((memo, { webpack, env }) => {
     const {
