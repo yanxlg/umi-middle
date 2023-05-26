@@ -45,42 +45,48 @@ export default async (api: IApi) => {
   });
 
   const commitId = await simpleGit().revparse(["--short", "HEAD"]);
+
   api.chainWebpack((memo, { webpack, env }) => {
-    // 本地build 不需要上传源码，怎么检测是否是本地。
     const {
       org = "yonghui",
       project,
       url = "https://sentry.yonghuivip.com",
       authToken,
     } = api.config.sentry;
-
-    memo.plugin("sentryWebpackPlugin").use(sentryWebpackPlugin, [
-      {
+    // 本地build 不需要上传源码，怎么检测是否是本地。
+    memo.plugin("sentryWebpackPlugin").use(
+      sentryWebpackPlugin({
         org: org,
         project: project,
         url: url,
         authToken: authToken,
         sourcemaps: {
           // Specify the directory containing build artifacts
-          assets: "./**",
+          assets: "./dist/**/*.js.map",
           // Don't upload the source maps of dependencies
           ignore: ["./node_modules/**"],
+          deleteFilesAfterUpload: "./dist/**/*.map",
         },
-        release: commitId, // 获取当前git提交记录。
-        debug: true,
-      },
-    ]);
+        release: {
+          name: commitId,
+          cleanArtifacts: true,
+        }, // 获取当前git提交记录。
+        debug: false,
+      }),
+      []
+    );
+  });
 
-    // runtime 修改
-    const tmpDir = winPath(__dirname);
-    api.onGenerateFiles(() => {
-      api.writeTmpFile({
-        path: "runtime.tsx",
-        tplPath: join(tmpDir, "runtime.tsx.tpl"),
-        context: {
-          dsn: sentryConfig.dsn,
-        },
-      });
+  // runtime 修改
+  const tmpDir = winPath(__dirname);
+  api.onGenerateFiles(() => {
+    const { dsn } = api.config.sentry;
+    api.writeTmpFile({
+      path: "runtime.tsx",
+      tplPath: join(tmpDir, "runtime.tsx.tpl"),
+      context: {
+        dsn: dsn,
+      },
     });
   });
 };

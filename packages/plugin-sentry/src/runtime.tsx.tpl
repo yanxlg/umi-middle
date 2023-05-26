@@ -1,5 +1,6 @@
 import * as Sentry from "@sentry/react";
 
+// release 会被sentry-plugin 自动inject
 Sentry.init({
   dsn: "{{{dsn}}}",
   integrations: [new Sentry.BrowserTracing(), new Sentry.Replay()],
