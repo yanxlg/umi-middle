@@ -2,7 +2,7 @@
  * @Author: yanxlg
  * @Date: 2023-05-01 21:15:00
  * @LastEditors: yanxlg
- * @LastEditTime: 2023-05-25 17:22:25
+ * @LastEditTime: 2023-05-26 22:27:28
  * @Description:
  * 检查是不是存在view.tsx|view.jsx 如果支持，表示组件在编辑器中和。view.js 支持。  __editMode 属性。如果有的话原属性直接传过来，不处理（editable、children等）。
  * meta.json | meta.ts | meta.tsx  支持default导出，支持 meta 属性导出。
@@ -68,8 +68,8 @@ export default async (api: IApi) => {
           deleteFilesAfterUpload: "./dist/**/*.map",
         },
         release: {
-          name: commitId,
-          cleanArtifacts: true,
+          // name: commitId,
+          // cleanArtifacts: true,
         }, // 获取当前git提交记录。
         debug: false,
       }),
