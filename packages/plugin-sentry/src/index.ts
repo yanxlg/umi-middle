@@ -121,7 +121,8 @@ export default async (api: IApi) => {
           filePath,
           fs
             .readFileSync(filePath, "utf8")
-            .replace(/^\/\*\# sourceMappingURL=.*/g, "")
+            .replace(/\/\*\# sourceMappingURL=.*/g, "")
+            .replace(/\/\/\# sourceMappingURL=.*/g, "")
         );
       }
     });
