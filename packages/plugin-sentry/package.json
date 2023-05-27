@@ -23,5 +23,5 @@
     "@sentry/webpack-plugin": "1.20.1",
     "simple-git": "3.19.0"
   },
-  "gitHead": "9fa6b15d4857afef6ca6bd1f274695683bace9bf"
+  "gitHead": "8ee1aa391223c9292114b5af8b2d6146c4dec029"
 }
