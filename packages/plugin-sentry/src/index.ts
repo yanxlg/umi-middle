@@ -2,7 +2,7 @@
  * @Author: yanxlg
  * @Date: 2023-05-01 21:15:00
  * @LastEditors: yanxlg
- * @LastEditTime: 2023-05-26 22:27:28
+ * @LastEditTime: 2023-05-27 12:10:15
  * @Description:
  * 检查是不是存在view.tsx|view.jsx 如果支持，表示组件在编辑器中和。view.js 支持。  __editMode 属性。如果有的话原属性直接传过来，不处理（editable、children等）。
  * meta.json | meta.ts | meta.tsx  支持default导出，支持 meta 属性导出。
@@ -53,6 +53,8 @@ export default async (api: IApi) => {
           authToken: zod.string(),
           /** sentry dsn */
           dsn: zod.string(),
+          /** environment tag */
+          environment: zod.string().optional(),
         });
       },
       onChange: api.ConfigChangeType.regenerateTmpFiles,
@@ -90,12 +92,14 @@ export default async (api: IApi) => {
   // runtime 修改
   const tmpDir = winPath(__dirname);
   api.onGenerateFiles(() => {
-    const { dsn } = api.config.sentry;
+    const { dsn, environment = "__runtime_env__sentry_environment__" } =
+      api.config.sentry;
     api.writeTmpFile({
       path: "runtime.tsx",
       tplPath: join(tmpDir, "runtime.tsx.tpl"),
       context: {
         dsn: dsn,
+        environment,
       },
     });
   });
