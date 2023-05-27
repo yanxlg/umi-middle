@@ -16,7 +16,8 @@ import { join } from "path";
 import { IApi } from "umi";
 import { winPath } from "umi/plugin-utils";
 
-const { sentryWebpackPlugin } = require("@sentry/webpack-plugin");
+// 降级，不能使用>2版本，与后台不匹配，源码不能正常上传
+import SentryWebpackPlugin from "@sentry/webpack-plugin";
 
 const isDev = process.env.NODE_ENV === "development";
 
@@ -43,7 +44,7 @@ export default async (api: IApi) => {
     enableBy: api.EnableBy.config,
   });
 
-  // const commitId = await simpleGit().revparse(["--short", "HEAD"]);
+  const commitId = await simpleGit().revparse(["--short", "HEAD"]);
 
   api.chainWebpack((memo, { webpack, env }) => {
     const {
@@ -53,27 +54,21 @@ export default async (api: IApi) => {
       authToken,
     } = api.config.sentry;
     // 本地build 不需要上传源码，怎么检测是否是本地。
-    memo.plugin("sentryWebpackPlugin").use(
-      sentryWebpackPlugin({
+    memo.plugin("SentryWebpackPlugin").use(SentryWebpackPlugin, [
+      {
         org: org,
         project: project,
         url: url,
         authToken: authToken,
-        sourcemaps: {
-          // Specify the directory containing build artifacts
-          assets: "./dist/**/*.js.map",
-          // Don't upload the source maps of dependencies
-          ignore: ["./node_modules/**"],
-          deleteFilesAfterUpload: "./dist/**/*.map",
-        },
-        release: {
-          // name: commitId,
-          // cleanArtifacts: true,
-        }, // 获取当前git提交记录。
+        include: ["./dist"],
+        urlPrefix: "~/",
+        ext: ["js", "js.map"],
+        release: commitId,
+        runOnce: true,
+        cleanArtifacts: true,
         debug: false,
-      }),
-      []
-    );
+      },
+    ]);
   });
 
   // runtime 修改
@@ -87,5 +82,10 @@ export default async (api: IApi) => {
         dsn: dsn,
       },
     });
+  });
+
+  api.onBuildComplete(({ isFirstCompile }) => {
+    // clean sourcemap files
+    console.log("清楚 本地sourcemap");
   });
 };
