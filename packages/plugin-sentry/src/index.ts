@@ -12,14 +12,30 @@
  * Copyright (c) 2023 by yanxlg, All Rights Reserved.
  */
 // 读取本地目录，生成对应的入口文件。 index.ts 是不是也可以不需要了？？？或者
+import fs from "fs";
 import { join } from "path";
+import simpleGit from "simple-git";
 import { IApi } from "umi";
 import { winPath } from "umi/plugin-utils";
 
 // 降级，不能使用>2版本，与后台不匹配，源码不能正常上传
 import SentryWebpackPlugin from "@sentry/webpack-plugin";
 
-const isDev = process.env.NODE_ENV === "development";
+export function withTmpPath(opts: {
+  api: IApi;
+  path: string;
+  noPluginDir?: boolean;
+}) {
+  return winPath(
+    join(
+      opts.api.paths.absTmpPath,
+      opts.api.plugin.key && !opts.noPluginDir
+        ? `plugin-${opts.api.plugin.key}`
+        : "",
+      opts.path
+    )
+  );
+}
 
 export default async (api: IApi) => {
   api.describe({
@@ -54,15 +70,15 @@ export default async (api: IApi) => {
       authToken,
     } = api.config.sentry;
     // 本地build 不需要上传源码，怎么检测是否是本地。
+    const outputPath = api.config.outputPath || "dist";
     memo.plugin("SentryWebpackPlugin").use(SentryWebpackPlugin, [
       {
         org: org,
         project: project,
         url: url,
         authToken: authToken,
-        include: ["./dist"],
+        include: [outputPath],
         urlPrefix: "~/",
-        ext: ["js", "js.map"],
         release: commitId,
         runOnce: true,
         cleanArtifacts: true,
@@ -84,8 +100,37 @@ export default async (api: IApi) => {
     });
   });
 
+  api.addRuntimePluginKey(() => ["sentry"]);
+  // 最初创建，需要在plugin-model dataflowProvider之前
+  api.addRuntimePlugin({
+    fn: () => withTmpPath({ api, path: "runtime.tsx" }),
+    stage: -1 * Number.MAX_SAFE_INTEGER,
+  });
+
+  function cleanSourceMapAfterUpload(dir: string) {
+    fs.readdirSync(dir).forEach((file) => {
+      const filePath = join(dir, file);
+      if (fs.statSync(filePath).isDirectory()) {
+        return cleanSourceMapAfterUpload(filePath);
+      }
+      if (/\.map$/.test(filePath)) {
+        fs.rmSync(filePath);
+      }
+      if (/\.css$/.test(filePath) || /\.js$/.test(filePath)) {
+        fs.writeFileSync(
+          filePath,
+          fs
+            .readFileSync(filePath, "utf8")
+            .replace(/^\/\*\# sourceMappingURL=.*/g, "")
+        );
+      }
+    });
+  }
+
   api.onBuildComplete(({ isFirstCompile }) => {
     // clean sourcemap files
-    console.log("清楚 本地sourcemap");
+    // find ./dist -name "*.js.map" | xargs rm -rf
+    const outputPath = api.config.outputPath || "dist";
+    cleanSourceMapAfterUpload(outputPath);
   });
 };
