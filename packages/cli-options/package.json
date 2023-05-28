@@ -5,6 +5,9 @@
   "publishConfig": {
     "access": "public"
   },
+  "scripts": {
+    "build": "father build"
+  },
   "main": "./lib/index.js",
   "module": "./es/index.js",
   "typings": "./lib/index.d.ts",
