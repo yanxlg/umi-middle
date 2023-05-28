@@ -140,11 +140,27 @@ const CliOptionsForm = ({
         form.setFieldsValue(resetValues);
         disabledFieldsMapRef.current.set(name, new Set(disabledFields));
         skipFieldsMapRef.current.set(name, new Set(skipFields));
+        config.forEach((group) => {
+          group.options.forEach((option) => {
+            const { type, name } = option;
+            if (type === "confirm" || type === "toggle") {
+              onSwitchChange(name, form.getFieldValue(name) || false, option);
+            }
+          });
+        });
         forceUpdate();
       } else {
         const { defaultOptions, disabledFields = [], skipFields = [] } = option;
         if (defaultOptions) {
           form.setFieldsValue(defaultOptions); // switch 需要触发更新
+          config.forEach((group) => {
+            group.options.forEach((option) => {
+              const { type, name } = option;
+              if (type === "confirm" || type === "toggle") {
+                onSwitchChange(name, form.getFieldValue(name) || false, option);
+              }
+            });
+          });
         }
         disabledFieldsMapRef.current.set(name, new Set(disabledFields));
         skipFieldsMapRef.current.set(name, new Set(skipFields));
