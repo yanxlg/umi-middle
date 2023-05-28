@@ -35,6 +35,9 @@ interface IOption extends Omit<PromptObject, "choices" | "name" | "type"> {
   label: string; // 表单label
   name: string;
   type: PromptType;
+  required: true;
+  skipFieldMap?: { true?: string[]; false?: string[] };
+  disabledFieldMap?: { true?: string[]; false?: string[] };
   choices?: Array<ChoiceType>;
 }
 
@@ -99,6 +102,9 @@ const CliOptionsForm = ({
                 onSelectChange(name, parseOption(choices[initial]));
               }
             }
+            if (type === "confirm" || type === "toggle") {
+              onSwitchChange(name, initial || false, option);
+            }
           });
         });
       });
@@ -146,6 +152,17 @@ const CliOptionsForm = ({
     }
   };
 
+  const onSwitchChange = (name: string, value: boolean, option: IOption) => {
+    const { disabledFieldMap, skipFieldMap } = option;
+    const disabledFields = disabledFieldMap
+      ? disabledFieldMap[String(value)]
+      : [];
+    const skipFields = skipFieldMap ? skipFieldMap[String(value)] : [];
+    disabledFieldsMapRef.current.set(name, new Set(disabledFields));
+    skipFieldsMapRef.current.set(name, new Set(skipFields));
+    forceUpdate();
+  };
+
   const disabledFields = useMemo(() => {
     let disabledSet = new Set<string>();
     disabledFieldsMapRef.current.forEach((subSet) => {
@@ -182,7 +199,22 @@ const CliOptionsForm = ({
             <Divider orientation="left">{group}</Divider>
             <Row>
               {filterOptions.map((option) => {
-                const { name, label, type, initial, choices } = option;
+                const { required, name, label, type, initial, choices } =
+                  option;
+                const rules = required
+                  ? [
+                      {
+                        required: true,
+                        message: `请${
+                          type === "select" ||
+                          type === "list" ||
+                          type === "multiselect"
+                            ? "选择"
+                            : "输入"
+                        }${label}`,
+                      },
+                    ]
+                  : undefined;
                 // 不同类型的使用不同的组件
                 // "text" | "password" | "invisible" | "number" | "confirm" | "list" | "toggle" | "select" | "multiselect" | "autocomplete" | "date" | "autocompleteMultiselect"
                 const disabled = disabledFields.has(name);
@@ -191,11 +223,13 @@ const CliOptionsForm = ({
                     return (
                       <Col span={span} key={name}>
                         <Form.Item
+                          preserve={false}
                           label={label}
                           name={name}
                           initialValue={initial}
+                          rules={rules}
                         >
-                          <Input disabled={disabled} />
+                          <Input disabled={disabled} allowClear />
                         </Form.Item>
                       </Col>
                     );
@@ -203,11 +237,13 @@ const CliOptionsForm = ({
                     return (
                       <Col span={span} key={name}>
                         <Form.Item
+                          preserve={false}
                           label={label}
                           name={name}
                           initialValue={initial}
+                          rules={rules}
                         >
-                          <Input.Password disabled={disabled} />
+                          <Input.Password disabled={disabled} allowClear />
                         </Form.Item>
                       </Col>
                     );
@@ -215,9 +251,11 @@ const CliOptionsForm = ({
                     return (
                       <Col span={span} key={name}>
                         <Form.Item
+                          preserve={false}
                           label={label}
                           name={name}
                           initialValue={initial}
+                          rules={rules}
                         >
                           <InputNumber disabled={disabled} />
                         </Form.Item>
@@ -228,12 +266,19 @@ const CliOptionsForm = ({
                     return (
                       <Col span={span} key={name}>
                         <Form.Item
+                          preserve={false}
                           label={label}
                           name={name}
                           initialValue={initial}
                           valuePropName="checked"
+                          rules={rules}
                         >
-                          <Switch disabled={disabled} />
+                          <Switch
+                            disabled={disabled}
+                            onChange={(checked) =>
+                              onSwitchChange(name, checked, option)
+                            }
+                          />
                         </Form.Item>
                       </Col>
                     );
@@ -243,8 +288,10 @@ const CliOptionsForm = ({
                     return (
                       <Col span={span} key={name}>
                         <Form.Item
+                          preserve={false}
                           label={label}
                           name={name}
+                          rules={rules}
                           initialValue={
                             initial == void 0
                               ? undefined
