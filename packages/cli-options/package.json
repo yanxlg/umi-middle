@@ -1,0 +1,27 @@
+{
+  "name": "@middle/cli-options",
+  "version": "1.3.23",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "./lib/index.js",
+  "module": "./es/index.js",
+  "typings": "./lib/index.d.ts",
+  "scripts": {
+    "install": "node ./install.js"
+  },
+  "files": [
+    "es",
+    "lib",
+    "install.js"
+  ],
+  "engines": {
+    "npm": ">=3.0.0"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "antd": ">=4.0.0",
+    "@types/prompts": "2.4.4"
+  }
+}
