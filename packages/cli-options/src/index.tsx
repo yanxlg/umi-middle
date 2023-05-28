@@ -23,16 +23,19 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 
 // 从cdn 获取选项json
 
+type ChoiceType = {
+  title: string;
+  value: string | number;
+  defaultOptions?: { [key: string]: unknown };
+  disabledFields?: string[];
+  skipFields?: string[];
+};
+
 interface IOption extends Omit<PromptObject, "choices" | "name" | "type"> {
   label: string; // 表单label
   name: string;
   type: PromptType;
-  choices?: Array<{
-    title: string;
-    value: string | number;
-    defaultOptions?: { [key: string]: unknown };
-    disabledFields?: string[];
-  }>;
+  choices?: Array<ChoiceType>;
 }
 
 type CliOptionsConfig = Array<{
@@ -71,10 +74,33 @@ const CliOptionsForm = ({
       .then((res) => res.json())
       .then((json) => {
         setConfig(json);
+        // 初始选项进行初始化
+        json.forEach((group) => {
+          const options = group.options;
+          options.forEach((option) => {
+            const { type, initial, choices, name } = option;
+            if ((type === "list" || type === "select") && initial !== void 0) {
+              onSelectChange(name, choices[initial]);
+            }
+            if (type === "multiselect" && initial !== void 0) {
+              if (Array.isArray(initial)) {
+                onSelectChange(
+                  name,
+                  initial.map((_) => choices[_])
+                );
+              } else {
+                onSelectChange(name, choices[initial]);
+              }
+            }
+          });
+        });
       });
   }, []);
 
-  const onSelectChange = (name: string, option: Array<any> | any) => {
+  const onSelectChange = (
+    name: string,
+    option: Array<ChoiceType> | ChoiceType
+  ) => {
     // 哪些禁止输入
     if (option) {
       if (Array.isArray(option)) {
@@ -224,12 +250,8 @@ const CliOptionsForm = ({
                             onChange={(_, option) =>
                               onSelectChange(name, option)
                             }
-                            options={choices?.map((option) => ({
-                              label: option.title,
-                              value: option.value,
-                              defaultOptions: option.defaultOptions,
-                              disabledFields: option.disabledFields,
-                            }))}
+                            optionLabelProp={"title"}
+                            options={choices}
                           />
                         </Form.Item>
                       </Col>
