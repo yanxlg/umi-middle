@@ -102,8 +102,13 @@ const CliOptionsForm = ({
                 onSelectChange(name, parseOption(choices[initial]));
               }
             }
+          });
+
+          // 重新循环
+          options.forEach((option) => {
+            const { type, name } = option;
             if (type === "confirm" || type === "toggle") {
-              onSwitchChange(name, initial || false, option);
+              onSwitchChange(name, form.getFieldValue(name) || false, option);
             }
           });
         });
@@ -139,7 +144,7 @@ const CliOptionsForm = ({
       } else {
         const { defaultOptions, disabledFields = [], skipFields = [] } = option;
         if (defaultOptions) {
-          form.setFieldsValue(defaultOptions);
+          form.setFieldsValue(defaultOptions); // switch 需要触发更新
         }
         disabledFieldsMapRef.current.set(name, new Set(disabledFields));
         skipFieldsMapRef.current.set(name, new Set(skipFields));
