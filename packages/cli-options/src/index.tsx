@@ -8,11 +8,13 @@
  * Copyright (c) 2023 by yanxlg, All Rights Reserved.
  */
 import {
+  Col,
   Divider,
   Form,
   FormInstance,
   Input,
   InputNumber,
+  Row,
   Select,
   Switch,
 } from "antd";
@@ -41,9 +43,11 @@ type CliOptionsConfig = Array<{
 const CliOptionsForm = ({
   form,
   version = "0.1.47",
+  cols = 3,
 }: {
   form: FormInstance;
   version?: string;
+  cols?: number;
 }) => {
   const disabledFieldsMapRef = useRef<Map<string, Set<string>>>(
     new Map<string, Set<string>>()
@@ -119,14 +123,32 @@ const CliOptionsForm = ({
     return disabledSet;
   }, [update]);
 
+  const skipFields = useMemo(() => {
+    let skipSet = new Set<string>();
+    skipFieldsMapRef.current.forEach((subSet) => {
+      if (subSet) {
+        subSet.forEach((value) => skipSet.add(value));
+      }
+    });
+    return skipSet;
+  }, [update]);
+
   return (
     <>
-      {config?.map((group) => {
-        const { group: name, options } = group;
+      {config?.map((subConfig) => {
+        const { group, options } = subConfig;
+        const filterOptions = options.filter((_) => {
+          return !skipFields.has(_.name);
+        });
+        if (!filterOptions.length) {
+          return null;
+        }
+        const span = 24 / cols;
         return (
-          <React.Fragment key={name}>
-            <Divider>{name}</Divider>
-            {options.map((option) => {
+          <React.Fragment key={group}>
+            <Divider orientation="left">{group}</Divider>
+            <Row></Row>
+            {filterOptions.map((option) => {
               const { name, label, type, initial, choices } = option;
               // 不同类型的使用不同的组件
               // "text" | "password" | "invisible" | "number" | "confirm" | "list" | "toggle" | "select" | "multiselect" | "autocomplete" | "date" | "autocompleteMultiselect"
@@ -134,75 +156,85 @@ const CliOptionsForm = ({
               switch (type) {
                 case "text":
                   return (
-                    <Form.Item
-                      key={name}
-                      label={label}
-                      name={name}
-                      initialValue={initial}
-                    >
-                      <Input disabled={disabled} />
-                    </Form.Item>
+                    <Col span={span}>
+                      <Form.Item
+                        key={name}
+                        label={label}
+                        name={name}
+                        initialValue={initial}
+                      >
+                        <Input disabled={disabled} />
+                      </Form.Item>
+                    </Col>
                   );
                 case "password":
                   return (
-                    <Form.Item
-                      key={name}
-                      label={label}
-                      name={name}
-                      initialValue={initial}
-                    >
-                      <Input.Password disabled={disabled} />
-                    </Form.Item>
+                    <Col span={span}>
+                      <Form.Item
+                        key={name}
+                        label={label}
+                        name={name}
+                        initialValue={initial}
+                      >
+                        <Input.Password disabled={disabled} />
+                      </Form.Item>
+                    </Col>
                   );
                 case "number":
                   return (
-                    <Form.Item
-                      key={name}
-                      label={label}
-                      name={name}
-                      initialValue={initial}
-                    >
-                      <InputNumber disabled={disabled} />
-                    </Form.Item>
+                    <Col span={span}>
+                      <Form.Item
+                        key={name}
+                        label={label}
+                        name={name}
+                        initialValue={initial}
+                      >
+                        <InputNumber disabled={disabled} />
+                      </Form.Item>
+                    </Col>
                   );
                 case "confirm":
                 case "toggle":
                   return (
-                    <Form.Item
-                      key={name}
-                      label={label}
-                      name={name}
-                      initialValue={initial}
-                    >
-                      <Switch disabled={disabled} />
-                    </Form.Item>
+                    <Col span={span}>
+                      <Form.Item
+                        key={name}
+                        label={label}
+                        name={name}
+                        initialValue={initial}
+                      >
+                        <Switch disabled={disabled} />
+                      </Form.Item>
+                    </Col>
                   );
                 case "list":
                 case "select":
                 case "multiselect":
                   return (
-                    <Form.Item
-                      key={name}
-                      label={label}
-                      name={name}
-                      initialValue={
-                        initial == void 0
-                          ? undefined
-                          : choices?.[initial as number]?.value
-                      }
-                    >
-                      <Select
-                        mode={type === "multiselect" ? "tags" : undefined}
-                        disabled={disabled}
-                        onChange={(_, option) => onSelectChange(name, option)}
-                        options={choices?.map((option) => ({
-                          label: option.title,
-                          value: option.value,
-                          defaultOptions: option.defaultOptions,
-                          disabledFields: option.disabledFields,
-                        }))}
-                      />
-                    </Form.Item>
+                    <Col span={span}>
+                      <Form.Item
+                        key={name}
+                        label={label}
+                        name={name}
+                        initialValue={
+                          initial == void 0
+                            ? undefined
+                            : choices?.[initial as number]?.value
+                        }
+                      >
+                        <Select
+                          mode={type === "multiselect" ? "tags" : undefined}
+                          disabled={disabled}
+                          onChange={(_, option) => onSelectChange(name, option)}
+                          options={choices?.map((option) => ({
+                            label: option.title,
+                            value: option.value,
+                            defaultOptions: option.defaultOptions,
+                            disabledFields: option.disabledFields,
+                          }))}
+                        />
+                      </Form.Item>
+                    </Col>
                   );
               }
             })}

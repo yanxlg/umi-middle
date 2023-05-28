@@ -67,7 +67,7 @@ export default async (api: IApi) => {
     .revparse(["--short", "HEAD"])
     .catch(() => undefined);
 
-  if (!isProduction) {
+  if (isProduction) {
     api.chainWebpack((memo, { webpack, env }) => {
       const {
         org = "yonghui",
