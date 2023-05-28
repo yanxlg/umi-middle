@@ -147,97 +147,100 @@ const CliOptionsForm = ({
         return (
           <React.Fragment key={group}>
             <Divider orientation="left">{group}</Divider>
-            <Row></Row>
-            {filterOptions.map((option) => {
-              const { name, label, type, initial, choices } = option;
-              // 不同类型的使用不同的组件
-              // "text" | "password" | "invisible" | "number" | "confirm" | "list" | "toggle" | "select" | "multiselect" | "autocomplete" | "date" | "autocompleteMultiselect"
-              const disabled = disabledFields.has(name);
-              switch (type) {
-                case "text":
-                  return (
-                    <Col span={span}>
-                      <Form.Item
-                        key={name}
-                        label={label}
-                        name={name}
-                        initialValue={initial}
-                      >
-                        <Input disabled={disabled} />
-                      </Form.Item>
-                    </Col>
-                  );
-                case "password":
-                  return (
-                    <Col span={span}>
-                      <Form.Item
-                        key={name}
-                        label={label}
-                        name={name}
-                        initialValue={initial}
-                      >
-                        <Input.Password disabled={disabled} />
-                      </Form.Item>
-                    </Col>
-                  );
-                case "number":
-                  return (
-                    <Col span={span}>
-                      <Form.Item
-                        key={name}
-                        label={label}
-                        name={name}
-                        initialValue={initial}
-                      >
-                        <InputNumber disabled={disabled} />
-                      </Form.Item>
-                    </Col>
-                  );
-                case "confirm":
-                case "toggle":
-                  return (
-                    <Col span={span}>
-                      <Form.Item
-                        key={name}
-                        label={label}
-                        name={name}
-                        initialValue={initial}
-                      >
-                        <Switch disabled={disabled} />
-                      </Form.Item>
-                    </Col>
-                  );
-                case "list":
-                case "select":
-                case "multiselect":
-                  return (
-                    <Col span={span}>
-                      <Form.Item
-                        key={name}
-                        label={label}
-                        name={name}
-                        initialValue={
-                          initial == void 0
-                            ? undefined
-                            : choices?.[initial as number]?.value
-                        }
-                      >
-                        <Select
-                          mode={type === "multiselect" ? "tags" : undefined}
-                          disabled={disabled}
-                          onChange={(_, option) => onSelectChange(name, option)}
-                          options={choices?.map((option) => ({
-                            label: option.title,
-                            value: option.value,
-                            defaultOptions: option.defaultOptions,
-                            disabledFields: option.disabledFields,
-                          }))}
-                        />
-                      </Form.Item>
-                    </Col>
-                  );
-              }
-            })}
+            <Row>
+              {filterOptions.map((option) => {
+                const { name, label, type, initial, choices } = option;
+                // 不同类型的使用不同的组件
+                // "text" | "password" | "invisible" | "number" | "confirm" | "list" | "toggle" | "select" | "multiselect" | "autocomplete" | "date" | "autocompleteMultiselect"
+                const disabled = disabledFields.has(name);
+                switch (type) {
+                  case "text":
+                    return (
+                      <Col span={span}>
+                        <Form.Item
+                          key={name}
+                          label={label}
+                          name={name}
+                          initialValue={initial}
+                        >
+                          <Input disabled={disabled} />
+                        </Form.Item>
+                      </Col>
+                    );
+                  case "password":
+                    return (
+                      <Col span={span}>
+                        <Form.Item
+                          key={name}
+                          label={label}
+                          name={name}
+                          initialValue={initial}
+                        >
+                          <Input.Password disabled={disabled} />
+                        </Form.Item>
+                      </Col>
+                    );
+                  case "number":
+                    return (
+                      <Col span={span}>
+                        <Form.Item
+                          key={name}
+                          label={label}
+                          name={name}
+                          initialValue={initial}
+                        >
+                          <InputNumber disabled={disabled} />
+                        </Form.Item>
+                      </Col>
+                    );
+                  case "confirm":
+                  case "toggle":
+                    return (
+                      <Col span={span}>
+                        <Form.Item
+                          key={name}
+                          label={label}
+                          name={name}
+                          initialValue={initial}
+                        >
+                          <Switch disabled={disabled} />
+                        </Form.Item>
+                      </Col>
+                    );
+                  case "list":
+                  case "select":
+                  case "multiselect":
+                    return (
+                      <Col span={span}>
+                        <Form.Item
+                          key={name}
+                          label={label}
+                          name={name}
+                          initialValue={
+                            initial == void 0
+                              ? undefined
+                              : choices?.[initial as number]?.value
+                          }
+                        >
+                          <Select
+                            mode={type === "multiselect" ? "tags" : undefined}
+                            disabled={disabled}
+                            onChange={(_, option) =>
+                              onSelectChange(name, option)
+                            }
+                            options={choices?.map((option) => ({
+                              label: option.title,
+                              value: option.value,
+                              defaultOptions: option.defaultOptions,
+                              disabledFields: option.disabledFields,
+                            }))}
+                          />
+                        </Form.Item>
+                      </Col>
+                    );
+                }
+              })}
+            </Row>
           </React.Fragment>
         );
       })}
