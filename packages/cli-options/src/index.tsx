@@ -115,9 +115,9 @@ const CliOptionsForm = ({
           } = item;
           if (defaultOptions) {
             Object.assign(resetValues, defaultOptions);
-            disabledFields = [...disabledFields, ..._disabledFields];
-            skipFields = [...skipFields, ..._skipFields];
           }
+          disabledFields = [...disabledFields, ..._disabledFields];
+          skipFields = [...skipFields, ..._skipFields];
         });
         form.setFieldsValue(resetValues);
         disabledFieldsMapRef.current.set(name, new Set(disabledFields));
@@ -127,10 +127,10 @@ const CliOptionsForm = ({
         const { defaultOptions, disabledFields = [], skipFields = [] } = option;
         if (defaultOptions) {
           form.setFieldsValue(defaultOptions);
-          disabledFieldsMapRef.current.set(name, new Set(disabledFields));
-          skipFieldsMapRef.current.set(name, new Set(skipFields));
-          forceUpdate();
         }
+        disabledFieldsMapRef.current.set(name, new Set(disabledFields));
+        skipFieldsMapRef.current.set(name, new Set(skipFields));
+        forceUpdate();
       }
     } else {
       disabledFieldsMapRef.current.delete(name);
