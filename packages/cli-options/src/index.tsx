@@ -43,6 +43,13 @@ type CliOptionsConfig = Array<{
   options: Array<IOption>;
 }>;
 
+function parseOption(choice: ChoiceType) {
+  return {
+    ...choice,
+    label: choice.title,
+  };
+}
+
 const CliOptionsForm = ({
   form,
   version = "0.1.47",
@@ -80,16 +87,16 @@ const CliOptionsForm = ({
           options.forEach((option) => {
             const { type, initial, choices, name } = option;
             if ((type === "list" || type === "select") && initial !== void 0) {
-              onSelectChange(name, choices[initial]);
+              onSelectChange(name, parseOption(choices[initial]));
             }
             if (type === "multiselect" && initial !== void 0) {
               if (Array.isArray(initial)) {
                 onSelectChange(
                   name,
-                  initial.map((_) => choices[_])
+                  initial.map((_) => parseOption(choices[_]))
                 );
               } else {
-                onSelectChange(name, choices[initial]);
+                onSelectChange(name, parseOption(choices[initial]));
               }
             }
           });
@@ -251,7 +258,7 @@ const CliOptionsForm = ({
                               onSelectChange(name, option)
                             }
                             optionLabelProp={"title"}
-                            options={choices}
+                            options={choices?.map((_) => parseOption(_))}
                           />
                         </Form.Item>
                       </Col>
