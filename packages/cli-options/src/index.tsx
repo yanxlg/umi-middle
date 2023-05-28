@@ -156,9 +156,8 @@ const CliOptionsForm = ({
                 switch (type) {
                   case "text":
                     return (
-                      <Col span={span}>
+                      <Col span={span} key={name}>
                         <Form.Item
-                          key={name}
                           label={label}
                           name={name}
                           initialValue={initial}
@@ -169,9 +168,8 @@ const CliOptionsForm = ({
                     );
                   case "password":
                     return (
-                      <Col span={span}>
+                      <Col span={span} key={name}>
                         <Form.Item
-                          key={name}
                           label={label}
                           name={name}
                           initialValue={initial}
@@ -182,9 +180,8 @@ const CliOptionsForm = ({
                     );
                   case "number":
                     return (
-                      <Col span={span}>
+                      <Col span={span} key={name}>
                         <Form.Item
-                          key={name}
                           label={label}
                           name={name}
                           initialValue={initial}
@@ -196,12 +193,12 @@ const CliOptionsForm = ({
                   case "confirm":
                   case "toggle":
                     return (
-                      <Col span={span}>
+                      <Col span={span} key={name}>
                         <Form.Item
-                          key={name}
                           label={label}
                           name={name}
                           initialValue={initial}
+                          valuePropName="checked"
                         >
                           <Switch disabled={disabled} />
                         </Form.Item>
@@ -211,9 +208,8 @@ const CliOptionsForm = ({
                   case "select":
                   case "multiselect":
                     return (
-                      <Col span={span}>
+                      <Col span={span} key={name}>
                         <Form.Item
-                          key={name}
                           label={label}
                           name={name}
                           initialValue={
