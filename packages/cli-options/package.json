@@ -8,13 +8,11 @@
   "scripts": {
     "build": "father build"
   },
-  "main": "./lib/index.js",
-  "module": "./es/index.js",
-  "typings": "./lib/index.d.ts",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "typings": "./dist/esm/index.d.ts",
   "files": [
-    "es",
-    "lib",
-    "install.js"
+    "dist"
   ],
   "engines": {
     "npm": ">=3.0.0"

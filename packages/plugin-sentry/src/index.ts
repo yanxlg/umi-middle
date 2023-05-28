@@ -21,6 +21,7 @@ import { winPath } from "umi/plugin-utils";
 // 降级，不能使用>2版本，与后台不匹配，源码不能正常上传
 import SentryWebpackPlugin from "@sentry/webpack-plugin";
 
+const isProduction = process.env.NODE_ENV === "production";
 export function withTmpPath(opts: {
   api: IApi;
   path: string;
@@ -62,32 +63,36 @@ export default async (api: IApi) => {
     enableBy: api.EnableBy.config,
   });
 
-  const commitId = await simpleGit().revparse(["--short", "HEAD"]);
+  const commitId = await simpleGit()
+    .revparse(["--short", "HEAD"])
+    .catch(() => undefined);
 
-  api.chainWebpack((memo, { webpack, env }) => {
-    const {
-      org = "yonghui",
-      project,
-      url = "https://sentry.yonghuivip.com",
-      authToken,
-    } = api.config.sentry;
-    // 本地build 不需要上传源码，怎么检测是否是本地。
-    const outputPath = api.config.outputPath || "dist";
-    memo.plugin("SentryWebpackPlugin").use(SentryWebpackPlugin, [
-      {
-        org: org,
-        project: project,
-        url: url,
-        authToken: authToken,
-        include: [outputPath],
-        urlPrefix: "~/",
-        release: commitId,
-        runOnce: true,
-        cleanArtifacts: true,
-        debug: false,
-      },
-    ]);
-  });
+  if (!isProduction) {
+    api.chainWebpack((memo, { webpack, env }) => {
+      const {
+        org = "yonghui",
+        project,
+        url = "https://sentry.yonghuivip.com",
+        authToken,
+      } = api.config.sentry;
+      // 本地build 不需要上传源码，怎么检测是否是本地。
+      const outputPath = api.config.outputPath || "dist";
+      memo.plugin("SentryWebpackPlugin").use(SentryWebpackPlugin, [
+        {
+          org: org,
+          project: project,
+          url: url,
+          authToken: authToken,
+          include: [outputPath],
+          urlPrefix: "~/",
+          release: commitId,
+          runOnce: true,
+          cleanArtifacts: true,
+          debug: false,
+        },
+      ]);
+    });
+  }
 
   // runtime 修改
   const tmpDir = winPath(__dirname);
