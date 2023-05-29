@@ -16,6 +16,7 @@ export async function run(mainBranch: string, currentBranch?: string) {
   const current = currentBranch || _current;
   console.log(`当前分支：${current}`);
   console.log(`所有分支：${all.join(" ")}`);
+  console.log(process.env);
   // 当前是release分支，执行检测
   if (/^release/.test(current)) {
     const releaseSet = new Set<string>();
