@@ -20,5 +20,6 @@
   "devDependencies": {
     "@types/prompts": "2.4.4",
     "antd": ">=4.0.0"
-  }
+  },
+  "gitHead": "2f96a51cb0dd9d8f377b7ad001239a64eeec7225"
 }
