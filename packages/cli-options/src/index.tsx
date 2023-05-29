@@ -2,7 +2,7 @@
  * @Author: yanxlg
  * @Date: 2023-05-27 18:11:50
  * @LastEditors: yanxlg
- * @LastEditTime: 2023-05-27 18:19:55
+ * @LastEditTime: 2023-05-29 09:35:58
  * @Description:
  *
  * Copyright (c) 2023 by yanxlg, All Rights Reserved.
@@ -90,16 +90,17 @@ const CliOptionsForm = ({
           options.forEach((option) => {
             const { type, initial, choices, name } = option;
             if ((type === "list" || type === "select") && initial !== void 0) {
-              onSelectChange(name, parseOption(choices[initial]));
+              onSelectChange(name, parseOption(choices[initial]), json);
             }
             if (type === "multiselect" && initial !== void 0) {
               if (Array.isArray(initial)) {
                 onSelectChange(
                   name,
-                  initial.map((_) => parseOption(choices[_]))
+                  initial.map((_) => parseOption(choices[_])),
+                  json
                 );
               } else {
-                onSelectChange(name, parseOption(choices[initial]));
+                onSelectChange(name, parseOption(choices[initial]), json);
               }
             }
           });
@@ -117,7 +118,8 @@ const CliOptionsForm = ({
 
   const onSelectChange = (
     name: string,
-    option: Array<ChoiceType> | ChoiceType
+    option: Array<ChoiceType> | ChoiceType,
+    config: CliOptionsConfig
   ) => {
     // 哪些禁止输入
     if (option) {
@@ -323,7 +325,7 @@ const CliOptionsForm = ({
                             mode={type === "multiselect" ? "tags" : undefined}
                             disabled={disabled}
                             onChange={(_, option) =>
-                              onSelectChange(name, option)
+                              onSelectChange(name, option, config)
                             }
                             optionLabelProp={"title"}
                             options={choices?.map((_) => parseOption(_))}
