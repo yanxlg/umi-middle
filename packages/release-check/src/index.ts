@@ -11,12 +11,11 @@ import simpleGit from "simple-git";
 
 const git = simpleGit();
 
-export async function run(mainBranch: string, currentBranch?: string) {
+export async function run(mainBranch: string) {
   const { current: _current, all } = await git.branch(); // 是不是所有的远程分支都能拿到
-  const current = currentBranch || _current;
+  const current = process.env.CI_COMMIT_REF_NAME || _current;
   console.log(`当前分支：${current}`);
   console.log(`所有分支：${all.join(" ")}`);
-  console.log(process.env);
   // 当前是release分支，执行检测
   if (/^release/.test(current)) {
     const releaseSet = new Set<string>();
