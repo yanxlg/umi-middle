@@ -19,32 +19,29 @@ export async function run(mainBranch: string) {
   // 获取所有master 的提交日志
   const { all: logs } = await git.log({
     from: `origin/${mainBranch}`,
-    to: `origin/${mainBranch}`,
-    format: "%H",
   });
-  const logHashSet = new Set(logs);
-  console.log(logs);
-  let unMergedReleaseBranches = [];
+  const logHashSet = new Set(logs.map((_) => _.hash));
+  const unMergedReleaseSet = new Set();
+
   // 当前是release分支，执行检测
   if (/^release/.test(current)) {
     for (let branch of all) {
-      const branchName = branch.replace(/^remotes\/origin\//, "");
-      if (branchName === current) {
-        continue;
-      } else if (/^release/.test(branchName)) {
-        // 获取最后一次提交，查看最后一次提交是否在logs中
-        const { latest } = await git.log({
-          from: `origin/${branchName}`,
-          to: `origin/${branchName}`,
-          format: "%H",
-        });
-        console.log(latest);
-        if (!logHashSet.has(latest)) {
-          // 不包括当前分支
-          unMergedReleaseBranches.push(branchName);
+      if (/^remotes\/origin\//.test(branch)) {
+        const branchName = branch.replace(/^remotes\/origin\//, "");
+        if (branchName === current) {
+          continue;
+        } else if (/^release/.test(branchName)) {
+          // 获取最后一次提交，查看最后一次提交是否在logs中
+          const { latest } = await git.log({
+            from: `origin/${branchName}`,
+          });
+          if (!logHashSet.has(latest.hash)) {
+            unMergedReleaseSet.add(branchName);
+          }
         }
       }
     }
+    let unMergedReleaseBranches = Array.from(unMergedReleaseSet);
     if (unMergedReleaseBranches.length > 0) {
       console.error(
         chalk.red(
