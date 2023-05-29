@@ -13,10 +13,10 @@ const git = simpleGit();
 
 export async function run(mainBranch: string) {
   const { current, all } = await git.branch(); // 是不是所有的远程分支都能拿到
+  console.log(`当前分支：${current}`);
+  console.log(`所有分支：${all.join(" ")}`);
   // 当前是release分支，执行检测
   if (/^release/.test(current)) {
-    console.log(`当前分支：${current}`);
-    console.log(`所有分支：${all.join(" ")}`);
     const releaseSet = new Set<string>();
     all.forEach((branch) => {
       if (/^remotes\/origin\/release/.test(branch)) {
