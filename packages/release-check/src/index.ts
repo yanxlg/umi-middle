@@ -7,7 +7,7 @@
  *
  * Copyright (c) 2023 by yanxlg, All Rights Reserved.
  */
-import chalk from "chalk";
+import { chalk } from "@umijs/utils";
 import simpleGit from "simple-git";
 
 const git = simpleGit();

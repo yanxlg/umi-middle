@@ -17,7 +17,7 @@
     "access": "public"
   },
   "dependencies": {
-    "chalk": "5.0.1",
+    "@umijs/utils": "4.0.67",
     "commander": "^9.4.0",
     "father": "^4.1.8",
     "simple-git": "3.19.0"
