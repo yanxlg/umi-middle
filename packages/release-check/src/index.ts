@@ -32,6 +32,7 @@ export async function run(mainBranch: string) {
     const mergedBranchSet = new Set(
       mergedBranches.map((_) => _.replace(/^remotes\/origin\//, ""))
     );
+    console.log(mergedBranches);
     let unMergedReleaseBranches = [];
     releaseSet.forEach((target) => {
       if (!mergedBranchSet.has(target)) {
