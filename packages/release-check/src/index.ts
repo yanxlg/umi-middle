@@ -39,11 +39,12 @@ export async function run(mainBranch: string) {
     });
     await git.checkout(current); // 切换回原来的分支
     if (unMergedReleaseBranches.length > 0) {
-      throw new Error(
+      console.error(
         `存在release分支未合并到主分支，新的release分支代码可能不完整，请处理完下列分支合并操作后重新发布编译动作：${unMergedReleaseBranches.join(
           " "
         )}`
       );
+      process.exit(1);
     }
   }
 }
