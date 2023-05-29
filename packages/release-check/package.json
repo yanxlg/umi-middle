@@ -1,6 +1,6 @@
 {
   "name": "release-check",
-  "version": "0.0.6-alpha.2",
+  "version": "0.0.6-alpha.3",
   "main": "lib/index.js",
   "files": [
     "lib",
@@ -17,10 +17,10 @@
     "access": "public"
   },
   "dependencies": {
+    "chalk": "5.0.1",
     "commander": "^9.4.0",
     "father": "^4.1.8",
-    "simple-git": "3.19.0",
-    "chalk": "5.0.1"
+    "simple-git": "3.19.0"
   },
   "gitHead": "8ee1aa391223c9292114b5af8b2d6146c4dec029"
 }
