@@ -12,9 +12,11 @@ import { run } from "./index";
 
 program.name("release-check");
 program.option("--main-branch <mainBranch>", "project main branch", "master");
+program.option("--current-branch <currentBranch>", "project current branch");
 program.action(async (options) => {
   const mainBranch = options["main-branch"];
-  await run(mainBranch);
+  const currentBranch = options["current-branch"];
+  await run(mainBranch, currentBranch);
 });
 
 program.parse();

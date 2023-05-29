@@ -11,8 +11,9 @@ import simpleGit from "simple-git";
 
 const git = simpleGit();
 
-export async function run(mainBranch: string) {
-  const { current, all } = await git.branch(); // 是不是所有的远程分支都能拿到
+export async function run(mainBranch: string, currentBranch?: string) {
+  const { current: _current, all } = await git.branch(); // 是不是所有的远程分支都能拿到
+  const current = currentBranch || _current;
   console.log(`当前分支：${current}`);
   console.log(`所有分支：${all.join(" ")}`);
   // 当前是release分支，执行检测
