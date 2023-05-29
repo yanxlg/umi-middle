@@ -7,6 +7,7 @@
  *
  * Copyright (c) 2023 by yanxlg, All Rights Reserved.
  */
+import chalk from "chalk";
 import simpleGit from "simple-git";
 
 const git = simpleGit();
@@ -14,8 +15,6 @@ const git = simpleGit();
 export async function run(mainBranch: string) {
   const { current: _current, all } = await git.branch(); // 是不是所有的远程分支都能拿到
   const current = process.env.CI_COMMIT_REF_NAME || _current;
-  console.log(`当前分支：${current}`);
-  console.log(`所有分支：${all.join(" ")}`);
   // 当前是release分支，执行检测
   if (/^release/.test(current)) {
     const releaseSet = new Set<string>();
@@ -28,7 +27,6 @@ export async function run(mainBranch: string) {
 
     await git.checkout(mainBranch); // 切换到基础分支
     const { all: mergedBranches } = await git.branch(["--merged"]);
-    console.log(`主分支已合并分支：${mergedBranches.join(" ")}`);
     // 查询baseBranch 的merge列表
     const mergedBranchSet = new Set(mergedBranches);
     let unMergedReleaseBranches = [];
@@ -40,9 +38,11 @@ export async function run(mainBranch: string) {
     await git.checkout(current); // 切换回原来的分支
     if (unMergedReleaseBranches.length > 0) {
       console.error(
-        `存在release分支未合并到主分支，新的release分支代码可能不完整，请处理完下列分支合并操作后重新发布编译动作：${unMergedReleaseBranches.join(
-          " "
-        )}`
+        chalk.red(
+          `存在release分支未合并到主分支，新的release分支代码可能不完整，请处理完下列分支合并操作后重新发布编译动作：${chalk.blueBright(
+            unMergedReleaseBranches.join(" ")
+          )}`
+        )
       );
       process.exit(1);
     }
