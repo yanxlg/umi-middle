@@ -7,7 +7,7 @@
     "bin"
   ],
   "bin": {
-    "middle": "bin/middle.js"
+    "release-check": "bin/release-check.js"
   },
   "description": "工程化启动包",
   "scripts": {
