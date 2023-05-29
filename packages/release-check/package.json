@@ -1,0 +1,25 @@
+{
+  "name": "release-check",
+  "version": "0.0.1",
+  "main": "lib/index.js",
+  "files": [
+    "lib",
+    "bin"
+  ],
+  "bin": {
+    "middle": "bin/middle.js"
+  },
+  "description": "工程化启动包",
+  "scripts": {
+    "build": "father build"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "commander": "^9.4.0",
+    "father": "^4.1.8",
+    "simple-git": "3.19.0"
+  },
+  "gitHead": "8ee1aa391223c9292114b5af8b2d6146c4dec029"
+}
