@@ -26,16 +26,19 @@ export async function run(mainBranch: string) {
     releaseSet.delete(current);
 
     await git.checkout(mainBranch); // 切换到基础分支
-    const { all: mergedBranches } = await git.branch(["--merged"]);
+    await git.pull();
+    const { all: mergedBranches } = await git.branch(["--remote", "--merged"]);
     // 查询baseBranch 的merge列表
-    const mergedBranchSet = new Set(mergedBranches);
+    const mergedBranchSet = new Set(
+      mergedBranches.map((_) => _.replace(/^remotes\/origin\//, ""))
+    );
     let unMergedReleaseBranches = [];
     releaseSet.forEach((target) => {
       if (!mergedBranchSet.has(target)) {
         unMergedReleaseBranches.push(target);
       }
     });
-    await git.checkout(current); // 切换回原来的分支
+    await git.checkout(_current); // 切换回原来的分支
     if (unMergedReleaseBranches.length > 0) {
       console.error(
         chalk.red(
