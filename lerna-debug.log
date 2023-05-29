@@ -1,0 +1,9 @@
+57 error Error: Command failed with exit code 1: git commit -F /private/var/folders/7m/613md9hn64v2h3bfbb2pny4c0000gn/T/469812e0-d32f-4a0e-923a-4622457543d9/lerna-commit.txt
+57 error On branch main
+57 error Your branch is up to date with 'origin/main'.
+57 error
+57 error nothing to commit, working tree clean
+57 error     at makeError (/Users/yanxianliang/Desktop/yonghui/umi-middle/node_modules/execa/lib/error.js:60:11)
+57 error     at handlePromise (/Users/yanxianliang/Desktop/yonghui/umi-middle/node_modules/execa/index.js:118:26)
+57 error     at processTicksAndRejections (node:internal/process/task_queues:96:5)
+57 error     at async Promise.all (index 0)
