@@ -26,7 +26,6 @@ export async function run(mainBranch: string) {
     releaseSet.delete(current);
 
     await git.checkout(mainBranch); // 切换到基础分支
-    await git.pull();
     const { all: mergedBranches } = await git.branch(["--remote", "--merged"]);
     // 查询baseBranch 的merge列表
     const mergedBranchSet = new Set(
