@@ -65,7 +65,7 @@ export default async (api: IApi) => {
 
   const commitId = await simpleGit()
     .revparse(["--short", "HEAD"])
-    .catch(() => undefined);
+    .catch(() => "not_git_repo");
 
   if (isProduction) {
     api.chainWebpack((memo, { webpack, env }) => {
