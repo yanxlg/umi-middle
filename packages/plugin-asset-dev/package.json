@@ -1,7 +1,7 @@
 {
   "name": "@middle/plugin-asset-dev",
   "author": "yanxlg <yanxlg2@yonghui.cn>",
-  "version": "0.2.0-alpha.2",
+  "version": "0.2.0",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
