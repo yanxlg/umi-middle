@@ -11,10 +11,8 @@ import { program } from "commander";
 import { run } from "./index";
 
 program.name("release-check");
-program.option("--main-branch <mainBranch>", "project main branch", "master");
-program.action(async (options) => {
-  const mainBranch = options.mainBranch;
-  await run(mainBranch);
+program.action(async () => {
+  await run();
 });
 
 program.parse();
