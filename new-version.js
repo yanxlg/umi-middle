@@ -30,7 +30,7 @@ fs.readdir(dir, function (err, paths) {
         const packageFile = _path.join(_dirPath, "package.json");
         let packageJson = JSON.parse(fs.readFileSync(packageFile, "utf8"));
         // 所有的相关版本全部更新
-        if(/^\@middle/.test(path)){
+        if(!/^\release-check/.test(path)){
           packageJson.version = nextVersion;
         }
         if (packageJson.devDependencies) {
