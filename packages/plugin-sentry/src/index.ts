@@ -2,7 +2,7 @@
  * @Author: yanxlg
  * @Date: 2023-05-01 21:15:00
  * @LastEditors: yanxlg
- * @LastEditTime: 2023-05-27 12:10:15
+ * @LastEditTime: 2023-05-30 15:06:06
  * @Description:
  * 检查是不是存在view.tsx|view.jsx 如果支持，表示组件在编辑器中和。view.js 支持。  __editMode 属性。如果有的话原属性直接传过来，不处理（editable、children等）。
  * meta.json | meta.ts | meta.tsx  支持default导出，支持 meta 属性导出。
@@ -56,6 +56,8 @@ export default async (api: IApi) => {
           dsn: zod.string(),
           /** environment tag */
           environment: zod.string().optional(),
+          /**ignore errors */
+          ignore: zod.array(zod.string()).optional(),
         });
       },
       onChange: api.ConfigChangeType.regenerateTmpFiles,
@@ -67,8 +69,15 @@ export default async (api: IApi) => {
     .revparse(["--short", "HEAD"])
     .catch(() => "not_git_repo");
 
-  if (isProduction) {
-    api.chainWebpack((memo, { webpack, env }) => {
+  api.modifyDefaultConfig((memo) => {
+    if (isProduction && api.name === "build") {
+      memo.devtool = memo.devtool || "source-map";
+    }
+    return memo;
+  });
+
+  api.chainWebpack((memo, { webpack, env }) => {
+    if (api.name === "build" && isProduction) {
       const {
         org = "yonghui",
         project,
@@ -91,20 +100,34 @@ export default async (api: IApi) => {
           debug: false,
         },
       ]);
-    });
-  }
+    }
+  });
 
   // runtime 修改
   const tmpDir = winPath(__dirname);
   api.onGenerateFiles(() => {
-    const { dsn, environment = "__runtime_env__sentry_environment__" } =
-      api.config.sentry;
+    const {
+      dsn,
+      environment = "__runtime_env__sentry_environment__",
+      ignore = [
+        "promise rejection",
+        "chrome.loadTimes() is deprecated",
+        "Request aborted",
+        "ResizeObserver",
+        "Failed to fetch",
+        "RequestError: timeout",
+      ],
+    } = api.config.sentry;
+
     api.writeTmpFile({
       path: "runtime.tsx",
       tplPath: join(tmpDir, "runtime.tsx.tpl"),
       context: {
         dsn: dsn,
-        environment,
+        environment: isProduction ? environment : "local",
+        debug: isProduction ? false : true,
+        disabled: isProduction ? false : true,
+        ignore: JSON.stringify(ignore),
       },
     });
   });

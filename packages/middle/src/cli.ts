@@ -2,10 +2,9 @@
  * @Author: yanxlg
  * @Date: 2023-05-04 23:18:33
  * @LastEditors: yanxlg
- * @LastEditTime: 2023-05-17 22:47:22
- * @Description:
- *  TODO:
- *    asset包build 进行工程化，配合father完成，直接指定内部.fatherrc.ts作为配置文件，外部不提供新的配置文件。
+ * @LastEditTime: 2023-05-30 15:07:45
+ * @Description: 工程化cli包
+ *
  *
  * Copyright (c) 2023 by yanxlg, All Rights Reserved.
  */
@@ -155,4 +154,4 @@ program.action(() => {
   });
 });
 
-program.parse(process.argv);
+program.parse();

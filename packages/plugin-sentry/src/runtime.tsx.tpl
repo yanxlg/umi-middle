@@ -10,5 +10,8 @@ Sentry.init({
   tracesSampleRate: 1.0,
   replaysSessionSampleRate: 0.1,
   replaysOnErrorSampleRate: 1.0,
-  environment: "{{{environment}}}"// 环境变量，不同的环境值，需要在部署工作台inject进来。 docker 和ng方案，怎么自动化？？？
+  environment: "{{{environment}}}",// 环境变量，不同的环境值，需要在部署工作台inject进来。 docker 和ng方案，怎么自动化？？？
+  debug: {{{debug}}},
+  disabled: {{{disabled}}},
+  ignoreErrors: {{{ignore}}},
 });
