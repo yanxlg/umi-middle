@@ -1,6 +1,6 @@
 {
   "name": "@middle/middle",
-  "version": "0.0.85",
+  "version": "0.0.86",
   "main": "lib/index.js",
   "files": [
     "lib",
@@ -21,10 +21,10 @@
     "@middle/plugin-asset-dev": "^0.0.8",
     "@middle/plugin-default-config": "^0.0.4",
     "@middle/plugin-dva-ts": "^0.0.3",
+    "@middle/plugin-release-check": "^0.0.2",
     "@middle/plugin-sentry": "^0.0.15",
     "@middle/plugin-tabs": "^0.0.12",
     "@middle/plugin-watermark": "^0.0.11",
-    "@middle/plugin-release-check": "^0.0.1",
     "@umijs/max": "^4.0.67",
     "commander": "^9.4.0",
     "father": "^4.1.8"
