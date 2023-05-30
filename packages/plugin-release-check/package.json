@@ -1,7 +1,7 @@
 {
   "name": "@middle/plugin-release-check",
   "author": "yanxlg <yanxlg2@yonghui.cn>",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "description": "release 分支 ci check",
@@ -19,7 +19,7 @@
     "lib"
   ],
   "dependencies": {
-    "release-check": "^0.1.0"
+    "release-check": "^0.1.1"
   },
   "gitHead": "8ee1aa391223c9292114b5af8b2d6146c4dec029"
 }
