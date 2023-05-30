@@ -1,0 +1,25 @@
+{
+  "name": "@middle/plugin-release-check",
+  "author": "yanxlg <yanxlg2@yonghui.cn>",
+  "version": "0.0.1",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "description": "release 分支 ci check",
+  "scripts": {
+    "dev": "father dev",
+    "build": "father build"
+  },
+  "keywords": [],
+  "authors": {
+    "name": "yanxlg <yanxlg2@yonghui.cn>",
+    "email": "yanxlg2@yonghui.cn"
+  },
+  "license": "MIT",
+  "files": [
+    "lib"
+  ],
+  "dependencies": {
+    "release-check": "^0.1.0"
+  },
+  "gitHead": "8ee1aa391223c9292114b5af8b2d6146c4dec029"
+}

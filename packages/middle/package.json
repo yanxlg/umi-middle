@@ -24,6 +24,7 @@
     "@middle/plugin-sentry": "^0.0.15",
     "@middle/plugin-tabs": "^0.0.12",
     "@middle/plugin-watermark": "^0.0.11",
+    "@middle/plugin-release-check": "^0.0.1",
     "@umijs/max": "^4.0.67",
     "commander": "^9.4.0",
     "father": "^4.1.8"
