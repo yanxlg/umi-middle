@@ -16,15 +16,16 @@ export async function run(mainBranch: string) {
   const { current: _current, all } = await git.branch(); // 是不是所有的远程分支都能拿到
   const current = process.env.CI_COMMIT_REF_NAME || _current;
 
-  // 获取所有master 的提交日志
-  const { all: logs } = await git.log({
-    from: `origin/${mainBranch}`,
-  });
-  const logHashSet = new Set(logs.map((_) => _.hash));
-  const unMergedReleaseSet = new Set();
-
   // 当前是release分支，执行检测
   if (/^release/.test(current)) {
+    // 获取所有master 的提交日志
+    const { all: logs } = await git.log({
+      from: `origin/${current}`,
+    });
+    const logHashSet = new Set(logs.map((_) => _.hash));
+    const unMergedReleaseSet = new Set();
+
+    // 不需要检测master，判断当前分支就可以
     for (let branch of all) {
       if (/^remotes\/origin\//.test(branch)) {
         const branchName = branch.replace(/^remotes\/origin\//, "");
@@ -45,7 +46,7 @@ export async function run(mainBranch: string) {
     if (unMergedReleaseBranches.length > 0) {
       console.error(
         chalk.red(
-          `存在release分支未合并到主分支，新的release分支代码可能不完整，请处理完下列分支合并操作后重新发布编译动作：${chalk.blueBright(
+          `存在release分支代码未合并到当前分支（上线后没有合并到master），新的release分支代码不完整，请处理完下列分支合并操作后重新发布编译动作：${chalk.blueBright(
             unMergedReleaseBranches.join(" ")
           )}`
         )
