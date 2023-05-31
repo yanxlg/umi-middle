@@ -20,5 +20,5 @@
   "dependencies": {
     "monaco-editor-webpack-plugin": "4.*.*"
   },
-  "gitHead": "471dc8d5b6ee0bad26aab28bc25b38afda2cd15c"
+  "gitHead": "fb3ee8a1c3c08acfe37be3f5eea339adb7157738"
 }
