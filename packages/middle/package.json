@@ -1,6 +1,6 @@
 {
   "name": "@middle/middle",
-  "version": "0.2.0",
+  "version": "0.3.0-alpha.2",
   "main": "lib/index.js",
   "files": [
     "lib",
@@ -17,15 +17,15 @@
     "access": "public"
   },
   "dependencies": {
-    "@middle/plugin-asset": "^0.2.0",
-    "@middle/plugin-asset-dev": "^0.2.0",
-    "@middle/plugin-default-config": "^0.2.0",
-    "@middle/plugin-dva-ts": "^0.2.0",
-    "@middle/plugin-release-check": "^0.2.0",
-    "@middle/plugin-inject-env": "^0.2.0",
-    "@middle/plugin-sentry": "^0.2.0",
-    "@middle/plugin-tabs": "^0.2.0",
-    "@middle/plugin-watermark": "^0.2.0",
+    "@middle/plugin-asset": "0.3.0-alpha.2",
+    "@middle/plugin-asset-dev": "0.3.0-alpha.2",
+    "@middle/plugin-default-config": "0.3.0-alpha.2",
+    "@middle/plugin-dva-ts": "0.3.0-alpha.2",
+    "@middle/plugin-release-check": "0.3.0-alpha.2",
+    "@middle/plugin-inject-env": "0.3.0-alpha.2",
+    "@middle/plugin-sentry": "0.3.0-alpha.2",
+    "@middle/plugin-tabs": "0.3.0-alpha.2",
+    "@middle/plugin-watermark": "0.3.0-alpha.2",
     "@umijs/max": "^4.0.67",
     "commander": "^9.4.0",
     "father": "^4.1.8"
