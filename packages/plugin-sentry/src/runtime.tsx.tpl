@@ -1,7 +1,6 @@
 import * as Sentry from "@sentry/react";
 import { InjectEnvs } from 'umi';
 
-// release 会被sentry-plugin 自动inject
 Sentry.init({
   dsn: "{{{dsn}}}",
   integrations: [
@@ -11,7 +10,7 @@ Sentry.init({
   tracesSampleRate: 1.0,
   replaysSessionSampleRate: 0.1,
   replaysOnErrorSampleRate: 1.0,
-  environment: InjectEnvs?.sentry_environment??"local",
+  environment: InjectEnvs?.sentry_environment??"local", // inject from environment
   debug: {{{debug}}},
   disabled: {{{disabled}}},
   ignoreErrors: {{{ignore}}},

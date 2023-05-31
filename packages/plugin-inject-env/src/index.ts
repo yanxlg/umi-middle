@@ -43,7 +43,7 @@ export default async (api: IApi) => {
 
   // runtime 修改
   api.onGenerateFiles(() => {
-    const vars = api.config.injectVars || {};
+    const vars = api.config.injectEnv || {};
     const indexPath = join(__dirname, "index.ts.tpl");
 
     api.writeTmpFile({
