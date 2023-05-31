@@ -16,6 +16,7 @@ export default () => {
       require.resolve("@middle/plugin-default-config"),
       require.resolve("@middle/plugin-sentry"),
       require.resolve("@middle/plugin-release-check"),
+      require.resolve("@middle/plugin-inject-env"),
     ],
   };
 };
