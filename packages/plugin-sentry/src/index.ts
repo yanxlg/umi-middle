@@ -49,8 +49,6 @@ export default async (api: IApi) => {
           authToken: zod.string(),
           /** sentry dsn */
           dsn: zod.string(),
-          /** environment tag */
-          environment: zod.string().optional(),
           /**ignore errors */
           ignore: zod.array(zod.string()).optional(),
         });
@@ -103,7 +101,6 @@ export default async (api: IApi) => {
   api.onGenerateFiles(() => {
     const {
       dsn,
-      environment = "__runtime_env__sentry_environment__",
       ignore = [
         "promise rejection",
         "chrome.loadTimes() is deprecated",
@@ -119,7 +116,6 @@ export default async (api: IApi) => {
       tplPath: join(tmpDir, "runtime.tsx.tpl"),
       context: {
         dsn: dsn,
-        environment: isProduction ? environment : "local",
         debug: isProduction ? false : true,
         disabled: isProduction ? false : true,
         ignore: JSON.stringify(ignore),
