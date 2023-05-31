@@ -1,11 +1,11 @@
-# @middle/plugin-tabs
+# @middle-cli/plugin-tabs
 
 A umi plugin
 
 ## Install
 
 ```bash
-pnpm i @middle/plugin-tabs
+pnpm i @middle-cli/plugin-tabs
 ```
 
 ## Usage
@@ -15,7 +15,7 @@ Configure in `.umirc.ts`,
 ```js
 export default {
   plugins: [
-    ['@middle/plugin-tabs'],
+    ['@middle-cli/plugin-tabs'],
   ],
 }
 ```

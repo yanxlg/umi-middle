@@ -1,11 +1,11 @@
-# @middle/plugin-watermark
+# @middle-cli/plugin-watermark
 
 A umi plugin
 
 ## Install
 
 ```bash
-pnpm i @middle/plugin-release-check
+pnpm i @middle-cli/plugin-release-check
 ```
 
 ## Usage

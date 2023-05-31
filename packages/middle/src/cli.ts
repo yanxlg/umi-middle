@@ -8,7 +8,7 @@
  *
  * Copyright (c) 2023 by yanxlg, All Rights Reserved.
  */
-import { pluginKey } from "@middle/plugin-asset";
+import { pluginKey } from "@middle-cli/plugin-asset";
 import { logger, printHelp, yParser } from "@umijs/utils";
 import { program } from "commander";
 import { Service as FatherService } from "father/dist/service/service";

@@ -10,13 +10,13 @@
 export default () => {
   return {
     plugins: [
-      require.resolve("@middle/plugin-watermark"),
-      require.resolve("@middle/plugin-tabs"),
-      require.resolve("@middle/plugin-dva-ts"),
-      require.resolve("@middle/plugin-default-config"),
-      require.resolve("@middle/plugin-sentry"),
-      require.resolve("@middle/plugin-release-check"),
-      require.resolve("@middle/plugin-inject-env"),
+      require.resolve("@middle-cli/plugin-watermark"),
+      require.resolve("@middle-cli/plugin-tabs"),
+      require.resolve("@middle-cli/plugin-dva-ts"),
+      require.resolve("@middle-cli/plugin-default-config"),
+      require.resolve("@middle-cli/plugin-sentry"),
+      require.resolve("@middle-cli/plugin-release-check"),
+      require.resolve("@middle-cli/plugin-inject-env"),
     ],
   };
 };

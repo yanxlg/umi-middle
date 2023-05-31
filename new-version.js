@@ -8,7 +8,7 @@
  * Copyright (c) 2022 by yanxlg, All Rights Reserved.
  */
 
-const nextVersion = "0.4.0-alpha.2";
+const nextVersion = "0.0.1-alpha.2";
 
 const fs = require("fs-extra");
 const _path = require("path");
@@ -35,14 +35,14 @@ fs.readdir(dir, function (err, paths) {
         }
         if (packageJson.devDependencies) {
           Object.keys(packageJson.devDependencies).forEach(function (key) {
-            if (/^\@middle/.test(key)) {
+            if (/^\@middle-cli/.test(key)) {
               packageJson.devDependencies[key] = nextVersion;
             }
           });
         }
         if (packageJson.dependencies) {
           Object.keys(packageJson.dependencies).forEach(function (key) {
-            if (/^\@middle/.test(key)) {
+            if (/^\@middle-cli/.test(key)) {
               packageJson.dependencies[key] = nextVersion;
             }
           });
