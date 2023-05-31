@@ -1,5 +1,5 @@
 {
-  "name": "@middle/plugin-sentry",
+  "name": "@middle/plugins/plugin-sentry",
   "author": "yanxlg <yanxlg2@yonghui.cn>",
   "version": "0.4.2",
   "main": "lib/index.js",
