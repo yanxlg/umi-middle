@@ -1,0 +1,22 @@
+{
+  "name": "@middle/plugin-inject-env",
+  "author": "yanxlg <yanxlg2@yonghui.cn>",
+  "version": "0.2.0",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "description": "runtime env plugin for middle cli",
+  "scripts": {
+    "dev": "father dev",
+    "build": "father build"
+  },
+  "keywords": [],
+  "authors": {
+    "name": "yanxlg <yanxlg2@yonghui.cn>",
+    "email": "yanxlg2@yonghui.cn"
+  },
+  "license": "MIT",
+  "files": [
+    "lib"
+  ],
+  "dependencies": {}
+}

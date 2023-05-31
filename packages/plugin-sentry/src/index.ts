@@ -3,15 +3,10 @@
  * @Date: 2023-05-01 21:15:00
  * @LastEditors: yanxlg
  * @LastEditTime: 2023-05-30 15:06:06
- * @Description:
- * 检查是不是存在view.tsx|view.jsx 如果支持，表示组件在编辑器中和。view.js 支持。  __editMode 属性。如果有的话原属性直接传过来，不处理（editable、children等）。
- * meta.json | meta.ts | meta.tsx  支持default导出，支持 meta 属性导出。
- *
- * 拆分包。渲染态、编辑态。渲染态数据精简。只需要
+ * @Description: sentry 文件生成
  *
  * Copyright (c) 2023 by yanxlg, All Rights Reserved.
  */
-// 读取本地目录，生成对应的入口文件。 index.ts 是不是也可以不需要了？？？或者
 import fs from "fs";
 import { join } from "path";
 import simpleGit from "simple-git";
