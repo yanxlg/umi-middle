@@ -1,0 +1,25 @@
+{
+  "name": "@middle-cli/plugin-click-to-component",
+  "author": "yanxlg <yanxlg2@yonghui.cn>",
+  "version": "0.0.1",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "description": "click-to-component 支持webstorm",
+  "scripts": {
+    "dev": "father dev",
+    "build": "father build"
+  },
+  "keywords": [],
+  "authors": {
+    "name": "yanxlg <yanxlg2@yonghui.cn>",
+    "email": "yanxlg2@yonghui.cn"
+  },
+  "license": "MIT",
+  "files": [
+    "lib"
+  ],
+  "dependencies": {
+    "click-to-react-component-2": "1.0.11"
+  },
+  "gitHead": "fb3ee8a1c3c08acfe37be3f5eea339adb7157738"
+}
