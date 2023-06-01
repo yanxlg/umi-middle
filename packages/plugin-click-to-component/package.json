@@ -1,7 +1,7 @@
 {
   "name": "@middle-cli/plugin-click-to-component",
   "author": "yanxlg <yanxlg2@yonghui.cn>",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "description": "click-to-component 支持webstorm",

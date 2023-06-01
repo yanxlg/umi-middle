@@ -1,6 +1,6 @@
 {
   "name": "@middle-cli/middle",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "main": "lib/index.js",
   "files": [
     "lib",
@@ -19,7 +19,7 @@
   "dependencies": {
     "@middle-cli/plugin-asset": "^0.0.1",
     "@middle-cli/plugin-asset-dev": "^0.0.1",
-    "@middle-cli/plugin-click-to-component": "^0.0.5",
+    "@middle-cli/plugin-click-to-component": "^0.0.6",
     "@middle-cli/plugin-default-config": "^0.0.1",
     "@middle-cli/plugin-dva-ts": "^0.0.1",
     "@middle-cli/plugin-inject-env": "^0.0.1",
