@@ -19,7 +19,7 @@
     "lib"
   ],
   "dependencies": {
-    "click-to-react-component-2": "1.0.12"
+    "click-to-react-component-2": "1.0.13"
   },
   "gitHead": "0143a3efae3e2256dada2cf4b66e1577f8be24f3"
 }

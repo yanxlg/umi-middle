@@ -22,7 +22,7 @@ export default (api: IApi) => {
     api.modifyAppData((memo) => {// 强制修改版本
         memo.clickToComponent = {
             pkgPath,
-            version: '1.0.12',
+            version: '1.0.13',
         };
         return memo;
     });
