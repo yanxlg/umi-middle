@@ -173,6 +173,7 @@ const WaterMark: React.FC<PropsWithChildren<WaterMarkProps>> = (props) => {
       {content ? (
         <div
           className={waterMakrCls}
+          data-click-to-component-disabled={'true'}
           style={{
             zIndex,
             position: "absolute",
