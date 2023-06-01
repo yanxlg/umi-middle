@@ -14,4 +14,7 @@ Sentry.init({
   debug: {{{debug}}},
   disabled: {{{disabled}}},
   ignoreErrors: {{{ignore}}},
+  {{#release}}
+  release: "{{{release}}}",
+  {{/release}}
 });

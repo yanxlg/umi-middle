@@ -119,6 +119,7 @@ export default async (api: IApi) => {
         debug: isProduction ? false : true,
         disabled: isProduction ? false : true,
         ignore: JSON.stringify(ignore),
+        release: isProduction? undefined: 'local'
       },
     });
   });
