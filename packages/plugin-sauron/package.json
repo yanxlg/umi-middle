@@ -1,23 +1,23 @@
 {
-	"name": "@middle-cli/plugin-sauron",
-	"author": "libk <libk1@yonghui.cn>",
-	"version": "0.0.1",
-	"main": "lib/index.js",
-	"types": "lib/index.d.ts",
-	"scripts": {
-		"dev": "father dev",
-		"build": "father build"
-	},
-	"keywords": [],
-	"authors": {
-		"name": "libk <libk1@yonghui.cn>",
-		"email": "libk1@yonghui.cn"
-	},
-	"license": "MIT",
-	"files": [
-		"lib"
-	],
-	"dependencies": {
-		"@yh/yh-sauron": "^4.0.0"
-	}
+  "name": "@middle-cli/plugin-sauron",
+  "version": "0.0.2",
+  "keywords": [],
+  "license": "MIT",
+  "author": "libk <libk1@yonghui.cn>",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "build": "father build",
+    "dev": "father dev"
+  },
+  "dependencies": {
+    "@yh/yh-sauron": "^4.0.0"
+  },
+  "authors": {
+    "name": "libk <libk1@yonghui.cn>",
+    "email": "libk1@yonghui.cn"
+  }
 }

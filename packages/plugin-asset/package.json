@@ -1,25 +1,25 @@
 {
   "name": "@middle-cli/plugin-asset",
+  "version": "0.0.2",
+  "keywords": [],
+  "license": "MIT",
   "author": "yanxlg <yanxlg2@yonghui.cn>",
-  "version": "0.0.1",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
-  "scripts": {
-    "dev": "father dev",
-    "build": "father build"
-  },
-  "keywords": [],
-  "authors": {
-    "name": "yanxlg <yanxlg2@yonghui.cn>",
-    "email": "yanxlg2@yonghui.cn"
-  },
-  "license": "MIT",
   "files": [
     "lib"
   ],
+  "scripts": {
+    "build": "father build",
+    "dev": "father dev"
+  },
   "dependencies": {
     "babel-plugin-import": "^1.13.3",
     "babel-plugin-replace-imports": "1.0.2"
+  },
+  "authors": {
+    "name": "yanxlg <yanxlg2@yonghui.cn>",
+    "email": "yanxlg2@yonghui.cn"
   },
   "gitHead": "fb3ee8a1c3c08acfe37be3f5eea339adb7157738"
 }
