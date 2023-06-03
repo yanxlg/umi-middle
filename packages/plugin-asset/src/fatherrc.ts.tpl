@@ -28,12 +28,6 @@ export default defineConfig({
             commonjs2: '@meditor/react',
             root: ['MEditor', 'React']
           },
-          "@meditor/setters": {
-            amd: '@meditor/setters',
-            commonjs: '@meditor/setters',
-            commonjs2: '@meditor/setters',
-            root: ['MEditor', 'Setters']
-          },
           "@meditor/shared": {
             amd: '@meditor/shared',
             commonjs: '@meditor/shared',
@@ -91,12 +85,6 @@ export default defineConfig({
             commonjs: '@meditor/react',
             commonjs2: '@meditor/react',
             root: ['MEditor', 'React']
-          },
-          "@meditor/setters": {
-            amd: '@meditor/setters',
-            commonjs: '@meditor/setters',
-            commonjs2: '@meditor/setters',
-            root: ['MEditor', 'Setters']
           },
           "@meditor/shared": {
             amd: '@meditor/shared',
