@@ -11,7 +11,7 @@ export default defineConfig({
           react: "React",
           "react-dom": "ReactDOM",
           "@middle/runner": "Runner", // 从umi 导出了部分值。比如history，编译会报错，后面修改，或者外部处理
-          lodash: "Lodash",
+          lodash: "_",
           "react-router": "ReactRouter",
           "react-router-dom": "ReactRouterDOM",
           "dayjs": "dayjs",
@@ -75,7 +75,7 @@ export default defineConfig({
           react: "React",
           "react-dom": "ReactDOM",
           "@middle/runner": "Runner", // 从umi 导出了部分值。比如history，编译会报错，后面修改，或者外部处理
-          lodash: "Lodash",
+          lodash: "_",
           "react-router": "ReactRouter",
           "react-router-dom": "ReactRouterDOM",
           "dayjs": "dayjs",
@@ -139,7 +139,7 @@ export default defineConfig({
     output: "{{{output}}}",
   },
   extraBabelPlugins: [
-    ["babel-plugin-replace-imports", 
+    ["babel-plugin-replace-imports",
       {
         "test": /\/locale\/en_US/i,
         "replacer": "/locale/zh_CN"
