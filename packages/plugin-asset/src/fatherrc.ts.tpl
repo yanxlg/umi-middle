@@ -20,31 +20,31 @@ export default defineConfig({
             amd: '@meditor/core',
             commonjs: '@meditor/core',
             commonjs2: '@meditor/core',
-            root: ['Designable', 'Core']
+            root: ['MEditor', 'Core']
           },
           "@meditor/react": {
             amd: '@meditor/react',
             commonjs: '@meditor/react',
             commonjs2: '@meditor/react',
-            root: ['Designable', 'React']
+            root: ['MEditor', 'React']
           },
           "@meditor/setters": {
             amd: '@meditor/setters',
             commonjs: '@meditor/setters',
             commonjs2: '@meditor/setters',
-            root: ['Designable', 'Setters']
+            root: ['MEditor', 'Setters']
           },
           "@meditor/shared": {
             amd: '@meditor/shared',
             commonjs: '@meditor/shared',
             commonjs2: '@meditor/shared',
-            root: ['Designable', 'Shared']
+            root: ['MEditor', 'Shared']
           },
           "@meditor/transformer": {
             amd: '@meditor/transformer',
             commonjs: '@meditor/transformer',
             commonjs2: '@meditor/transformer',
-            root: ['Designable', 'Transformer']
+            root: ['MEditor', 'Transformer']
           },
           "@formily/react": {
             amd: '@formily/react',
@@ -84,31 +84,31 @@ export default defineConfig({
             amd: '@meditor/core',
             commonjs: '@meditor/core',
             commonjs2: '@meditor/core',
-            root: ['Designable', 'Core']
+            root: ['MEditor', 'Core']
           },
           "@meditor/react": {
             amd: '@meditor/react',
             commonjs: '@meditor/react',
             commonjs2: '@meditor/react',
-            root: ['Designable', 'React']
+            root: ['MEditor', 'React']
           },
           "@meditor/setters": {
             amd: '@meditor/setters',
             commonjs: '@meditor/setters',
             commonjs2: '@meditor/setters',
-            root: ['Designable', 'Setters']
+            root: ['MEditor', 'Setters']
           },
           "@meditor/shared": {
             amd: '@meditor/shared',
             commonjs: '@meditor/shared',
             commonjs2: '@meditor/shared',
-            root: ['Designable', 'Shared']
+            root: ['MEditor', 'Shared']
           },
           "@meditor/transformer": {
             amd: '@meditor/transformer',
             commonjs: '@meditor/transformer',
             commonjs2: '@meditor/transformer',
-            root: ['Designable', 'Transformer']
+            root: ['MEditor', 'Transformer']
           },
           "@formily/react": {
             amd: '@formily/react',
