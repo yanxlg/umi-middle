@@ -16,6 +16,7 @@ import * as fs from "fs";
 import { join } from "path";
 import { run } from "umi";
 import { Service } from "umi/dist/service/service";
+import * as process from "process";
 
 program.name("middle");
 
@@ -35,6 +36,11 @@ program.command("asset").action(async () => {
       require.resolve("./asset-preset"),
     ].join(",");
 
+    // 删除.umi
+    await fs.rmSync(join(process.cwd(),'src','.umi'),{
+      force: true,
+      recursive: true
+    });
     await new Service().run2({
       name: "setup",
       args,
