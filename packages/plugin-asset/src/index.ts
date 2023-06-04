@@ -294,12 +294,21 @@ export default widgets;
       if (fs.existsSync(destPath)) {
         try {
           const assetJson = JSON.parse(fs.readFileSync(destPath, "utf-8"));
-          assetJson.packages?.forEach((pkg:any)=>{
-            pkg.version = packageJson.version;
-          })
+          assetJson.packages = [
+            {
+              name: packageJson.name,
+              library: libraryName,
+              version: packageJson.version,
+            },
+          ];
+          assetJson.components = assetJson.components || [];
           assetJson.components.forEach((component:any)=>{
             component.npm.version = packageJson.version;
           });
+          assetJson.components = assetJson.components.filter((component:any)=>{
+            return components.indexOf(component.name) > -1;
+          });
+
           components.forEach((name) => {
             if (
               assetJson.components &&
