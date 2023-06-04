@@ -1,24 +1,22 @@
 {
   "name": "@middle-cli/plugin-history-inject",
+  "version": "0.0.2",
+  "description": "plugin for middle cli to inject history to __history__",
+  "keywords": [],
+  "license": "MIT",
   "author": "yanxlg <yanxlg2@yonghui.cn>",
-  "version": "0.0.1",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
-  "description": "plugin for middle cli to inject history to __history__",
-  "scripts": {
-    "dev": "father dev",
-    "build": "father build"
-  },
-  "keywords": [],
-  "authors": {
-    "name": "yanxlg <yanxlg2@yonghui.cn>",
-    "email": "yanxlg2@yonghui.cn"
-  },
-  "license": "MIT",
   "files": [
     "lib"
   ],
-  "dependencies": {
+  "scripts": {
+    "build": "father build",
+    "dev": "father dev"
+  },
+  "authors": {
+    "name": "yanxlg <yanxlg2@yonghui.cn>",
+    "email": "yanxlg2@yonghui.cn"
   },
   "gitHead": "fb3ee8a1c3c08acfe37be3f5eea339adb7157738"
 }
