@@ -18,7 +18,8 @@ export default () => {
       require.resolve("@middle-cli/plugin-release-check"),
       require.resolve("@middle-cli/plugin-inject-env"),
       require.resolve("@middle-cli/plugin-click-to-component"),
-      require.resolve("@middle-cli/plugin-sauron")
+      require.resolve("@middle-cli/plugin-sauron"),
+      require.resolve("@middle-cli/plugin-history-inject")
     ],
   };
 };

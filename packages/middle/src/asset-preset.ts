@@ -12,6 +12,7 @@ export default () => {
     plugins: [
       require.resolve("@middle-cli/plugin-asset"),
       require.resolve("@middle-cli/plugin-asset-dev"),
+      require.resolve("@middle-cli/plugin-history-inject")
     ],
   };
 };
