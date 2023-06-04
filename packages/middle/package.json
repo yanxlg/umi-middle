@@ -26,6 +26,7 @@
     "@middle-cli/plugin-sentry": "^0.0.2",
     "@middle-cli/plugin-tabs": "^0.0.1",
     "@middle-cli/plugin-watermark": "^0.0.2",
+    "@middle-cli/plugin-body-scripts": "^0.0.1",
     "@umijs/max": "^4.0.67",
     "commander": "^9.4.0",
     "father": "^4.1.8"
