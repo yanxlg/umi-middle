@@ -288,12 +288,18 @@ export default widgets;
     if (devPlugin) {
       // 生成asset.json文件
       // 读取当前已经存在的json文件
-      const destPath = path.join(cwdPath, "src/asset.json");
+      const destPath = path.join(cwdPath, "src/asset.json");//
       // 需要点的
       // 组合修改json
       if (fs.existsSync(destPath)) {
         try {
           const assetJson = JSON.parse(fs.readFileSync(destPath, "utf-8"));
+          assetJson.packages?.forEach((pkg:any)=>{
+            pkg.version = packageJson.version;
+          })
+          assetJson.components.forEach((component:any)=>{
+            component.npm.version = packageJson.version;
+          });
           components.forEach((name) => {
             if (
               assetJson.components &&
@@ -313,6 +319,7 @@ export default widgets;
               category: "",
             });
           });
+
           fs.writeFileSync(destPath, JSON.stringify(assetJson, null, 2));
         } catch (e) {}
       } else {
