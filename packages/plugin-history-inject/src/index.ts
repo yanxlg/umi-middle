@@ -29,7 +29,7 @@ export function withTmpPath(opts: {
 
 export default async (api: IApi) => {
   api.describe({
-    key: "sentry",
+    key: "history-inject",
     config: {
       onChange: api.ConfigChangeType.regenerateTmpFiles,
     },
