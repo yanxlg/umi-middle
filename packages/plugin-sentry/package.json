@@ -1,7 +1,7 @@
 {
   "name": "@middle-cli/plugin-sentry",
   "author": "yanxlg <yanxlg2@yonghui.cn>",
-  "version": "0.0.2",
+  "version": "0.1.0-alpha.2",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "description": "sentry plugin for middle cli",

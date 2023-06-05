@@ -1,7 +1,7 @@
 {
   "name": "@middle-cli/plugin-release-check",
   "author": "yanxlg <yanxlg2@yonghui.cn>",
-  "version": "0.0.1",
+  "version": "0.1.0-alpha.2",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "description": "release 分支 ci check",
