@@ -1,4 +1,4 @@
-192 warn complete Waiting for 2 child processes to exit. CTRL-C to exit immediately.
+192 warn complete Waiting for 1 child process to exit. CTRL-C to exit immediately.
 193 error Error: Command failed with exit code 128: git tag @middle-cli/cli-options@0.1.0 -m @middle-cli/cli-options@0.1.0
 193 error fatal: tag '@middle-cli/cli-options@0.1.0' already exists
 193 error     at makeError (/Users/yanxianliang/Desktop/yonghui/umi-middle/node_modules/execa/lib/error.js:60:11)
