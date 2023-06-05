@@ -1,19 +1,8 @@
-0 silly argv {
-0 silly argv   _: [ 'publish' ],
-0 silly argv   composed: 'publish',
-0 silly argv   lernaVersion: '6.0.1',
-0 silly argv   '$0': '/Users/yanxianliang/Desktop/yonghui/umi-middle/node_modules/.bin/lerna'
-0 silly argv }
-1 notice cli v6.0.1
-2 verbose rootPath /Users/yanxianliang/Desktop/yonghui/umi-middle
-3 info versioning independent
-4 warn EWORKSPACES Workspaces exist in the root package.json, but Lerna is not configured to use them.
-4 warn EWORKSPACES To fix this and have Lerna use workspaces to resolve packages, set `useWorkspaces: true` in lerna.json.
-5 warn EPACKAGES No packages defined in lerna.json. Defaulting to packages in packages/*
-6 error Error: Invalid package name "@middle/plugins/plugin-sentry": name can only contain URL-friendly characters
-6 error     at invalidPackageName (/Users/yanxianliang/Desktop/yonghui/umi-middle/node_modules/npm-package-arg/npa.js:89:15)
-6 error     at Result.setName (/Users/yanxianliang/Desktop/yonghui/umi-middle/node_modules/npm-package-arg/npa.js:124:11)
-6 error     at new Result (/Users/yanxianliang/Desktop/yonghui/umi-middle/node_modules/npm-package-arg/npa.js:114:23)
-6 error     at Function.resolve (/Users/yanxianliang/Desktop/yonghui/umi-middle/node_modules/npm-package-arg/npa.js:61:15)
-6 error     at new Package (/Users/yanxianliang/Desktop/yonghui/umi-middle/node_modules/@lerna/package/index.js:94:26)
-6 error     at /Users/yanxianliang/Desktop/yonghui/umi-middle/node_modules/@lerna/project/index.js:278:26
+192 warn complete Waiting for 1 child process to exit. CTRL-C to exit immediately.
+193 error Error: Command failed with exit code 128: git tag release-check@0.1.0 -m release-check@0.1.0
+193 error fatal: tag 'release-check@0.1.0' already exists
+193 error     at makeError (/Users/yanxianliang/Desktop/yonghui/umi-middle/node_modules/execa/lib/error.js:60:11)
+193 error     at handlePromise (/Users/yanxianliang/Desktop/yonghui/umi-middle/node_modules/execa/index.js:118:26)
+193 error     at processTicksAndRejections (node:internal/process/task_queues:96:5)
+193 error     at async Promise.all (index 15)
+193 error     at async Promise.all (index 0)
