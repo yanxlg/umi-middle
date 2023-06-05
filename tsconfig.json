@@ -15,7 +15,8 @@
     "suppressImplicitAnyIndexErrors": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
-    "declaration": true
+    "declaration": true,
+    "incremental": false
   },
   "exclude": ["lib", "es"]
 }
