@@ -1,22 +1,22 @@
 {
   "name": "@middle-cli/plugin-default-config",
+  "version": "0.1.0",
+  "description": "umijs 默认配置修改",
+  "keywords": [],
+  "license": "MIT",
   "author": "yanxlg <yanxlg2@yonghui.cn>",
-  "version": "0.1.0-alpha.2",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
-  "description": "umijs 默认配置修改",
+  "files": [
+    "lib"
+  ],
   "scripts": {
-    "dev": "father dev",
-    "build": "father build"
+    "build": "father build",
+    "dev": "father dev"
   },
-  "keywords": [],
   "authors": {
     "name": "yanxlg <yanxlg2@yonghui.cn>",
     "email": "yanxlg2@yonghui.cn"
   },
-  "license": "MIT",
-  "files": [
-    "lib"
-  ],
   "gitHead": "fb3ee8a1c3c08acfe37be3f5eea339adb7157738"
 }

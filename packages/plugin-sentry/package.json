@@ -1,27 +1,27 @@
 {
   "name": "@middle-cli/plugin-sentry",
+  "version": "0.1.0",
+  "description": "sentry plugin for middle cli",
+  "keywords": [],
+  "license": "MIT",
   "author": "yanxlg <yanxlg2@yonghui.cn>",
-  "version": "0.1.0-alpha.2",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
-  "description": "sentry plugin for middle cli",
-  "scripts": {
-    "dev": "father dev",
-    "build": "father build"
-  },
-  "keywords": [],
-  "authors": {
-    "name": "yanxlg <yanxlg2@yonghui.cn>",
-    "email": "yanxlg2@yonghui.cn"
-  },
-  "license": "MIT",
   "files": [
     "lib"
   ],
+  "scripts": {
+    "build": "father build",
+    "dev": "father dev"
+  },
   "dependencies": {
     "@sentry/react": "7.53.0",
     "@sentry/webpack-plugin": "1.20.1",
     "simple-git": "3.19.0"
+  },
+  "authors": {
+    "name": "yanxlg <yanxlg2@yonghui.cn>",
+    "email": "yanxlg2@yonghui.cn"
   },
   "gitHead": "fb3ee8a1c3c08acfe37be3f5eea339adb7157738"
 }
