@@ -15,7 +15,7 @@
     "dev": "father dev"
   },
   "dependencies": {
-    "click-to-react-component-2": "1.0.14"
+    "click-to-react-component-2": "^1.0.15"
   },
   "authors": {
     "name": "yanxlg <yanxlg2@yonghui.cn>",
