@@ -19,9 +19,6 @@ export default (api: IApi) => {
 					appName: zod.string(),
 					// 索伦平台的组名
 					projectName: zod.string(),
-					// 以下是可选参数
-					// 环境：dev、online、online-inside
-					env: zod.string().optional(),
 					// 是否开启打印功能
           debug: zod.boolean().optional(),
 					// 是否开启性能监控
@@ -67,15 +64,11 @@ export default (api: IApi) => {
 		enableBy: api.EnableBy.config
 	});
 
-	// 通过链式编程，修改webpack默认配置
-	api.chainWebpack((memo, { webpack, env }) => {});
-
 	// 生成临时文件并写入配置信息
 	const isBoolean = (val: any) => Object.prototype.toString.call(val) === "[object Boolean]";
 	const tmpDir = winPath(__dirname);
 	api.onGenerateFiles(() => {
 		const {
-			env = "dev",
 			appName,
 			projectName,
       debug = false,
@@ -98,7 +91,6 @@ export default (api: IApi) => {
 			path: "runtime.tsx",
 			tplPath: join(tmpDir, "runtime.tsx.tpl"),
 			context: {
-				env,
 				appName,
 				projectName,
         debug,
