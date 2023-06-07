@@ -2,6 +2,7 @@ import fs from "fs";
 import { join } from "path";
 import type { IApi } from "umi";
 import { winPath } from "umi/plugin-utils";
+import {defaultErrorFilters} from "@middle-cli/plugin-sentry";
 
 export function withTmpPath(opts: { api: IApi; path: string; noPluginDir?: boolean }) {
 	return winPath(join(opts.api.paths.absTmpPath, opts.api.plugin.key && !opts.noPluginDir ? `plugin-${opts.api.plugin.key}` : "", opts.path));
@@ -22,13 +23,15 @@ export default (api: IApi) => {
 					// 环境：dev、online、online-inside
 					env: zod.string().optional(),
 					// 是否开启打印功能
-					useLog: zod.boolean().optional(),
+          debug: zod.boolean().optional(),
 					// 是否开启性能监控
 					useWebPerformance: zod.boolean().optional(),
-					platformName: zod.string().optional(),
+          useListenException: zod.union([zod.boolean(),zod.object({
+            ignore: zod.array(zod.string()).optional().describe("异常忽略，同步sentry的配置")
+          })]).optional().describe("是否开启异常上报"),
 					webPerformanceRouteList: zod.array(zod.string()).optional(),
 					// 是否开启慢请求监控
-					useListenAndSendSlowRquest: zod
+					useListenAndSendSlowRequest: zod
 						.union([
 							zod.boolean(),
 							zod.object({
@@ -73,19 +76,23 @@ export default (api: IApi) => {
 	api.onGenerateFiles(() => {
 		const {
 			env = "dev",
-			appName = "永辉超市",
-			projectName = "yh_life",
-			useLog = false,
+			appName,
+			projectName,
+      debug = false,
 			useWebPerformance = false,
-			platformName = "web-performance",
 			webPerformanceRouteList = ["/"],
-			useListenAndSendSlowRquest = false,
+			useListenAndSendSlowRequest = false,
 			useListenPageView = false,
 			useListenRequestDuration = false,
 			useListenInterfaceException = false,
 			useAutoListenSendBlock = false,
-			useAutoListenAndSendClick = false
+			useAutoListenAndSendClick = false,
+      useListenException
 		} = api.config.sauron;
+
+
+    // 同步sentry配置
+    const ignore = typeof useListenException ==='object'? (useListenException.ignore||api.config.sentry?.ignore || defaultErrorFilters): undefined;
 
 		api.writeTmpFile({
 			path: "runtime.tsx",
@@ -94,16 +101,18 @@ export default (api: IApi) => {
 				env,
 				appName,
 				projectName,
-				useLog,
+        debug,
 				useWebPerformance,
-				platformName,
+        useListenException: useListenException? JSON.stringify({
+          ignore: ignore
+        },null,2): false,
 				webPerformanceRouteList: JSON.stringify(webPerformanceRouteList),
-				useListenAndSendSlowRquest: isBoolean(useListenAndSendSlowRquest) ? useListenAndSendSlowRquest : JSON.stringify(useListenAndSendSlowRquest),
+        useListenAndSendSlowRequest: isBoolean(useListenAndSendSlowRequest) ? useListenAndSendSlowRequest : JSON.stringify(useListenAndSendSlowRequest,null,2),
 				useListenPageView,
 				useListenRequestDuration,
-				useListenInterfaceException: isBoolean(useListenInterfaceException) ? useListenInterfaceException : JSON.stringify(useListenInterfaceException),
+				useListenInterfaceException: isBoolean(useListenInterfaceException) ? useListenInterfaceException : JSON.stringify(useListenInterfaceException,null,2),
 				useAutoListenSendBlock,
-				useAutoListenAndSendClick: isBoolean(useAutoListenAndSendClick) ? useAutoListenAndSendClick : JSON.stringify(useAutoListenAndSendClick)
+				useAutoListenAndSendClick: isBoolean(useAutoListenAndSendClick) ? useAutoListenAndSendClick : JSON.stringify(useAutoListenAndSendClick,null,2)
 			}
 		});
 	});

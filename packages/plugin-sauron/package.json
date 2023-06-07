@@ -14,7 +14,8 @@
     "dev": "father dev"
   },
   "dependencies": {
-    "@yh/yh-sauron": "^4.0.0"
+    "@yh/yh-sauron": "^4.0.0",
+    "@middle-cli/plugin-sentry": "0.1.1"
   },
   "authors": {
     "name": "libk <libk1@yonghui.cn>",

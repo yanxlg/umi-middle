@@ -33,6 +33,15 @@ export function withTmpPath(opts: {
   );
 }
 
+export const defaultErrorFilters = [
+  "promise rejection",
+  "chrome.loadTimes() is deprecated",
+  "Request aborted",
+  "ResizeObserver",
+  "Failed to fetch",
+  "RequestError: timeout",
+];
+
 export default async (api: IApi) => {
   api.describe({
     key: "sentry",
@@ -101,14 +110,7 @@ export default async (api: IApi) => {
   api.onGenerateFiles(() => {
     const {
       dsn,
-      ignore = [
-        "promise rejection",
-        "chrome.loadTimes() is deprecated",
-        "Request aborted",
-        "ResizeObserver",
-        "Failed to fetch",
-        "RequestError: timeout",
-      ],
+      ignore = defaultErrorFilters,
     } = api.config.sentry;
 
     api.writeTmpFile({
@@ -116,8 +118,8 @@ export default async (api: IApi) => {
       tplPath: join(tmpDir, "runtime.tsx.tpl"),
       context: {
         dsn: dsn,
-        debug: isProduction ? false : true,
-        disabled: isProduction ? false : true,
+        debug: !isProduction,
+        disabled: !isProduction,
         ignore: JSON.stringify(ignore),
         release: isProduction? undefined: 'local'
       },
