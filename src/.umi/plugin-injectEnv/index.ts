@@ -12,7 +12,8 @@
  */
 
 const sentry_environment = "local";
+const sauron_environment = "dev";
 
-const InjectEnvs = { sentry_environment };
+const InjectEnvs = { sentry_environment, sauron_environment };
 
 export { InjectEnvs };

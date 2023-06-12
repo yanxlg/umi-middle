@@ -17,4 +17,5 @@ export { WindowTabs } from '/Users/yanxianliang/Desktop/yonghui/umi-middle/src/.
 export { WaterMark, patchWatermarkConfig } from '/Users/yanxianliang/Desktop/yonghui/umi-middle/src/.umi/plugin-watermark';
 // plugins types.d.ts
 export * from '/Users/yanxianliang/Desktop/yonghui/umi-middle/src/.umi/plugin-antd/types.d';
+export * from '/Users/yanxianliang/Desktop/yonghui/umi-middle/src/.umi/plugin-sauron/types.d';
 export * from '/Users/yanxianliang/Desktop/yonghui/umi-middle/src/.umi/plugin-watermark/types.d';

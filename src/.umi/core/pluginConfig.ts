@@ -73,6 +73,7 @@ interface IConfigTypes {
     base?: (string | undefined);
     exclude?: (Array<any> | undefined);
 };
+    conventionLayout: boolean;
     base: string;
     analyze: {
 
@@ -141,7 +142,7 @@ interface IConfigTypes {
     esm: {
 
 };
-    devtool: "cheap-source-map" | "cheap-module-source-map" | "eval" | "eval-source-map" | "eval-cheap-source-map" | "eval-cheap-module-source-map" | "eval-nosources-cheap-source-map" | "eval-nosources-cheap-module-source-map" | "eval-nosources-source-map" | "source-map" | "hidden-source-map" | "hidden-nosources-cheap-source-map" | "hidden-nosources-cheap-module-source-map" | "hidden-nosources-source-map" | "hidden-cheap-source-map" | "hidden-cheap-module-source-map" | "inline-source-map" | "inline-cheap-source-map" | "inline-cheap-module-source-map" | "inline-nosources-cheap-source-map" | "inline-nosources-cheap-module-source-map" | "inline-nosources-source-map" | "nosources-source-map" | "nosources-cheap-source-map" | "nosources-cheap-module-source-map" | "#cheap-source-map" | "#cheap-module-source-map" | "#eval" | "#eval-source-map" | "#eval-cheap-source-map" | "#eval-cheap-module-source-map" | "#eval-nosources-cheap-source-map" | "#eval-nosources-cheap-module-source-map" | "#eval-nosources-source-map" | "#source-map" | "#hidden-source-map" | "#hidden-nosources-cheap-source-map" | "#hidden-nosources-cheap-module-source-map" | "#hidden-nosources-source-map" | "#hidden-cheap-source-map" | "#hidden-cheap-module-source-map" | "#inline-source-map" | "#inline-cheap-source-map" | "#inline-cheap-module-source-map" | "#inline-nosources-cheap-source-map" | "#inline-nosources-cheap-module-source-map" | "#inline-nosources-source-map" | "#nosources-source-map" | "#nosources-cheap-source-map" | "#nosources-cheap-module-source-map" | "@cheap-source-map" | "@cheap-module-source-map" | "@eval" | "@eval-source-map" | "@eval-cheap-source-map" | "@eval-cheap-module-source-map" | "@eval-nosources-cheap-source-map" | "@eval-nosources-cheap-module-source-map" | "@eval-nosources-source-map" | "@source-map" | "@hidden-source-map" | "@hidden-nosources-cheap-source-map" | "@hidden-nosources-cheap-module-source-map" | "@hidden-nosources-source-map" | "@hidden-cheap-source-map" | "@hidden-cheap-module-source-map" | "@inline-source-map" | "@inline-cheap-source-map" | "@inline-cheap-module-source-map" | "@inline-nosources-cheap-source-map" | "@inline-nosources-cheap-module-source-map" | "@inline-nosources-source-map" | "@nosources-source-map" | "@nosources-cheap-source-map" | "@nosources-cheap-module-source-map" | "#@cheap-source-map" | "#@cheap-module-source-map" | "#@eval" | "#@eval-source-map" | "#@eval-cheap-source-map" | "#@eval-cheap-module-source-map" | "#@eval-nosources-cheap-source-map" | "#@eval-nosources-cheap-module-source-map" | "#@eval-nosources-source-map" | "#@source-map" | "#@hidden-source-map" | "#@hidden-nosources-cheap-source-map" | "#@hidden-nosources-cheap-module-source-map" | "#@hidden-nosources-source-map" | "#@hidden-cheap-source-map" | "#@hidden-cheap-module-source-map" | "#@inline-source-map" | "#@inline-cheap-source-map" | "#@inline-cheap-module-source-map" | "#@inline-nosources-cheap-source-map" | "#@inline-nosources-cheap-module-source-map" | "#@inline-nosources-source-map" | "#@nosources-source-map" | "#@nosources-cheap-source-map" | "#@nosources-cheap-module-source-map" | boolean;
+    devtool: "cheap-source-map" | "cheap-module-source-map" | "eval" | "eval-source-map" | "eval-cheap-source-map" | "eval-cheap-module-source-map" | "eval-nosources-cheap-source-map" | "eval-nosources-cheap-module-source-map" | "eval-nosources-source-map" | "source-map" | "hidden-source-map" | "hidden-nosources-cheap-source-map" | "hidden-nosources-cheap-module-source-map" | "hidden-nosources-source-map" | "hidden-cheap-source-map" | "hidden-cheap-module-source-map" | "inline-source-map" | "inline-cheap-source-map" | "inline-cheap-module-source-map" | "inline-nosources-cheap-source-map" | "inline-nosources-cheap-module-source-map" | "inline-nosources-source-map" | "nosources-source-map" | "nosources-cheap-source-map" | "nosources-cheap-module-source-map" | boolean;
     depTranspiler: "babel" | "esbuild" | "swc" | "none";
     define: { [x: string]: any };
     deadCode: {
@@ -160,6 +161,7 @@ interface IConfigTypes {
     from: string;
     to: string;
 } | string>;
+    checkDepCssModules?: boolean;
     cacheDirectoryPath: string;
     babelLoaderCustomize: string;
     autoprefixer: { [x: string]: any };
@@ -260,6 +262,7 @@ interface IConfigTypes {
     ui: {
 
 };
+    hmrGuardian: boolean;
     verifyCommit: {
     scope?: (Array<string> | undefined);
     allowEmoji?: (boolean | undefined);
@@ -282,6 +285,7 @@ interface IConfigTypes {
     theme?: ({ [x: string]: any } | undefined);
     appConfig?: ({ [x: string]: any } | undefined);
     momentPicker?: (boolean | undefined);
+    styleProvider?: ({ [x: string]: any } | undefined);
 };
     dva: {
     extraModels?: (Array<string> | undefined);
@@ -369,6 +373,39 @@ interface IConfigTypes {
 };
     releaseCheck: boolean;
     injectEnv: { [x: string]: string };
+    sauron: {
+    appName: string;
+    projectName: string;
+    debug?: (boolean | undefined);
+    useWebPerformance?: (boolean | undefined);
+    /** 是否开启异常上报 */
+    useListenException?: (boolean | {
+    /** 异常忽略，同步sentry的配置 */
+    ignore?: (Array<string> | undefined);
+} | undefined);
+    webPerformanceRouteList?: (Array<string> | undefined);
+    useListenAndSendSlowRequest?: (boolean | {
+    slowRequestTime: number;
+} | undefined);
+    useListenPageView?: (boolean | undefined);
+    useListenRequestDuration?: (boolean | undefined);
+    useListenInterfaceException?: (boolean | {
+    rules: Array<{
+    pathRule: string;
+    successCodes: Array<string>;
+}>;
+} | undefined);
+    useAutoListenSendBlock?: (boolean | undefined);
+    useAutoListenAndSendClick?: (boolean | {
+    collect_tags: Array<string>;
+    collect_input: boolean;
+} | undefined);
+};
+    bodyScripts?: (Array<string | {
+    src: string;
+} | {
+    content: string;
+}> | undefined);
 };
 
 type PrettifyWithCloseable<T> = {

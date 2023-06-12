@@ -3,6 +3,7 @@ import { join } from "path";
 import type { IApi } from "umi";
 import { winPath } from "umi/plugin-utils";
 import {defaultErrorFilters} from "@middle-cli/plugin-sentry";
+import {RUNTIME_TYPE_FILE_NAME} from "umi";
 
 export function withTmpPath(opts: { api: IApi; path: string; noPluginDir?: boolean }) {
 	return winPath(join(opts.api.paths.absTmpPath, opts.api.plugin.key && !opts.noPluginDir ? `plugin-${opts.api.plugin.key}` : "", opts.path));
@@ -46,10 +47,10 @@ export default (api: IApi) => {
 						.union([
 							zod.boolean(),
 							zod.object({
-								statusCode: zod.object({
-									code: zod.array(zod.union([zod.number(), zod.string()])),
-									success: zod.array(zod.union([zod.number(), zod.string()]))
-								})
+                rules: zod.array(zod.object({
+                  pathRule: zod.string(),
+                  successCodes: zod.array(zod.string())
+								}))
 							})
 						])
 						.optional(),
@@ -84,6 +85,29 @@ export default (api: IApi) => {
 		} = api.config.sauron;
 
 
+    // 检测是否存在app.tsx
+
+
+
+    api.writeTmpFile({
+      path: "types.d.ts",
+      content: `
+export type SauronConfig = {
+
+};
+export type RunTimeSauronConfig = () => SauronConfig;
+    `.trimStart(),
+    });
+    api.writeTmpFile({
+      path: RUNTIME_TYPE_FILE_NAME,
+      content: `
+import type { RunTimeSauronConfig } from './types.d';
+export interface IRuntimeConfig {
+  sauron?: RunTimeSauronConfig
+}
+      `,
+    });
+
     // 同步sentry配置
     const ignore = typeof useListenException ==='object'? (useListenException.ignore||api.config.sentry?.ignore || defaultErrorFilters): undefined;
 
@@ -114,31 +138,5 @@ export default (api: IApi) => {
 	api.addRuntimePlugin({
 		fn: () => withTmpPath({ api, path: "runtime.tsx" }),
 		stage: -1 * Number.MAX_SAFE_INTEGER
-	});
-
-	function cleanSourceMapAfterUpload(dir: string) {
-		fs.readdirSync(dir).forEach(file => {
-			const filePath = join(dir, file);
-			if (fs.statSync(filePath).isDirectory()) {
-				return cleanSourceMapAfterUpload(filePath);
-			}
-			if (/\.map$/.test(filePath)) {
-				fs.rmSync(filePath);
-			}
-			if (/\.css$/.test(filePath) || /\.js$/.test(filePath)) {
-				fs.writeFileSync(
-					filePath,
-					fs
-						.readFileSync(filePath, "utf8")
-						.replace(/\/\*\# sourceMappingURL=.*/g, "")
-						.replace(/\/\/\# sourceMappingURL=.*/g, "")
-				);
-			}
-		});
-	}
-	// 打包完成，清理sourceMap
-	api.onBuildComplete(({ isFirstCompile }) => {
-		const outputPath = api.config.outputPath || "dist";
-		cleanSourceMapAfterUpload(outputPath);
 	});
 };

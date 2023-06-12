@@ -1,0 +1,63 @@
+stages:
+  - node_install
+  - node_build
+  - docker_build
+
+node_install:
+  image: node:12.22.0
+  stage: node_install
+  script:
+    - yarn config get registry
+    - yarn install
+    - tar -zcf node_modules.tar.gz node_modules/
+    - cp node_modules.tar.gz ${CACHE_BRANCHE}/
+  when: manual
+
+node_build:
+  image: node:12.22.0
+  stage: node_build
+  script:
+    - mkdir node_modules
+    - cp -r ${CACHE_BRANCHE}/node_modules.tar.gz node_modules.tar.gz
+    - chmod -R 777 node_modules.tar.gz && tar -zxf node_modules.tar.gz
+    - yarn build
+    - git rev-parse --short HEAD >> dist/version
+    - cp -r dist ${CACHE_PIPELINE}/
+  only:
+    - master
+    - develop
+    - sit
+    - /^release-.*$/
+    - /^test-.*$/
+    - uat
+
+docker_build:
+  stage: docker_build
+  script:
+    - docker_build .
+    - update_charts_base v3 front
+    - chart_build
+    - rm -rf ${CACHE_PIPELINE}/dist
+  only:
+    - master
+    - develop
+    - sit
+    - /^release-.*$/
+    - /^test-.*$/
+    - uat
+
+.auto_devops: &auto_devops |
+  http_status_code=`curl -o .auto_devops.sh -s -m 10 --connect-timeout 10 -w %{http_code} "${CHOERODON_URL}/devops-action/ci?gitlabProjectId=${CI_PROJECT_ID}&pipelineId=${CI_PIPELINE_ID}&token=${Token}&type=base&version=v1"`
+  if [ "$http_status_code" != "200" ]; then
+    cat .auto_devops.sh
+    exit 1
+  fi
+  source .auto_devops.sh
+
+  function node_build(){
+      chmod -R 777 node_modules
+      yarn ${1:-"build"}
+  }
+
+before_script:
+  - *auto_devops
