@@ -20,7 +20,7 @@ node_build:
     - mkdir node_modules
     - cp -r ${CACHE_BRANCHE}/node_modules.tar.gz node_modules.tar.gz
     - chmod -R 777 node_modules.tar.gz && tar -zxf node_modules.tar.gz
-    - yarn build
+    - yarn web-build
     - git rev-parse --short HEAD >> dist/version
     - cp -r dist ${CACHE_PIPELINE}/
   only:
