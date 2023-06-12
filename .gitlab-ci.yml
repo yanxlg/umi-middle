@@ -4,7 +4,7 @@ stages:
   - docker_build
 
 node_install:
-  image: node:12.22.0
+  image: node:16.0.0
   stage: node_install
   script:
     - yarn config get registry
@@ -14,7 +14,7 @@ node_install:
   when: manual
 
 node_build:
-  image: node:12.22.0
+  image: node:16.0.0
   stage: node_build
   script:
     - mkdir node_modules
