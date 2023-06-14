@@ -68,7 +68,7 @@ export interface IRuntimeConfig {
       context: {
         appFilePath: runtimeConfig ? hasAppFilePath : undefined,
         ignoreErrors: JSON.stringify(ignoreErrors),
-        isDev: isProduction
+        isDev: !isProduction
       }
     });
   });
