@@ -61,7 +61,7 @@ export default (api: IApi) => {
       },
       onChange: api.ConfigChangeType.regenerateTmpFiles
     },
-    enableBy: api.EnableBy.config
+    enableBy: api.EnableBy.register
   });
 
   // 生成临时文件并写入配置信息
