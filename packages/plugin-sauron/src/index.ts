@@ -59,12 +59,16 @@ export interface IRuntimeConfig {
     const ignoreErrors = api.config.sentry?.ignore || defaultErrorFilters;
     // ast 检测有没有导出sauron
     const runtimeConfig = hasAppFilePath ? hasRuntimeConfig(hasAppFilePath) : false;
+
+    const isProduction = process.env.NODE_ENV === "production";
+
     api.writeTmpFile({
       path: "runtime.tsx",
       tplPath: join(tmpDir, "runtime.tsx.tpl"),
       context: {
         appFilePath: runtimeConfig ? hasAppFilePath : undefined,
-        ignoreErrors: JSON.stringify(ignoreErrors)
+        ignoreErrors: JSON.stringify(ignoreErrors),
+        isDev: isProduction
       }
     });
   });

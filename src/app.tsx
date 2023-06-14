@@ -17,7 +17,6 @@ export const watermark = ():WatermarkConfig => {
 export const sauron = ():InitParamsType => {
   return {
     app_name: "test",
-    debug: true,
     env: 'dev',
     uid: localStorage.getItem("uid") || '',
     captureException: true,
