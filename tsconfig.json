@@ -1,22 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es6",
-    "lib": ["dom", "es2017"],
-    "module": "esnext",
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "importHelpers": true,
-    "jsx": "preserve",
-    "esModuleInterop": true,
-    "sourceMap": true,
-    "baseUrl": "./",
-    "strict": false,
-    "skipLibCheck": true,
-    "suppressImplicitAnyIndexErrors": true,
-    "experimentalDecorators": true,
-    "allowSyntheticDefaultImports": true,
-    "declaration": true,
-    "incremental": false
+    "jsx": "react-jsx"
   },
-  "exclude": ["lib", "es"]
+  "extends": "./src/.umi/tsconfig.json"
 }
