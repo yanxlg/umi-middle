@@ -23,18 +23,4 @@ export default defineConfig({
     sentry_environment: "local", // 注入环境变量，需要在部署工作台配置，此处值作为开发默认值使用
     sauron_environment: "dev"
   },
-  sauron: {
-    // appName: 'test',// 如果想要多个前端共用一个索伦项目，可通过该字段进行区分
-    // projectName: 'yh_life', // 索伦平台项目编码
-    // debug: process.env.NODE_ENV !== "production",
-    // useListenPageView: true,
-    // useListenRequestDuration: true,
-    // useListenException: true,
-    // useListenInterfaceException: {
-    //   rules: [{
-    //     pathRule: '*',
-    //     successCodes: ['200000']
-    //   }]
-    // }
-  }
 });

@@ -56,7 +56,7 @@ export interface IRuntimeConfig {
     // 项目是否有app.ts 文件
     const hasAppFilePath = getAppFilePath();
     // 同步sentry配置
-    const ignores = api.config.sentry?.ignore || defaultErrorFilters;
+    const ignoreErrors = api.config.sentry?.ignore || defaultErrorFilters;
     // ast 检测有没有导出sauron
     const runtimeConfig = hasAppFilePath ? hasRuntimeConfig(hasAppFilePath) : false;
     api.writeTmpFile({
@@ -64,7 +64,7 @@ export interface IRuntimeConfig {
       tplPath: join(tmpDir, "runtime.tsx.tpl"),
       context: {
         appFilePath: runtimeConfig ? hasAppFilePath : undefined,
-        ignores: JSON.stringify(ignores)
+        ignoreErrors: JSON.stringify(ignoreErrors)
       }
     });
   });
