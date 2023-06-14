@@ -5,8 +5,6 @@ import {winPath} from "umi/plugin-utils";
 import {defaultErrorFilters} from "@middle-cli/plugin-sentry";
 import {RUNTIME_TYPE_FILE_NAME} from "umi";
 
-const {parse} = require("@babel/parser");
-
 export function withTmpPath(opts: { api: IApi; path: string; noPluginDir?: boolean }) {
   return winPath(join(opts.api.paths.absTmpPath, opts.api.plugin.key && !opts.noPluginDir ? `plugin-${opts.api.plugin.key}` : "", opts.path));
 }
@@ -24,31 +22,8 @@ function getAppFilePath() {
 }
 
 function hasRuntimeConfig(filePath: string) {
-  const ast = parse(fs.readFileSync(filePath, {encoding: "utf-8"}), {
-    sourceType: 'module'
-  });
-  const body = ast.program.body;
-  try {
-    const findConfig = body.find((item: any) => item.type === 'ExportNamedDeclaration' && item.declaration.declarations[0].id.name === 'sauron');
-    if (!!findConfig) {
-      return true;
-    }
-  } catch (e) {
-  }
-  try {
-    const findConfig = body.find((item: any) => {
-      const isDefaultExport = item.type === 'ExportDefaultDeclaration';
-      if (!isDefaultExport) {
-        return false;
-      }
-      const properties = item.declaration.arguments[0].properties;
-      return !!properties.find((property: any) => property.type === 'ObjectProperty' && property.key.name === 'sauron' && property.value.type === 'ArrowFunctionExpression' || property.type === 'ObjectMethod' && property.key.name === 'sauron')
-    });
-    return !!findConfig;
-  } catch (e) {
-
-  }
-  return false;
+  const fileContent = fs.readFileSync(filePath, {encoding: "utf-8"}).replace(/\s/g,'');
+  return /sauron\(.*\){/g.test(fileContent) || /sauron:\(.*\)=>{/g.test(fileContent) || /sauron=\(.*\)(:\S+)?=>{/g.test(fileContent);
 }
 
 export default (api: IApi) => {
