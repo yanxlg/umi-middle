@@ -8,7 +8,7 @@ if(sauron){
   // 初始化
   init({
     ...config,
-    env: InjectEnvs?.sauron_environment??"dev",
+    env: InjectEnvs?.sauron_environment??"dev", // 环境，全局配置
     debug: debug??{{{isDev}}},
     captureException: captureException ? captureException === true ? {
       ignoreErrors: {{{ignoreErrors}}}
