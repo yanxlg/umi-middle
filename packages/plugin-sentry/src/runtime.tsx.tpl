@@ -1,6 +1,7 @@
 import * as Sentry from "@sentry/react";
 import { InjectEnvs } from 'umi';
 
+// 微前端 需要区分应用。 sourcemap 怎么处理？？？  异常怎么区分。
 Sentry.init({
   dsn: "{{{dsn}}}",
   integrations: [

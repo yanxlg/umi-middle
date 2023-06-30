@@ -14,9 +14,11 @@ const HomePage: React.FC = () => {
   const name = DEFAULT_NAME;
 
   useEffect(()=>{
-    console.log("1111111----------");
-    const name = window['v'].name;
-    console.log(name);
+    // console.log("1111111----------");
+    // const name = window['v'].name;
+    // console.log(name);
+
+    fetch("http://vasada.com/aaaa.js");
   },[]);
 
   return (
