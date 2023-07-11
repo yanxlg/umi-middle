@@ -74,7 +74,7 @@ export async function run() {
       console.error(
         chalk.red(
           `前置release分支[${chalk.blueBright(
-            unMergedReleaseBranches.join(" ")
+            unMergedReleaseBranches.join("、")
           )}]未合并到当前分支中，请检查前置release分支是否完整合并到master主分支`
         )
       );
