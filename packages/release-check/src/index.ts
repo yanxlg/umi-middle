@@ -10,6 +10,7 @@
 import { chalk } from "@umijs/utils";
 import { simpleGit } from "simple-git";
 import dayjs from 'dayjs';
+import 'dayjs/plugin/isSameOrBefore';
 
 const git = simpleGit({ baseDir: process.cwd() });
 
@@ -37,7 +38,22 @@ export async function run() {
   if (/^release/.test(current)) {
     const unMergedReleaseSet = new Set();
 
-    let prevReleaseBranch = '';
+    let prevReleaseBranch = ''; // 同一天创建了多个release分支也需要检测到。
+
+    const currentDate = getDate(current);
+
+    const releaseBranches = all.map(branch=>{
+      if(/^remotes\/origin\//.test(branch)){
+        const branchName = branch.replace(/^remotes\/origin\//, "");
+        const branchDate = getDate(branchName);
+        if (/^release/.test(branchName) && branchName !== current && dayjs(branchDate).isSameOrBefore(currentDate,'d')){
+          return branchName;
+        }
+      }
+      return '';
+    }).filter(Boolean).sort((prev:string,next:string)=>dayjs(prev).isBefore(dayjs(next))?-1:1);
+
+    console.log(releaseBranches);
 
     // 不需要检测master，判断当前分支就可以
     for (let branch of all) {
@@ -72,9 +88,9 @@ export async function run() {
     if (unMergedReleaseBranches.length > 0) {
       console.error(
         chalk.red(
-          `存在release分支代码未合并到当前分支（上线后没有合并到master），新的release分支代码不完整，请处理完下列分支合并操作后重新发布编译动作：${chalk.blueBright(
+          `前置release分支[${chalk.blueBright(
             unMergedReleaseBranches.join(" ")
-          )}`
+          )}]未合并到当前分支中，请检查前置release分支是否完整合并到master主分支`
         )
       );
       process.exit(1);
