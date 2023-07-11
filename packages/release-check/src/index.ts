@@ -10,7 +10,9 @@
 import { chalk } from "@umijs/utils";
 import { simpleGit } from "simple-git";
 import dayjs from 'dayjs';
-import 'dayjs/plugin/isSameOrBefore';
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
+
+dayjs.extend(isSameOrBefore);
 
 const git = simpleGit({ baseDir: process.cwd() });
 
@@ -38,8 +40,6 @@ export async function run() {
   if (/^release/.test(current)) {
     const unMergedReleaseSet = new Set();
 
-    let prevReleaseBranch = ''; // 同一天创建了多个release分支也需要检测到。
-
     const currentDate = getDate(current);
 
     const releaseBranches = all.map(branch=>{
@@ -53,34 +53,19 @@ export async function run() {
       return '';
     }).filter(Boolean).sort((prev:string,next:string)=>dayjs(prev).isBefore(dayjs(next))?-1:1);
 
-    console.log(releaseBranches);
+    if(releaseBranches.length>0){
+      const lastBranch = releaseBranches[releaseBranches.length-1];
+      const preBranches = releaseBranches.filter(branch=>getDate(branch)===getDate(lastBranch));
 
-    // 不需要检测master，判断当前分支就可以
-    for (let branch of all) {
-      if (/^remotes\/origin\//.test(branch)) {
-        const branchName = branch.replace(/^remotes\/origin\//, "");
-        // 获取当前分支对应的日期
-        const currentDate = getDate(current);
-
-        if (/^release/.test(branchName) && branchName !== current) {
-          // 解析release 分支对应的日期
-          const branchDate = getDate(branchName);
-          if(dayjs(branchDate).isBefore(currentDate,'d') && (!prevReleaseBranch || dayjs(getDate(prevReleaseBranch)).isBefore(branchDate,'d'))){ // 前置日期，不需要检查所有，检查前一个就行
-            prevReleaseBranch = branchName;
-          }
+      for (let branch of preBranches){
+        const { total } = await git.log({
+          from: `origin/${current}`,
+          to: `origin/${branch}`,
+          symmetric: false,
+        });
+        if (total > 0) {
+          unMergedReleaseSet.add(branch);
         }
-      }
-    }
-
-    if(prevReleaseBranch){
-      // 获取最后一次提交，查看最后一次提交是否在logs中
-      const { total } = await git.log({
-        from: `origin/${current}`,
-        to: `origin/${prevReleaseBranch}`,
-        symmetric: false,
-      });
-      if (total > 0) {
-        unMergedReleaseSet.add(prevReleaseBranch);
       }
     }
 
