@@ -17,7 +17,8 @@
     "@umijs/utils": "4.0.67",
     "commander": "^9.4.0",
     "father": "^4.1.8",
-    "simple-git": "3.19.0"
+    "simple-git": "3.19.0",
+    "dayjs": "^1.11.8"
   },
   "publishConfig": {
     "access": "public"
