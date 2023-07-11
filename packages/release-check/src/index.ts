@@ -10,6 +10,9 @@
 import { chalk } from "@umijs/utils";
 import { simpleGit } from "simple-git";
 import dayjs from 'dayjs';
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
+
+dayjs.extend(isSameOrBefore);
 
 const git = simpleGit({ baseDir: process.cwd() });
 
@@ -37,34 +40,32 @@ export async function run() {
   if (/^release/.test(current)) {
     const unMergedReleaseSet = new Set();
 
-    let prevReleaseBranch = '';
+    const currentDate = getDate(current);
 
-    // 不需要检测master，判断当前分支就可以
-    for (let branch of all) {
-      if (/^remotes\/origin\//.test(branch)) {
+    const releaseBranches = all.map(branch=>{
+      if(/^remotes\/origin\//.test(branch)){
         const branchName = branch.replace(/^remotes\/origin\//, "");
-        // 获取当前分支对应的日期
-        const currentDate = getDate(current);
-
-        if (/^release/.test(branchName) && branchName !== current) {
-          // 解析release 分支对应的日期
-          const branchDate = getDate(branchName);
-          if(dayjs(branchDate).isBefore(currentDate,'d') && (!prevReleaseBranch || dayjs(getDate(prevReleaseBranch)).isBefore(branchDate,'d'))){ // 前置日期，不需要检查所有，检查前一个就行
-            prevReleaseBranch = branchName;
-          }
+        const branchDate = getDate(branchName);
+        if (/^release/.test(branchName) && branchName !== current && dayjs(branchDate).isSameOrBefore(currentDate,'d')){
+          return branchName;
         }
       }
-    }
+      return '';
+    }).filter(Boolean).sort((prev:string,next:string)=>dayjs(prev).isBefore(dayjs(next))?-1:1);
 
-    if(prevReleaseBranch){
-      // 获取最后一次提交，查看最后一次提交是否在logs中
-      const { total } = await git.log({
-        from: `origin/${current}`,
-        to: `origin/${prevReleaseBranch}`,
-        symmetric: false,
-      });
-      if (total > 0) {
-        unMergedReleaseSet.add(prevReleaseBranch);
+    if(releaseBranches.length>0){
+      const lastBranch = releaseBranches[releaseBranches.length-1];
+      const preBranches = releaseBranches.filter(branch=>getDate(branch)===getDate(lastBranch));
+
+      for (let branch of preBranches){
+        const { total } = await git.log({
+          from: `origin/${current}`,
+          to: `origin/${branch}`,
+          symmetric: false,
+        });
+        if (total > 0) {
+          unMergedReleaseSet.add(branch);
+        }
       }
     }
 
@@ -72,9 +73,9 @@ export async function run() {
     if (unMergedReleaseBranches.length > 0) {
       console.error(
         chalk.red(
-          `存在release分支代码未合并到当前分支（上线后没有合并到master），新的release分支代码不完整，请处理完下列分支合并操作后重新发布编译动作：${chalk.blueBright(
-            unMergedReleaseBranches.join(" ")
-          )}`
+          `前置release分支[${chalk.blueBright(
+            unMergedReleaseBranches.join("、")
+          )}]未合并到当前分支中，请检查前置release分支是否完整合并到master主分支`
         )
       );
       process.exit(1);
