@@ -1,6 +1,6 @@
 {
   "name": "@middle-cli/plugin-sentry",
-  "version": "0.1.14",
+  "version": "0.1.15",
   "description": "sentry plugin for middle cli",
   "keywords": [],
   "license": "MIT",
