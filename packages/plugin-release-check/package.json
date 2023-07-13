@@ -1,6 +1,6 @@
 {
   "name": "@middle-cli/plugin-release-check",
-  "version": "0.1.3",
+  "version": "0.1.14",
   "description": "release 分支 ci check",
   "keywords": [],
   "license": "MIT",

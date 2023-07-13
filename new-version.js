@@ -8,7 +8,7 @@
  * Copyright (c) 2022 by yanxlg, All Rights Reserved.
  */
 
-const nextVersion = "0.1.1-alpha.2";
+const nextVersion = "0.1.14";
 
 const fs = require("fs-extra");
 const _path = require("path");
