@@ -58,7 +58,7 @@ export async function run() {
       const preBranches = releaseBranches.filter(branch=>getDate(branch)===getDate(lastBranch));
 
       for (let branch of preBranches){
-        console.log(`---------------------release compare branch: ${branch}----------------------`);
+        console.log(`---------------------release compare with branch: ${branch}----------------------`);
         const { total } = await git.log({
           from: `origin/${current}`,
           to: `origin/${branch}`,
