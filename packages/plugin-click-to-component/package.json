@@ -1,6 +1,6 @@
 {
   "name": "@middle-cli/plugin-click-to-component",
-  "version": "0.1.15",
+  "version": "0.1.30",
   "description": "click-to-component 支持webstorm",
   "keywords": [],
   "license": "MIT",
