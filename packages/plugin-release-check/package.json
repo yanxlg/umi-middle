@@ -1,6 +1,6 @@
 {
   "name": "@middle-cli/plugin-release-check",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "release 分支 ci check",
   "keywords": [],
   "license": "MIT",
@@ -15,7 +15,7 @@
     "dev": "father dev"
   },
   "dependencies": {
-    "release-check": "^0.3.7"
+    "release-check": "^0.3.8"
   },
   "authors": {
     "name": "yanxlg <yanxlg2@yonghui.cn>",
