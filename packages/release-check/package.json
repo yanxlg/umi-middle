@@ -15,13 +15,16 @@
   },
   "dependencies": {
     "@umijs/utils": "4.0.67",
-    "commander": "^9.4.0",
+    "commander": "^7.2.0",
     "dayjs": "^1.11.8",
     "father": "^4.1.8",
     "simple-git": "3.19.0"
   },
   "publishConfig": {
     "access": "public"
+  },
+  "engines": {
+    "node": ">= 10"
   },
   "gitHead": "fb3ee8a1c3c08acfe37be3f5eea339adb7157738"
 }
