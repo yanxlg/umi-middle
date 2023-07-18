@@ -7,10 +7,11 @@
  *
  * Copyright (c) 2023 by yanxlg, All Rights Reserved.
  */
-import { chalk } from "@umijs/utils";
 import { simpleGit } from "simple-git";
 import dayjs from 'dayjs';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
+
+const chalk = require('chalk');
 
 dayjs.extend(isSameOrBefore);
 

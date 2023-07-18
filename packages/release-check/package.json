@@ -14,7 +14,7 @@
     "build": "father build"
   },
   "dependencies": {
-    "@umijs/utils": "4.0.67",
+    "chalk": "4.1.2",
     "commander": "^7.2.0",
     "dayjs": "^1.11.8",
     "father": "^4.1.8",
