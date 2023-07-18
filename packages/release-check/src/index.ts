@@ -7,10 +7,11 @@
  *
  * Copyright (c) 2023 by yanxlg, All Rights Reserved.
  */
-import { chalk } from "@umijs/utils";
 import { simpleGit } from "simple-git";
 import dayjs from 'dayjs';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
+
+const chalk = require('chalk');
 
 dayjs.extend(isSameOrBefore);
 
@@ -36,7 +37,7 @@ function getDate(branchName: string){
 export async function run() {
   const { current: _current, all } = await git.branch(); // 是不是所有的远程分支都能拿到
   const current = process.env.CI_COMMIT_REF_NAME || _current;
-
+  console.log('---------------------release check start----------------------');
   if (/^release/.test(current)) {
     const unMergedReleaseSet = new Set();
 
@@ -58,6 +59,7 @@ export async function run() {
       const preBranches = releaseBranches.filter(branch=>getDate(branch)===getDate(lastBranch));
 
       for (let branch of preBranches){
+        console.log(`---------------------release compare with branch: ${branch}----------------------`);
         const { total } = await git.log({
           from: `origin/${current}`,
           to: `origin/${branch}`,
@@ -80,5 +82,7 @@ export async function run() {
       );
       process.exit(1);
     }
+  }else{
+     console.log('---------------------not release branch----------------------');
   }
 }
