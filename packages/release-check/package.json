@@ -1,6 +1,6 @@
 {
   "name": "release-check",
-  "version": "0.3.9",
+  "version": "0.3.10",
   "description": "工程化启动包",
   "main": "lib/index.js",
   "bin": {
@@ -20,11 +20,11 @@
     "father": "^4.1.8",
     "simple-git": "3.19.0"
   },
-  "publishConfig": {
-    "access": "public"
-  },
   "engines": {
     "node": ">= 10"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "gitHead": "fb3ee8a1c3c08acfe37be3f5eea339adb7157738"
 }
