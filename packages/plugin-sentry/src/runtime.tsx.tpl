@@ -1,5 +1,5 @@
 import * as Sentry from "@sentry/react";
-import { InjectEnvs } from 'umi';
+import { getInjectEnv } from 'umi';
 
 // 微前端 需要区分应用。 sourcemap 怎么处理？？？  异常怎么区分。
 Sentry.init({
@@ -11,7 +11,7 @@ Sentry.init({
   tracesSampleRate: 1.0,
   replaysSessionSampleRate: 0.1,
   replaysOnErrorSampleRate: 1.0,
-  environment: InjectEnvs?.sentry_environment??"local", // inject from environment
+  environment: getInjectEnv?.('sentry_environment')??"local", // inject from environment
   debug: {{{debug}}},
   disabled: {{{disabled}}},
   ignoreErrors: {{{ignore}}},
