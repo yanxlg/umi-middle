@@ -1,6 +1,6 @@
 {{#appFilePath}}
 import { init } from "@yh/yh-sauron";
-import { InjectEnvs } from 'umi';
+import { getInjectEnv } from 'umi';
 const { sauron } = require('{{{appFilePath}}}');
 
 if(sauron){
@@ -8,7 +8,7 @@ if(sauron){
   // 初始化
   init({
     ...config,
-    env: InjectEnvs?.sauron_environment??"dev", // 环境，全局配置
+    env: getInjectEnv?.('sauron_environment')??"dev", // 环境，全局配置
     debug: debug??{{{isDev}}},
     captureException: captureException ? captureException === true ? {
       ignoreErrors: {{{ignoreErrors}}}

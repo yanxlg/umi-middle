@@ -8,10 +8,15 @@
  * Copyright (c) 2023 by yanxlg, All Rights Reserved.
  */
 
-{{#vars}}
-const {{{key}}} = "{{{value}}}";
-{{/vars}}
+const defaultValue = {{{defaultValue}}};
 
-const InjectEnvs = { {{{varKeys}}} };
+function getInjectEnv(envKey: {{{keys}}}) {
+  // 获取
+  return !window.__inject_env__ ||
+    !window.__inject_env__[envKey] ||
+    /^__runtime_env/.test(window.__inject_env__[envKey])
+    ? defaultValue[envKey]
+    : window.__inject_env__[envKey];
+}
 
-export { InjectEnvs };
+export { getInjectEnv };

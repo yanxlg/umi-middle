@@ -43,23 +43,22 @@ export default async (api: IApi) => {
 
   // runtime 修改
   api.onGenerateFiles(() => {
-    const vars = api.config.injectEnv || {};
+    const vars = api.config.injectEnv || {}; // 默认值
     const indexPath = join(__dirname, "index.ts.tpl");
+
+    const placeholder: {[key:string]: string} = {};
+    Object.keys(vars).forEach(key=>{
+      placeholder[key] = `__runtime_env__${key}__`;
+    });
+    // 注入到html中
+    api.addHTMLHeadScripts(() => `window.__inject_env__=${JSON.stringify(placeholder)}`)// 添加代码到html head 中，将变量注入进去
 
     api.writeTmpFile({
       path: "index.ts",
       tplPath: indexPath,
       context: {
-        vars: isProduction
-          ? Object.keys(vars).map((key) => ({
-              key: key,
-              value: `__runtime_env__${key}__`,
-            }))
-          : Object.keys(vars).map((key) => ({
-              key: key,
-              value: vars[key],
-            })),
-        varKeys:Object.keys(vars).join(', ')
+        keys: Object.keys(vars).map(key=>`'${key}'`).join(' | '),
+        defaultValue: JSON.stringify(vars),
       },
     });
   });

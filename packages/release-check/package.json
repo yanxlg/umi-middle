@@ -1,6 +1,6 @@
 {
   "name": "release-check",
-  "version": "0.3.7",
+  "version": "0.3.11",
   "description": "工程化启动包",
   "main": "lib/index.js",
   "bin": {
@@ -14,11 +14,14 @@
     "build": "father build"
   },
   "dependencies": {
-    "@umijs/utils": "4.0.67",
-    "commander": "^9.4.0",
+    "chalk": "4.1.2",
+    "commander": "^7.2.0",
     "dayjs": "^1.11.8",
     "father": "^4.1.8",
     "simple-git": "3.19.0"
+  },
+  "engines": {
+    "node": ">= 10"
   },
   "publishConfig": {
     "access": "public"

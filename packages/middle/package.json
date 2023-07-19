@@ -1,6 +1,6 @@
 {
   "name": "@middle-cli/middle",
-  "version": "0.1.15",
+  "version": "0.1.18",
   "description": "工程化启动包",
   "main": "lib/index.js",
   "bin": {
