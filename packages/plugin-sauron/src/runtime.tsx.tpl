@@ -1,12 +1,12 @@
 {{#appFilePath}}
-import { init } from "@yh/yh-sauron";
+import Sauron from "@yh/yh-sauron";
 import { getInjectEnv } from 'umi';
 const { sauron } = require('{{{appFilePath}}}');
 
 if(sauron){
   const {captureException, debug, ...config} = sauron();
   // 初始化
-  init({
+  Sauron.init({
     ...config,
     env: getInjectEnv?.('sauron_environment')??"dev", // 环境，全局配置
     debug: debug??{{{isDev}}},
