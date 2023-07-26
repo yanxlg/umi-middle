@@ -7,26 +7,27 @@
  *
  * Copyright (c) 2023 by yanxlg, All Rights Reserved.
  */
-import { simpleGit } from "simple-git";
+import {simpleGit} from "simple-git";
 import dayjs from 'dayjs';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
+import lodash from 'lodash';
 
 const chalk = require('chalk');
 
 dayjs.extend(isSameOrBefore);
 
-const git = simpleGit({ baseDir: process.cwd() });
+const git = simpleGit({baseDir: process.cwd()});
 
 
-function getDate(branchName: string){
-  const dateStr = branchName.replace(/[^\d]/g,'');
+function getDate(branchName: string) {
+  const dateStr = branchName.replace(/[^\d]/g, '');
   const length = dateStr.length;
   const currentYear = new Date().getFullYear() + '';
   switch (length) {
     case 8:
       return dateStr;
     case 6: // 没有20
-      return currentYear.substring(0,2) + dateStr;
+      return currentYear.substring(0, 2) + dateStr;
     case 4:
       return currentYear + dateStr;
   }
@@ -35,7 +36,7 @@ function getDate(branchName: string){
 
 
 export async function run() {
-  const { current: _current, all } = await git.branch(); // 是不是所有的远程分支都能拿到
+  const {current: _current, all} = await git.branch(); // 是不是所有的远程分支都能拿到
   const current = process.env.CI_COMMIT_REF_NAME || _current;
   console.log('---------------------release check start----------------------');
   if (/^release/.test(current)) {
@@ -43,24 +44,26 @@ export async function run() {
 
     const currentDate = getDate(current);
 
-    const releaseBranches = all.map(branch=>{
-      if(/^remotes\/origin\//.test(branch)){
+    const releaseBranches = all.map(branch => {
+      if (/^remotes\/origin\//.test(branch)) {
         const branchName = branch.replace(/^remotes\/origin\//, "");
         const branchDate = getDate(branchName);
-        if (/^release/.test(branchName) && branchName !== current && dayjs(branchDate).isSameOrBefore(currentDate,'d')){
+        if (/^release/.test(branchName) && branchName !== current && dayjs(branchDate).isSameOrBefore(currentDate, 'd')) {
           return branchName;
         }
       }
       return '';
-    }).filter(Boolean).sort((prev:string,next:string)=>dayjs(prev).isBefore(dayjs(next))?-1:1);
+    }).filter(Boolean);
+    const releaseSortBranches = releaseBranches.sort((prev: string, next: string) => {
+      return dayjs(getDate(prev)).isBefore(dayjs(getDate(next))) ? -1 : 1;
+    });
+    if (releaseSortBranches.length > 0) {
+      const lastBranch = releaseSortBranches[releaseSortBranches.length - 1];
+      const preBranches = releaseSortBranches.filter(branch => getDate(branch) === getDate(lastBranch));
 
-    if(releaseBranches.length>0){
-      const lastBranch = releaseBranches[releaseBranches.length-1];
-      const preBranches = releaseBranches.filter(branch=>getDate(branch)===getDate(lastBranch));
-
-      for (let branch of preBranches){
+      for (let branch of preBranches) {
         console.log(`---------------------release compare with branch: ${branch}----------------------`);
-        const { total } = await git.log({
+        const {total} = await git.log({
           from: `origin/${current}`,
           to: `origin/${branch}`,
           symmetric: false,
@@ -82,7 +85,7 @@ export async function run() {
       );
       process.exit(1);
     }
-  }else{
-     console.log('---------------------not release branch----------------------');
+  } else {
+    console.log('---------------------not release branch----------------------');
   }
 }
