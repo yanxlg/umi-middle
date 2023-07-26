@@ -10,7 +10,6 @@
 import {simpleGit} from "simple-git";
 import dayjs from 'dayjs';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
-import lodash from 'lodash';
 
 const chalk = require('chalk');
 
