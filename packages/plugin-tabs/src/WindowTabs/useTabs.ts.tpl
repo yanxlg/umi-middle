@@ -119,7 +119,7 @@ const useTabs = (defaultTabs?: string[]) => {
   }>('__window_tabs_cache__',{
     defaultValue: () => {
       const pathname = location.pathname;
-      const tabPathList = [pathname,...defaultTabs];
+      const tabPathList = Array.from(new Set([pathname,...defaultTabs]));
       const targetTabList = tabPathList.map(path=>getTargetTab(clientRoutes, path));
       return {
         activeKey: pathname,
