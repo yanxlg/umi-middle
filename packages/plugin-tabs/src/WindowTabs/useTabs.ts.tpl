@@ -120,7 +120,7 @@ const useTabs = (defaultTabs?: string[]) => {
     defaultValue: () => {
       const pathname = location.pathname;
       const tabPathList = Array.from(new Set([pathname,...defaultTabs]));
-      const targetTabList = tabPathList.map(path=>getTargetTab(clientRoutes, path));
+      const targetTabList = tabPathList.map(path=>getTargetTab(clientRoutes, path)).filter(Boolean);
       return {
         activeKey: pathname,
         wins: targetTabList || [],
