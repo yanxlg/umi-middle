@@ -112,7 +112,7 @@ interface IWindowTabsProps {
 }
 
 
-function TabLabel(widthType: IWindowTabsProps['widthType'], name: string, badge?: number) {
+function TabLabel({widthType, name, badge}:{widthType: IWindowTabsProps['widthType'], name: string, badge?: number}) {
   const content = widthType === 'fit-content' ? name : <Tooltip title={name}><div style={ {[widthType.type]: widthType.width, textOverflow: 'ellipsis', overflow: 'hidden'} }>{name}</div></Tooltip>;
   if(void 0 === badge) {
     return content;
