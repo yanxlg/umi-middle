@@ -1,4 +1,4 @@
-import { Menu as AntdMenu, MenuProps, Tabs, Tooltip } from "antd";
+import { Menu as AntdMenu, MenuProps, Tabs, Tooltip, Badge } from "antd";
 import type { MenuInfo } from "rc-menu/lib/interface";
 import React, { useCallback } from "react";
 import { history, useAppData } from "umi";
@@ -111,6 +111,16 @@ interface IWindowTabsProps {
   defaultTabs?: string[];// 默认显示的tabs，通过path自动显示默认标签
 }
 
+
+function TabLabel(widthType: IWindowTabsProps['widthType'], name: string, badge?: number) {
+  const content = widthType === 'fit-content' ? name : <Tooltip title={name}><div style={ {[widthType.type]: widthType.width, textOverflow: 'ellipsis', overflow: 'hidden'} }>{name}</div></Tooltip>;
+  if(void 0 === badge) {
+    return content;
+  }
+  return <Badge count={badge}>{content}</Badge>
+}
+
+
 export default function WindowTabs(props: IWindowTabsProps) {
   const {
     activeKey,
@@ -190,7 +200,7 @@ export default function WindowTabs(props: IWindowTabsProps) {
         animated={false}
         items={wins.map((node, index) => ({
           key: node.pathname,
-          label: widthType === 'fit-content' ? node.name : <Tooltip title={node.name}><div style={ {[widthType.type]: widthType.width, textOverflow: 'ellipsis', overflow: 'hidden'} }>{node.name}</div></Tooltip>,
+          label: <TabLabel widthType={widthType} name={node.name}/>,
           closable: wins.length === 1 ? firstTabCloseable : closeable,
         }))}
         onContextMenu={handleContextMenu}
