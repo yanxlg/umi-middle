@@ -106,7 +106,7 @@ function addPage(pages: PageType[], page: PageType) {
 }
 
 // 跟sessionStorage 联动
-const useTabs = () => {
+const useTabs = (defaultTabs?: string[]) => {
   const location = useLocation();
   const { clientRoutes } = useAppData();
   const { dropScope, refresh, getCachingNodes } = useAliveController();
@@ -118,11 +118,12 @@ const useTabs = () => {
     wins: IWindow[];
   }>('__window_tabs_cache__',{
     defaultValue: () => {
-      const targetTab = getTargetTab(clientRoutes, location.pathname);
       const pathname = location.pathname;
+      const tabPathList = [pathname,...defaultTabs];
+      const targetTabList = tabPathList.map(path=>getTargetTab(clientRoutes, path));
       return {
         activeKey: pathname,
-        wins: targetTab ? [targetTab] : [],
+        wins: targetTabList || [],
       };
     }
   });

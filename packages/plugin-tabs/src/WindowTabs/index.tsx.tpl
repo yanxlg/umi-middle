@@ -108,6 +108,7 @@ interface IWindowTabsProps {
   theme?: 'otb';// 内置主题
   /** 宽度模式 */
   widthType?: 'fit-content' | { type: 'maxWidth'; width: number } | { type: 'width'; width: number };
+  defaultTabs?: string[];// 默认显示的tabs，通过path自动显示默认标签
 }
 
 export default function WindowTabs(props: IWindowTabsProps) {
@@ -119,7 +120,7 @@ export default function WindowTabs(props: IWindowTabsProps) {
     removeOthers,
     removeAll,
     refreshPage,
-  } = useTabs();
+  } = useTabs(props.defaultTabs);
 
   const { pluginManager } = useAppData();
 
