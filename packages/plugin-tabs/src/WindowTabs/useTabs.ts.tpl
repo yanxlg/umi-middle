@@ -51,16 +51,16 @@ function getTargetTab(routes: RouteObject[], pathname: string) {
   const matchedRoutes = getMatchRoutes(routes, pathname);
   if (matchedRoutes && matchedRoutes.length > 0) {
     const extractRoute = matchedRoutes.pop()!;
-    const { route, params } = extractRoute; 
-  
+    const { route, params } = extractRoute;
+
     const { tabMode, name, tabTemplate, redirect, element } = route;// 如果重定向, 则忽略
     if( !!redirect || element?.type?.name === 'NavigateWithParams' || (!name && !tabTemplate)){
       return undefined;
     }
     if (tabMode === 'inner') {
-      // 父级
+      // 父级, 获取到的父级可能有问题，有可能是layout
       const parent = matchedRoutes.pop();
-      if (parent) {
+      if (parent && !parent.route.isLayout) {
         // 根据父级生成对应的Tab
         return {
           ...omit(parent.route,['element']),
