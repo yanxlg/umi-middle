@@ -7,9 +7,11 @@
  *
  * Copyright (c) 2023 by yanxlg, All Rights Reserved.
  */
-import { join } from "path";
-import { IApi } from "umi";
-import { winPath } from "umi/plugin-utils";
+import {join} from "path";
+import {IApi} from "umi";
+import {winPath} from "umi/plugin-utils";
+import parser from '@babel/parser';
+import {ExportDefaultDeclaration, ExpressionStatement, Identifier} from "@babel/types";
 
 export function withTmpPath(opts: {
   api: IApi;
@@ -27,6 +29,66 @@ export function withTmpPath(opts: {
   );
 }
 
+
+function getConfigPropertiesFromSource(content: string, properties: string[]) {
+  const ast = parser.parse(content, {
+    sourceType: 'module',
+    allowImportExportEverywhere: false,
+    allowReturnOutsideFunction: false,
+    createParenthesizedExpressions: false,
+    ranges: false,
+    tokens: false,
+    plugins: [
+      'decorators',
+      'decoratorAutoAccessors',
+      'doExpressions',
+      'exportDefaultFrom',
+      'flow',
+      'functionBind',
+      'importAssertions',
+      'jsx',
+      'regexpUnicodeSets',
+    ],
+    // decoratorOptions: { version: "2022-03", decoratorsBeforeExport: false, allowCallParenthesized: true },
+    // pipelineOptions: { proposal: 'hack', hackTopicToken: '%' },
+    // typescriptOptions: { dts: false, disallowAmbiguousJSXLike: false },
+  });
+  const program = ast.program;
+  const body = program.body;
+  const exportDefaultDeclaration = body.find(statement => statement.type === 'ExportDefaultDeclaration') as ExportDefaultDeclaration;
+  if (!exportDefaultDeclaration) {
+    return undefined;
+  }
+
+  const exportDefaultName = (exportDefaultDeclaration.declaration as Identifier)?.name;
+  if (!exportDefaultName) {
+    return undefined;
+  }
+
+  const expressionStatementList = body.filter(statement => statement.type === 'ExpressionStatement') as ExpressionStatement[];
+  if (!expressionStatementList || expressionStatementList.length === 0) {
+    return undefined;
+  }
+
+  const propertyValues: { [key: string]: string } = {};
+
+  properties.forEach(property => {
+    expressionStatementList.forEach(statement => {
+      const expression = statement.expression;
+      if (expression.type === 'AssignmentExpression') {
+        const left = expression.left;
+        const right = expression.right;
+        if (left.type === 'MemberExpression' && left.object && (left.object as Identifier).name === exportDefaultName && (left.property as Identifier).name === property && right.type === 'StringLiteral') {
+          propertyValues[property] = right.value;
+        }
+      }
+    });
+  });
+
+  return propertyValues;
+}
+
+
 export default (api: IApi) => {
   // See https://umijs.org/docs/guides/plugins
   // hooks 生成
@@ -36,7 +98,7 @@ export default (api: IApi) => {
   api.describe({
     key: "tabs",
     config: {
-      schema({ zod }) {
+      schema({zod}) {
         return zod.boolean().optional();
       },
       onChange: api.ConfigChangeType.regenerateTmpFiles,
@@ -52,7 +114,20 @@ export default (api: IApi) => {
   // Babel Plugin for react-activation
   api.addExtraBabelPlugins(() => require.resolve("react-activation/babel"));
 
-  api.addExtraBabelPlugins(() => withTmpPath({ api, path: "babel" }));
+  api.addExtraBabelPlugins(() => withTmpPath({api, path: "babel"}));
+
+  // 约定式路由需要从代码中解析相关配置
+  api.modifyRoutes((memo) => {
+    Object.keys(memo).forEach((id) => {
+      const route = memo[id];
+      const content = route.__content;// 内容
+      if (content) { // 解析内容
+        const properties = getConfigPropertiesFromSource(content, ['tabTemplate', 'tabMode', 'saveScrollPosition']);
+        Object.assign(route,properties);
+      }
+    });
+    return memo;
+  })
 
   api.onGenerateFiles(() => {
     // 支持import { KeepAlive } from 'umi';
