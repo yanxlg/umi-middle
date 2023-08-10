@@ -10,7 +10,7 @@
 import {join} from "path";
 import {IApi} from "umi";
 import {winPath} from "umi/plugin-utils";
-import parser from '@babel/parser';
+import * as parser from '@babel/parser';
 import {ExportDefaultDeclaration, ExpressionStatement, Identifier} from "@babel/types";
 
 export function withTmpPath(opts: {
