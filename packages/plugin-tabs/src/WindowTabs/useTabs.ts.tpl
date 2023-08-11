@@ -300,8 +300,8 @@ const useTabs = (defaultTabs?: string[]) => {
 
   const refreshPage = useCallback(
     (index: number) => {
-      const removeWin = tabState.wins[index];
-      const pathname = removeWin.pathname;
+      const activeWin = tabState.wins[index];
+      const pathname = activeWin.pathname;
       refresh(pathname);
     },
     [tabState],

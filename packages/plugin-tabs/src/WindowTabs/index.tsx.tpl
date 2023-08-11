@@ -115,7 +115,7 @@ interface IWindowTabsProps {
 }
 
 
-function TabLabel({widthType, name, badge, onReload}:{widthType: IWindowTabsProps['widthType']; name: string; badge?: number; onReload?: Function}) {
+function TabLabel({index, widthType, name, badge, onReload}:{index:number; widthType: IWindowTabsProps['widthType']; name: string; badge?: number; onReload?: Function}) {
   const content = widthType === 'fit-content' ? name : <Tooltip title={name}><div style={ {[widthType.type]: widthType.width, textOverflow: 'ellipsis', overflow: 'hidden'} }>{name}</div></Tooltip>;
   if(void 0 === badge) {
     return (
@@ -125,7 +125,7 @@ function TabLabel({widthType, name, badge, onReload}:{widthType: IWindowTabsProp
           onReload?(
             <ReloadOutlined
              style={ { marginLeft: 10, marginRight: 0 } }
-             onClick={onReload}
+             onClick={()=>onReload(index)}
            />
           ):null
         }
@@ -139,7 +139,7 @@ function TabLabel({widthType, name, badge, onReload}:{widthType: IWindowTabsProp
         onReload?(
           <ReloadOutlined
            style={ { marginLeft: 10, marginRight: 0 } }
-           onClick={onReload}
+           onClick={()=>onReload(index)}
          />
         ):null
       }
@@ -236,7 +236,7 @@ export default function WindowTabs(props: IWindowTabsProps) {
         animated={false}
         items={wins.map((node, index) => ({
           key: node.pathname,
-          label: <TabLabel widthType={widthType} name={node.name} badge={node.badge} onReload={reloadIcon ? refreshPage: null}/>,
+          label: <TabLabel index={index} widthType={widthType} name={node.name} badge={node.badge} onReload={reloadIcon ? refreshPage: null}/>,
           closable: wins.length === 1 ? firstTabCloseable : closeable,
         }))}
         onContextMenu={rightMenu ? handleContextMenu : null}
