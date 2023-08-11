@@ -209,7 +209,7 @@ export default function WindowTabs(props: IWindowTabsProps) {
         animated={false}
         items={wins.map((node, index) => ({
           key: node.pathname,
-          label: <TabLabel widthType={widthType} name={node.name}/>,
+          label: <TabLabel widthType={widthType} name={node.name} badge={node.badge} />,
           closable: wins.length === 1 ? firstTabCloseable : closeable,
         }))}
         onContextMenu={handleContextMenu}
