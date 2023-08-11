@@ -134,15 +134,17 @@ function TabLabel({index, widthType, name, badge, onReload}:{index:number; width
   }
   return (
     <>
-      <Badge count={badge}>{content}</Badge>
-      {
-        onReload?(
-          <ReloadOutlined
-           style={ { marginLeft: 10, marginRight: 0 } }
-           onClick={()=>onReload(index)}
-         />
-        ):null
-      }
+      <Badge count={badge}>
+        {content}
+        {
+          onReload?(
+            <ReloadOutlined
+             style={ { marginLeft: 10, marginRight: 0 } }
+             onClick={()=>onReload(index)}
+           />
+          ):null
+        }
+      </Badge>
     </>
   )
 }
