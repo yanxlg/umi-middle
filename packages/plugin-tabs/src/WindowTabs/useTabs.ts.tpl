@@ -4,6 +4,7 @@ import { RouteObject } from 'react-router';
 import { history, matchRoutes, useAppData, useLocation } from 'umi';
 import omit from 'lodash/omit';
 import useSessionStorageState from 'ahooks/es/useSessionStorageState';
+import useMemoizedFn from 'ahooks/es/useMemoizedFn';
 
 // 扩展路由中自定义配置
 declare module 'react-router' {
@@ -27,6 +28,7 @@ export type IWindow = RouteObject & {
   pathname: string;
   name?: string;
   pages: PageType[]; // 多个页面共用一个Tab.
+  badge?: number; // badge显示
 };
 
 function getMatchRoutes(routes: RouteObject[], pathname: string) {
@@ -53,7 +55,7 @@ function getTargetTab(routes: RouteObject[], pathname: string) {
     const extractRoute = matchedRoutes.pop()!;
     const { route, params } = extractRoute;
 
-    const { tabMode, name, tabTemplate, redirect, element } = route;// 如果重定向, 则忽略
+    const { tabMode, name, tabTemplate, tabKey, redirect, element } = route;// 如果重定向, 则忽略
     if( !!redirect || element?.type?.name === 'NavigateWithParams' || (!name && !tabTemplate)){
       return undefined;
     }
@@ -63,6 +65,7 @@ function getTargetTab(routes: RouteObject[], pathname: string) {
       if (parent && !parent.route.isLayout) {
         // 根据父级生成对应的Tab
         return {
+          tabKey,
           ...omit(parent.route,['element']),
           initPathName: parent.pathname,
           tabMode: 'inner', // 需要替换父级菜单
@@ -86,6 +89,7 @@ function getTargetTab(routes: RouteObject[], pathname: string) {
       pathname,
     };
     return {
+      tabKey,
       ...page,
       initPathName: pathname,
       pages: [page],
@@ -303,6 +307,18 @@ const useTabs = (defaultTabs?: string[]) => {
     [tabState],
   );
 
+  const setTabBadge = useMemoizedFn((tabKey: string, badge?: number)=>{
+    setTabState(tabState=>{
+      tabState.wins = tabState.wins.map(win=>{
+        if(win.tabKey === tabKey){
+          return {...win,badge};
+        }
+        return win;
+      });
+      return {...tabState}
+    });
+  });
+
   return {
     ...tabState,
     removeTab,
@@ -310,6 +326,7 @@ const useTabs = (defaultTabs?: string[]) => {
     removeOthers,
     removeAll,
     refreshPage,
+    setTabBadge,
   };
 };
 

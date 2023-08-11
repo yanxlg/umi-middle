@@ -121,6 +121,8 @@ function TabLabel({widthType, name, badge}:{widthType: IWindowTabsProps['widthTy
 }
 
 
+export let setTabBadge = (tabKey: string, badge?: number)=>{};
+
 export default function WindowTabs(props: IWindowTabsProps) {
   const {
     activeKey,
@@ -130,6 +132,7 @@ export default function WindowTabs(props: IWindowTabsProps) {
     removeOthers,
     removeAll,
     refreshPage,
+    setTabBadge: _setTabBadge,
   } = useTabs(props.defaultTabs);
 
   const { pluginManager } = useAppData();
@@ -183,6 +186,12 @@ export default function WindowTabs(props: IWindowTabsProps) {
     // 切换到新的页面
     history.push(pathname);
   }, []);
+
+
+  useEffect(()=>{
+    setTabBadge = _setTabBadge;
+  },[]);
+
 
   return (
     <>
