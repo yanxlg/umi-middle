@@ -4,6 +4,7 @@ import React, { useCallback, useEffect } from "react";
 import { history, useAppData } from "umi";
 import "./themes/otb/index.less";
 import { useTabs } from "./useTabs";
+import ReloadOutlined from '@ant-design/icons/ReloadOutlined';
 
 import { Menu, useContextMenu } from "react-contexify";
 import "react-contexify/dist/ReactContexify.css";
@@ -109,15 +110,41 @@ interface IWindowTabsProps {
   /** 宽度模式 */
   widthType?: 'fit-content' | { type: 'maxWidth'; width: number } | { type: 'width'; width: number };
   defaultTabs?: string[];// 默认显示的tabs，通过path自动显示默认标签
+  rightMenu?: boolean;// 是否显示右键操作按钮。
+  reloadIcon?: boolean; // 是否显示刷新图标
 }
 
 
-function TabLabel({widthType, name, badge}:{widthType: IWindowTabsProps['widthType'], name: string, badge?: number}) {
+function TabLabel({widthType, name, badge}:{widthType: IWindowTabsProps['widthType']; name: string; badge?: number; onReload?: Function}) {
   const content = widthType === 'fit-content' ? name : <Tooltip title={name}><div style={ {[widthType.type]: widthType.width, textOverflow: 'ellipsis', overflow: 'hidden'} }>{name}</div></Tooltip>;
   if(void 0 === badge) {
-    return content;
+    return (
+      <>
+        {content}
+        {
+          onReload?(
+            <ReloadOutlined
+             style={{ marginLeft: 10, marginRight: 0 }}
+             onClick={onReload}
+           />
+          ):null
+        }
+      <>
+    );
   }
-  return <Badge count={badge}>{content}</Badge>
+  return (
+    <>
+      <Badge count={badge}>{content}</Badge>
+      {
+        onReload?(
+          <ReloadOutlined
+           style={{ marginLeft: 10, marginRight: 0 }}
+           onClick={onReload}
+         />
+        ):null
+      }
+    </>
+  )
 }
 
 
@@ -137,7 +164,7 @@ export default function WindowTabs(props: IWindowTabsProps) {
 
   const { pluginManager } = useAppData();
 
-  const { firstTabCloseable = true, closeable = true, widthType = defaultWidthConfig, showWhenEmptyTabs = true, style, className, theme } = props;
+  const { firstTabCloseable = true, closeable = true, widthType = defaultWidthConfig, showWhenEmptyTabs = true, style, className, theme, rightMenu = true, reloadIcon = false } = props;
 
   const { show } = useContextMenu({
     id: MENU_ID,
@@ -209,19 +236,23 @@ export default function WindowTabs(props: IWindowTabsProps) {
         animated={false}
         items={wins.map((node, index) => ({
           key: node.pathname,
-          label: <TabLabel widthType={widthType} name={node.name} badge={node.badge} />,
+          label: <TabLabel widthType={widthType} name={node.name} badge={node.badge} onReload={reloadIcon ? refreshPage: null}/>,
           closable: wins.length === 1 ? firstTabCloseable : closeable,
         }))}
-        onContextMenu={handleContextMenu}
+        onContextMenu={rightMenu ? handleContextMenu : null}
       />
-      <Menu id={MENU_ID} style={ { padding: 0 } }>
-        <ReplaceMenuWithAnt
-          removeTabByIndex={removeTabByIndex}
-          removeOthers={removeOthers}
-          removeAll={removeAll}
-          refreshPage={refreshPage}
-        />
-      </Menu>
+      {
+        rightMenu? (
+          <Menu id={MENU_ID} style={ { padding: 0 } }>
+            <ReplaceMenuWithAnt
+              removeTabByIndex={removeTabByIndex}
+              removeOthers={removeOthers}
+              removeAll={removeAll}
+              refreshPage={refreshPage}
+            />
+          </Menu>
+        ):null
+      }
     </>
   );
 }
