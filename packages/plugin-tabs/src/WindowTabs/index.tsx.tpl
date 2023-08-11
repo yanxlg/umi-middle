@@ -129,7 +129,7 @@ function TabLabel({widthType, name, badge}:{widthType: IWindowTabsProps['widthTy
            />
           ):null
         }
-      <>
+      </>
     );
   }
   return (
