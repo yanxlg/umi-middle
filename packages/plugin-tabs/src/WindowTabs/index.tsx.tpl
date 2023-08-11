@@ -124,7 +124,7 @@ function TabLabel({widthType, name, badge}:{widthType: IWindowTabsProps['widthTy
         {
           onReload?(
             <ReloadOutlined
-             style={{ marginLeft: 10, marginRight: 0 }}
+             style={ { marginLeft: 10, marginRight: 0 } }
              onClick={onReload}
            />
           ):null
@@ -138,7 +138,7 @@ function TabLabel({widthType, name, badge}:{widthType: IWindowTabsProps['widthTy
       {
         onReload?(
           <ReloadOutlined
-           style={{ marginLeft: 10, marginRight: 0 }}
+           style={ { marginLeft: 10, marginRight: 0 } }
            onClick={onReload}
          />
         ):null
