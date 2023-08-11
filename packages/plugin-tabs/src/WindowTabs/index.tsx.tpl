@@ -1,6 +1,6 @@
 import { Menu as AntdMenu, MenuProps, Tabs, Tooltip, Badge } from "antd";
 import type { MenuInfo } from "rc-menu/lib/interface";
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import { history, useAppData } from "umi";
 import "./themes/otb/index.less";
 import { useTabs } from "./useTabs";
