@@ -7,9 +7,12 @@
  *
  * Copyright (c) 2023 by yanxlg, All Rights Reserved.
  */
-import * as program from "commander";
+import * as commander from "commander";
 import { run } from "./index";
 import * as process from "process";
+
+
+const program = commander.program || commander;
 
 program.name("release-check");
 program.action(async () => {
