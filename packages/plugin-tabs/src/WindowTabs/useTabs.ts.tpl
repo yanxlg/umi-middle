@@ -33,15 +33,15 @@ export type IWindow = RouteObject & {
 
 function getMatchRoutes(routes: RouteObject[], pathname: string) {
   const segs = pathname.split('/');
-  const routes = [];
+  const _routes:RouteObject[] = [];
   for(let i = 0;i< segs.length;i++){
     const path = segs.slice(0,i+1);
     const matchRoutes = matchRoutes(routes, path);
     if(matchRoutes && matchRoutes.length >0){
-      routes.push(matchRoutes[matchRoutes.length-1]);
+      _routes.push(matchRoutes[matchRoutes.length-1]);
     }
   }
-  return routes;
+  return _routes;
 }
 
 function parseTemplateString(template: string, data: object) {
