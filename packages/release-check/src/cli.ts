@@ -7,12 +7,13 @@
  *
  * Copyright (c) 2023 by yanxlg, All Rights Reserved.
  */
-import { program } from "commander";
+import * as program from "commander";
 import { run } from "./index";
+import * as process from "process";
 
 program.name("release-check");
 program.action(async () => {
   await run();
 });
 
-program.parse();
+program.parse(process.argv);
