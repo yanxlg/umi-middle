@@ -118,6 +118,25 @@ function addPage(pages: PageType[], page: PageType) {
   pages.push(page);
 }
 
+
+
+function getWindowTabList(paths: string[], routes: RouteObject[]){
+  const tabPathList = Array.from(new Set(paths));// 可能会存在重复，
+  let windowTabList: IWindow[] = [];
+  for(let i=0;i<tabPathList.length;i++){
+    const path = tabPathList[i];
+    const target = getTargetTab(routes, path);
+    if(target){
+      const sameIndex = windowTabList.findIndex(_=>_.initPathName!==target.initPathName)
+      if(sameIndex > -1){
+        windowTabList.splice(sameIndex,1);
+      }
+      windowTabList.push(target);
+    }
+  }
+  return windowTabList;
+}
+
 // 跟sessionStorage 联动
 const useTabs = (defaultTabs?: string[]) => {
   const location = useLocation();
@@ -132,8 +151,7 @@ const useTabs = (defaultTabs?: string[]) => {
   }>('__window_tabs_cache__',{
     defaultValue: () => {
       const pathname = location.pathname;
-      const tabPathList = Array.from(new Set([pathname,...defaultTabs]));
-      const targetTabList = tabPathList.map(path=>getTargetTab(clientRoutes, path)).filter(Boolean);
+      const targetTabList = getWindowTabList([...defaultTabs, pathname],clientRoutes);
       return {
         activeKey: pathname,
         wins: targetTabList || [],
