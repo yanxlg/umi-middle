@@ -143,8 +143,8 @@ const useTabs = (defaultTabs?: string[]) => {
           // 聚合在父级Tab下，如果没有则创建
           const findParentTab = wins.find(
             (parent) =>
-              parent.path === targetTab.path &&
-              parent.initPathName === targetTab.initPathName,
+              String(parent.path).toLowerCase() === String(targetTab.path).toLowerCase() &&
+              String(parent.initPathName).toLowerCase() === String(targetTab.initPathName).toLowerCase(),
           );
           if (!findParentTab) {
             return {
