@@ -127,7 +127,7 @@ function getWindowTabList(paths: string[], routes: RouteObject[]){
     const path = tabPathList[i];
     const target = getTargetTab(routes, path);
     if(target){
-      const sameIndex = windowTabList.findIndex(_=>_.initPathName!==target.initPathName)
+      const sameIndex = windowTabList.findIndex(_=>_.initPathName===target.initPathName)
       if(sameIndex > -1){
         windowTabList.splice(sameIndex,1);
       }
