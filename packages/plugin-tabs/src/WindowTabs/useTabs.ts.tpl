@@ -35,7 +35,7 @@ function getMatchRoutes(routes: RouteObject[], pathname: string) {
   const segs = pathname.split('/');
   const _routes:RouteObject[] = [];
   for(let i = 0;i< segs.length;i++){
-    const path = segs.slice(0,i+1);
+    const path = segs.slice(0,i+1).join('/');
     const _matchRoutes = matchRoutes(routes, path);
     if(_matchRoutes && _matchRoutes.length >0){
       _routes.push(_matchRoutes[_matchRoutes.length-1]);
