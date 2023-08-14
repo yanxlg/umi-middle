@@ -17,8 +17,10 @@
     "chalk": "4.1.2",
     "commander": "^7.2.0",
     "dayjs": "^1.11.8",
-    "father": "^4.1.8",
     "simple-git": "3.19.0"
+  },
+  "devDependencies": {
+    "father": "^4.1.8"
   },
   "engines": {
     "node": ">= 10"
