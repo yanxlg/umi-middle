@@ -129,9 +129,10 @@ function getWindowTabList(paths: string[], routes: RouteObject[]){
     if(target){
       const sameIndex = windowTabList.findIndex(_=>_.initPathName===target.initPathName)
       if(sameIndex > -1){
-        windowTabList.splice(sameIndex,1);
+        windowTabList.splice(sameIndex,1,target);
+      }else{
+        windowTabList.push(target);
       }
-      windowTabList.push(target);
     }
   }
   return windowTabList;
