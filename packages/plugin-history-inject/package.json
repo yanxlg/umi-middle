@@ -1,6 +1,6 @@
 {
   "name": "@middle-cli/plugin-history-inject",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "plugin for middle cli to inject history to __history__",
   "keywords": [],
   "license": "MIT",
