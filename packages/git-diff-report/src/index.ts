@@ -26,7 +26,16 @@ type Module = {
   modules?: Array<Module>;
 }
 
-class SourceAnalyzerPlugin {
+
+const cwd_path = process.cwd();
+
+
+function isInCommon(commonDirs: string[], file_path: string) {
+  return commonDirs.find((dir: string) => file_path.startsWith(dir));
+}
+
+
+class ChangeAnalyzerPlugin {
   private readonly options: { sitBranch?: string; mainBranch?: string; commonDirs?: string } = {};
 
   constructor(opts = {}) {
@@ -57,12 +66,11 @@ class SourceAnalyzerPlugin {
       const diff = await git.diffSummary([mainBranch, sitBranch]);
       const {files} = diff;
 
-      const commonDirList = commonDirs.split(',');
+      const commonDirList = commonDirs.split(',').map(_ => join(cwd_path, _));
 
-      const publicFiles = files.filter(_ => {
-        const file = _.file;
-        return commonDirList.find((dir: string) => file.startsWith(dir));
-      }).map(_ => join(process.cwd(), _.file));
+      const publicFiles = files.map(_ => join(cwd_path, _.file)).filter(_ => {
+        return isInCommon(commonDirList, _);
+      });
 
       if (publicFiles.length === 0) {
         console.log('---------------------git diff report: no file change----------------------');
@@ -99,7 +107,12 @@ class SourceAnalyzerPlugin {
                   if (originModule) {
                     // webpack 5.0
                     const file = originModule[key];
-                    parentSet.add(file);
+                    if(isInCommon(commonDirList,file)){
+                      const parents = getRelationParent(file);
+                      parents.forEach(p=>parentSet.add(p));
+                    }else{
+                      parentSet.add(file);
+                    }
                   }
                   // webpack 4.0
                   if (dependency) {
@@ -107,7 +120,12 @@ class SourceAnalyzerPlugin {
                       const originModule = dependency.originModule;
                       if (originModule) {
                         const file = originModule[key];
-                        parentSet.add(file);
+                        if(isInCommon(commonDirList,file)){
+                          const parents = getRelationParent(file);
+                          parents.forEach(p=>parentSet.add(p));
+                        }else{
+                          parentSet.add(file);
+                        }
                       }
                     }
                   }
@@ -128,7 +146,7 @@ class SourceAnalyzerPlugin {
 
       publicFiles.forEach(originFile => {
         const relationParent = getRelationParent(originFile);
-        console.log(relationParent);
+        console.log(`改动文件：${originFile},影响文件：${relationParent}`);
       });
 
 
@@ -143,4 +161,4 @@ class SourceAnalyzerPlugin {
   }
 }
 
-export {SourceAnalyzerPlugin};
+export {ChangeAnalyzerPlugin};
