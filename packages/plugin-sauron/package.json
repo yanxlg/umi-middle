@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@middle-cli/plugin-sentry": "^0.3.1",
-    "@yh/yh-sauron": "^4.1.1"
+    "@yh/yh-sauron": "^4.1.2"
   },
   "authors": {
     "name": "libk <libk1@yonghui.cn>",
