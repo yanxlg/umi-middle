@@ -26,7 +26,7 @@ type Module = {
   modules?: Array<Module>;
 }
 
-class BundleAnalyzerPlugin {
+class SourceAnalyzerPlugin {
   private readonly options: { sitBranch?: string; mainBranch?: string; commonDirs?: string } = {};
 
   constructor(opts = {}) {
@@ -143,4 +143,4 @@ class BundleAnalyzerPlugin {
   }
 }
 
-export default BundleAnalyzerPlugin;
+export {SourceAnalyzerPlugin};
