@@ -134,6 +134,7 @@ export default async (api: IApi) => {
   });
 
   function cleanSourceMapAfterUpload(dir: string) {
+    if(!fs.existsSync(dir)) return;
     fs.readdirSync(dir).forEach((file) => {
       const filePath = join(dir, file);
       if (fs.statSync(filePath).isDirectory()) {
