@@ -11,6 +11,7 @@ import {join} from 'path';
 
 const git = simpleGit({baseDir: process.cwd()});
 
+const request = require('request');
 
 type Reason = {
   dependency: {
@@ -59,6 +60,15 @@ class ChangeAnalyzerPlugin {
 
       if (!sitBranch || !mainBranch || !commonDirs) {
         console.log('---------------------git diff report: 配置不完善----------------------');
+        callback();
+        return;
+      }
+
+      const {current: _current, all} = await git.branch(); // 是不是所有的远程分支都能拿到
+      const current = process.env.CI_COMMIT_REF_NAME || _current;
+
+      if(current !== sitBranch){
+        console.log(`---------------------git diff report: ${current}分支不做检测----------------------`);
         callback();
         return;
       }
@@ -144,12 +154,30 @@ class ChangeAnalyzerPlugin {
         return Array.from(parentSet);
       }
 
+
+      const changeList:Array<{
+        source: string;
+        dependencies: string[];
+      }> = [];
+
       publicFiles.forEach(originFile => {
-        const relationParent = getRelationParent(originFile);
-        console.log(`改动文件：${originFile},影响文件：${relationParent}`);
+        const relationParent = getRelationParent(originFile) as string[];
+        changeList.push({
+          source: originFile,
+          dependencies: relationParent
+        })
+      });
+
+      request({
+        url: 'https://www.feishu.cn/flow/api/trigger-webhook/9cea35854efe3bc79c8d7e04568d55a0',
+        method: 'POST',
+        body: JSON.stringify({
+          changeList: changeList.map(change=>({source:change.source,dependencies:change.dependencies.join(',')}))
+        })
       });
 
 
+      console.log(changeList); // 需要发起机器人接口，创建文档
       callback();
     };
 
