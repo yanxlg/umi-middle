@@ -8,6 +8,7 @@
 
 import {simpleGit} from "simple-git";
 import {join} from 'path';
+import dayjs from 'dayjs';
 
 const git = simpleGit({baseDir: process.cwd()});
 
@@ -36,8 +37,14 @@ function isInCommon(commonDirs: string[], file_path: string) {
 }
 
 
-class ChangeAnalyzerPlugin {
-  private readonly options: { sitBranch?: string; mainBranch?: string; commonDirs?: string } = {};
+export class ChangeAnalyzerPlugin {
+  private readonly options: {
+    sitBranch?: string;
+    mainBranch?: string;
+    commonDirs?: string;
+    webhook?: string;
+    users?: string[];
+  } = {};
 
   constructor(opts = {}) {
     this.options = opts;
@@ -56,9 +63,9 @@ class ChangeAnalyzerPlugin {
       callback = callback || (() => {
       });
 
-      const {sitBranch, mainBranch, commonDirs} = this.options;
+      const {sitBranch, mainBranch, commonDirs, webhook, users} = this.options;
 
-      if (!sitBranch || !mainBranch || !commonDirs) {
+      if (!sitBranch || !mainBranch || !commonDirs || !webhook) {
         console.log('---------------------git diff report: 配置不完善----------------------');
         callback();
         return;
@@ -67,13 +74,13 @@ class ChangeAnalyzerPlugin {
       const {current: _current, all} = await git.branch(); // 是不是所有的远程分支都能拿到
       const current = process.env.CI_COMMIT_REF_NAME || _current;
 
-      if(current !== sitBranch){
+      if (current !== sitBranch) {
         console.log(`---------------------git diff report: ${current}分支不做检测----------------------`);
         callback();
         return;
       }
 
-      const diff = await git.diffSummary([mainBranch, sitBranch]);
+      const diff = await git.diffSummary([`origin/${mainBranch}`, `origin/${sitBranch}`]);
       const {files} = diff;
 
       const commonDirList = commonDirs.split(',').map(_ => join(cwd_path, _));
@@ -117,10 +124,10 @@ class ChangeAnalyzerPlugin {
                   if (originModule) {
                     // webpack 5.0
                     const file = originModule[key];
-                    if(isInCommon(commonDirList,file)){
+                    if (isInCommon(commonDirList, file)) {
                       const parents = getRelationParent(file);
-                      parents.forEach(p=>parentSet.add(p));
-                    }else{
+                      parents.forEach(p => parentSet.add(p));
+                    } else {
                       parentSet.add(file);
                     }
                   }
@@ -130,10 +137,10 @@ class ChangeAnalyzerPlugin {
                       const originModule = dependency.originModule;
                       if (originModule) {
                         const file = originModule[key];
-                        if(isInCommon(commonDirList,file)){
+                        if (isInCommon(commonDirList, file)) {
                           const parents = getRelationParent(file);
-                          parents.forEach(p=>parentSet.add(p));
-                        }else{
+                          parents.forEach(p => parentSet.add(p));
+                        } else {
                           parentSet.add(file);
                         }
                       }
@@ -155,7 +162,7 @@ class ChangeAnalyzerPlugin {
       }
 
 
-      const changeList:Array<{
+      const changeList: Array<{
         source: string;
         dependencies: string[];
       }> = [];
@@ -168,16 +175,31 @@ class ChangeAnalyzerPlugin {
         })
       });
 
+
+      const logs = await git.log();
+
+      const submitList = logs.all.filter(submit=>dayjs().diff(dayjs(submit.date),'day') < 14);
+
+      const wechatMsg = {
+        "msgtype": "markdown",
+        "markdown": {
+          "content": '## 文件影响范围:\n\n' +
+            "> 公共组件/模块 修改 所关联的引用文件，研发与测试根据此可确定回归范围\n\n" +
+            changeList.map(change => `**[公共文件变更]**：${change.source.replace(cwd_path, '')}\n**[关联文件]**：\n${change.dependencies.map(dep => dep.replace(cwd_path, '')).join('\n')}`).join('\n\n\n\n') +
+            "\n\n\n\n## 提交记录:\n\n" +
+            `> 近2周共${submitList.length}commit\n\n` +
+            submitList.slice(0, 3).map(log => `[提交人]:${log.author_name} \n[提交日期]:${log.date} \n[提交说明]:${log.message}`).join('\n\n\n\n') +
+            "\n\n\n\n请对应研发和测试参考以上内容进行回归" +
+            users?.map(user => `<@${user}>`).join(''),
+        },
+      }
+
+      // 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=90d04116-5345-45b8-92a9-c156c1e905f1'
       request({
-        url: 'https://www.feishu.cn/flow/api/trigger-webhook/9cea35854efe3bc79c8d7e04568d55a0',
-        method: 'POST',
-        body: JSON.stringify({
-          changeList: changeList.map(change=>({source:change.source,dependencies:change.dependencies.join(',')}))
-        })
-      });
-
-
-      console.log(changeList); // 需要发起机器人接口，创建文档
+        url: webhook,
+        method: "POST",
+        body: JSON.stringify(wechatMsg)
+      })
       callback();
     };
 
@@ -188,5 +210,3 @@ class ChangeAnalyzerPlugin {
     }
   }
 }
-
-export {ChangeAnalyzerPlugin};
