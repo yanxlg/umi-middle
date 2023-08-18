@@ -29,6 +29,10 @@ function getDate(branchName: string) {
       return currentYear.substring(0, 2) + dateStr;
     case 4:
       return currentYear + dateStr;
+    default:
+      if (length > 8) {
+        return dateStr.slice(-8);
+      }
   }
   return dayjs().format('YYYYMMDD');
 }

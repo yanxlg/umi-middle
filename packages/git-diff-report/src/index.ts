@@ -107,7 +107,7 @@ export class ChangeAnalyzerPlugin {
 
       // 需要溯源到非公共目录
       function getRelationParent(filePath: string) {
-        const parentSet = new Set();
+        const parentSet = new Set();  // 获取对应文件的注释，通过注释解析文件解释。
 
         const key = 'userRequest';// 还是使用 resource？？
         const modules = stats.compilation.modules;
