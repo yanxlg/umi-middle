@@ -14,7 +14,8 @@
     "chalk": "4.1.2",
     "dayjs": "^1.11.8",
     "request": "^2.88.2",
-    "simple-git": "3.19.0"
+    "simple-git": "3.19.0",
+    "@documented-style-sheets/parser": "1.0.5"
   },
   "engines": {
     "node": ">= 10"

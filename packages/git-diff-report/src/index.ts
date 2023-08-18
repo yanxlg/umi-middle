@@ -9,6 +9,9 @@
 import {simpleGit} from "simple-git";
 import {join} from 'path';
 import dayjs from 'dayjs';
+import * as fs from 'fs';
+
+import {parse} from './parser';
 
 const git = simpleGit({baseDir: process.cwd()});
 
@@ -26,6 +29,7 @@ type Module = {
   request: string;
   reasons?: Array<Reason>;
   modules?: Array<Module>;
+  _source?: { _value?: string };
 }
 
 
@@ -116,6 +120,12 @@ export class ChangeAnalyzerPlugin {
         function checkModules(modules: Array<Module> | Set<Module>) {
           modules.forEach(_ => {
             if (_[key] && _[key] === filePath) {
+              // 读取内容
+              const content = fs.readFileSync(filePath).toString('utf-8');
+              parse(content, {}, (parsedObject: any) => {
+                console.log(parsedObject)
+              })
+
               const reasons: Module['reasons'] = _.reasons ? _.reasons : moduleGraph ? Array.from(moduleGraph.getIncomingConnections(_)) : undefined;
               if (reasons) {
                 reasons.forEach(reason => {
@@ -178,7 +188,7 @@ export class ChangeAnalyzerPlugin {
 
       const logs = await git.log();
 
-      const submitList = logs.all.filter(submit=>dayjs().diff(dayjs(submit.date),'day') < 14);
+      const submitList = logs.all.filter(submit => dayjs().diff(dayjs(submit.date), 'day') < 14);
 
       const wechatMsg = {
         "msgtype": "markdown",
