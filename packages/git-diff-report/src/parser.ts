@@ -8,6 +8,10 @@
 
 import {extend, isArray} from 'lodash';
 
+
+type Block = { meta: { [key: string]: unknown[] }; from: number; to: number };
+
+
 /*
   * Get the index of string inside of another
   */
@@ -87,7 +91,7 @@ class DSS {
   }
 
   trim = (str: string, arr?: RegExp[]) => {
-    const defaults = [/^\s\s*/, /\s\s*$/, /^:/, /:$/]
+    const defaults = [/^\s*:/, /:\s*$/, /^\s\s*/, /\s\s*$/]
     arr = (isArray(arr)) ? arr.concat(defaults) : defaults
     arr.forEach(function (regEx) {
       str = str.replace(regEx, '')
@@ -105,7 +109,7 @@ class DSS {
     return this.trim(textBlock.replace(/^(\s*\*+)/, ''))
   }
 
-  parse = (lines: string, options: { preserve_whitespace?: boolean }, fn: Function) => {
+  parse = (lines: string, options: { preserve_whitespace?: boolean }) => {
     // Options
     options = (options) || {}
     options.preserve_whitespace = !!(options.preserve_whitespace)
@@ -116,7 +120,7 @@ class DSS {
     let insideMultiLineBlock = false
     const _blocks: Array<{ text: string; from: number; to: number }> = []
     let parsed = ''
-    const blocks: Array<{ meta: { [key: string]: unknown[] }; from: number; to: number }> = []
+    const blocks: Block[] = []
 
     let lineNum = 0
     let from = 0
@@ -200,8 +204,7 @@ class DSS {
       });
     })
 
-    // Execute callback with filename and blocks
-    fn({blocks})
+    return blocks;
   }
 
   _parse = (temp: {
@@ -255,7 +258,7 @@ class DSS {
           line = this.trim(line)
         }
 
-        if (line && line.indexOf(parserMarker) === -1) {
+        if (line.trim() && line.indexOf(parserMarker) === -1) {
           ret.push(line)
         }
       })

@@ -32,12 +32,31 @@ type Module = {
   _source?: { _value?: string };
 }
 
+type RelationTree = {
+  path: string;
+  meta?: {
+    component?: string;
+    util?: string;
+    page?: string;
+    module?: string;
+  };
+  parents?: RelationTree[]
+}
+
+type FlatRelationTree = { path: string; meta: RelationTree['meta']; parent?: FlatRelationTree }
+
 
 const cwd_path = process.cwd();
 
 
 function isInCommon(commonDirs: string[], file_path: string) {
   return commonDirs.find((dir: string) => file_path.startsWith(dir));
+}
+
+
+function getCommentBlocks(filePath: string) {
+  const content = fs.readFileSync(filePath).toString('utf-8').replace(/^\s*\n*/, '');// 处理顶部空格和换行
+  return parse(content, {});
 }
 
 
@@ -58,6 +77,7 @@ export class ChangeAnalyzerPlugin {
     hooks?: { done: { tapAsync: (event: string, callback: Function) => void } };
     plugin: (event: string, callback: Function) => void;
   }) {
+
     const done = async (stats: {
       compilation: {
         modules: Module[] | Set<Module>;
@@ -109,36 +129,40 @@ export class ChangeAnalyzerPlugin {
       // 4. 机器人发送通知，生成修改文件对应的excel文档，发送到产研群，由前端研发补齐具体页面/场景描述。
 
 
-      // 需要溯源到非公共目录
-      function getRelationParent(filePath: string) {
-        const parentSet = new Set();  // 获取对应文件的注释，通过注释解析文件解释。
+      const leafMap = new Map<string, RelationTree>();
 
+
+      // 需要溯源到非公共目录
+      function getTreeLeaf(filePath: string) {
         const key = 'userRequest';// 还是使用 resource？？
         const modules = stats.compilation.modules;
         const moduleGraph = stats.compilation.moduleGraph;
 
-        function checkModules(modules: Array<Module> | Set<Module>) {
-          modules.forEach(_ => {
-            if (_[key] && _[key] === filePath) {
-              // 读取内容
-              const content = fs.readFileSync(filePath).toString('utf-8');
-              parse(content, {}, (parsedObject: any) => {
-                console.log(parsedObject)
-              })
+        if (leafMap.has(filePath)) {
+          return leafMap.get(filePath);
+        }
 
+        function checkModules(modules: Array<Module> | Set<Module>): RelationTree | undefined {
+          for (let _ of modules) {
+            if (_[key] && _[key] === filePath) { // 向上查找，如果引用在组件目录中。 需要做缓存，减少时间消耗。
+              const blocks = getCommentBlocks(filePath);
+              const block = blocks.find(block => !!block.meta.component || !!block.meta.util || !!block.meta.module || !!block.meta.page); // 组件、工具、模块、页面。
+
+              const leaf: RelationTree = {
+                path: filePath,
+                meta: block?.meta,
+                parents: []
+              };
               const reasons: Module['reasons'] = _.reasons ? _.reasons : moduleGraph ? Array.from(moduleGraph.getIncomingConnections(_)) : undefined;
-              if (reasons) {
+              if (reasons) {// 查找引用，父级
                 reasons.forEach(reason => {
                   const dependency = reason.dependency;
                   const originModule = reason.originModule;
                   if (originModule) {
                     // webpack 5.0
                     const file = originModule[key];
-                    if (isInCommon(commonDirList, file)) {
-                      const parents = getRelationParent(file);
-                      parents.forEach(p => parentSet.add(p));
-                    } else {
-                      parentSet.add(file);
+                    if (!leaf.parents?.find(leaf => leaf.path === file)) {
+                      leaf.parents!.push(getTreeLeaf(file)!);
                     }
                   }
                   // webpack 4.0
@@ -147,60 +171,220 @@ export class ChangeAnalyzerPlugin {
                       const originModule = dependency.originModule;
                       if (originModule) {
                         const file = originModule[key];
-                        if (isInCommon(commonDirList, file)) {
-                          const parents = getRelationParent(file);
-                          parents.forEach(p => parentSet.add(p));
-                        } else {
-                          parentSet.add(file);
+                        if (!leaf.parents?.find(leaf => leaf.path === file)) {
+                          leaf.parents!.push(getTreeLeaf(file)!);
                         }
                       }
                     }
                   }
                 });
               }
+              return leaf;
             }
             const subModules = _.modules;
             if (subModules) {
-              checkModules(subModules);
+              const result = checkModules(subModules);
+              if (result) {
+                return result;
+              }
             }
-          });
+          }
         }
 
-        checkModules(modules);
-
-        return Array.from(parentSet);
+        const leaf = checkModules(modules);
+        leafMap.set(filePath, leaf!); // 缓存
+        return leaf;
       }
 
 
-      const changeList: Array<{
-        source: string;
-        dependencies: string[];
-      }> = [];
+      // const changeList: Array<{
+      //   source: string;
+      //   dependencies: string[];
+      // }> = [];
+      //
+      // publicFiles.forEach(originFile => {
+      //   const relationParent = getTreeLeaf(originFile);
+      //   changeList.push({
+      //     source: originFile,
+      //     dependencies: relationParent
+      //   })
+      // });
 
-      publicFiles.forEach(originFile => {
-        const relationParent = getRelationParent(originFile) as string[];
-        changeList.push({
-          source: originFile,
-          dependencies: relationParent
-        })
+      const treeList = publicFiles.map(file => getTreeLeaf(file)).filter(Boolean) as RelationTree[];
+
+
+      // 解释查找，如果无法找到则使用配置目录外的第一个文件地址作为范围提示。
+
+      // 先完成平铺
+
+
+      const flatTree = function (tree: RelationTree[] | undefined) {
+        if (!tree || !tree.length) {
+          return [undefined];// 空的，向上
+        }
+        const flatParent: Array<FlatRelationTree> = [];
+
+        tree.forEach(leaf => {
+          const {parents} = leaf;
+          const _flatParent = flatTree(parents);
+          _flatParent.forEach(p => {
+            flatParent.push({
+              path: leaf.path,
+              meta: leaf.meta,
+              parent: p
+            });
+          });
+        });
+        return flatParent;
+      }
+
+      const flatTreeList = flatTree(treeList);
+
+
+
+      const changes = flatTreeList.map((leaf) => {
+        const findByComponentName = function (leaf: FlatRelationTree):string|undefined {
+          const {path, meta, parent} = leaf;
+          if (!isInCommon(commonDirList, path)) {
+            return undefined;
+          }
+          if (meta && meta.component) {
+            return meta.component
+          }
+          if (parent) {
+            return findByComponentName(parent);
+          }
+        }
+        const findByUtilName = function (leaf: FlatRelationTree):string|undefined {
+          const {path, meta, parent} = leaf;
+          if (!isInCommon(commonDirList, path)) {
+            return undefined;
+          }
+          if (meta && meta.util) {
+            return meta.util
+          }
+          if (parent) {
+            return findByUtilName(parent);
+          }
+        }
+        const findModuleName = function (leaf: FlatRelationTree): string | undefined {
+          const {path, meta, parent} = leaf;
+
+          if (isInCommon(commonDirList, path) && parent) {
+            return findModuleName(parent);
+          }
+          if (!isInCommon(commonDirList, path)) {
+            if (meta && meta.module) {
+              return meta.module
+            }
+          }
+
+          if(parent){
+            return findModuleName(parent);
+          }
+        }
+
+        const findPageName = function (leaf: FlatRelationTree): string | undefined {
+          const {path, meta, parent} = leaf;
+
+          if (isInCommon(commonDirList, path) && parent) {
+            return findPageName(parent);
+          }
+          if (!isInCommon(commonDirList, path)) {
+            if (meta && meta.page) {
+              return meta.page
+            }
+          }
+          if(parent){
+            return findPageName(parent);
+          }
+        }
+
+        const findPrivateParentPath = function (leaf: FlatRelationTree): string|undefined {
+          const {path, meta, parent} = leaf;
+
+          if (isInCommon(commonDirList, path) && parent) {
+            return findPrivateParentPath(parent);
+          }
+          if (!isInCommon(commonDirList, path)) {
+            return leaf.path;
+          }
+        }
+
+        if (leaf) {
+          // 在公共目录范围内查找组件和工具
+          return {
+            rootPath: leaf.path,
+            parentPath: findPrivateParentPath(leaf),
+            component: findByComponentName(leaf),
+            util: findByUtilName(leaf),
+            module: findModuleName(leaf),
+            page: findPageName(leaf)
+          }
+        }
+        return undefined;
       });
 
 
+      console.log(JSON.stringify(flatTreeList, null, 2));
       const logs = await git.log();
 
       const submitList = logs.all.filter(submit => dayjs().diff(dayjs(submit.date), 'day') < 14);
 
+
+      // 构建消息内容
+      const msgContent = [];
+      msgContent.push('## 变更影响:\n\n');
+      msgContent.push('> 对比master代码，存在差异的公共组件/工具类，及其关联的页面/模块，研发与测试根据此可确定回归范围\n\n');
+
+      // 需要根据key聚合
+      const changeMap = new Map<string,{
+        pageModules?: string[];
+        fileList?: string[];
+      }>();
+      changes.filter(Boolean).forEach(change=>{
+        const {component,util,page,module,rootPath,parentPath} = change!;
+        const key = component? `修改组件：${component}`: util? `修改工具类：${util}`: `修改文件：${rootPath}`;
+        if(!changeMap.has(key)){
+          changeMap.set(key,{
+            pageModules: [],
+            fileList: []
+          })
+        }
+        const pageModules = changeMap.get(key)?.pageModules!;
+        const fileList = changeMap.get(key)?.fileList!;
+        if(page){
+          pageModules.push(`「${page}」页面${module?`-「${module}」模块`:''}`);
+        }else if(parentPath){
+          fileList.push(parentPath);
+        }
+      });
+
+
+      changeMap.forEach((change,key)=>{
+        msgContent.push(key);
+        msgContent.push('\n');
+        const {pageModules,fileList} = change;
+        if(pageModules && pageModules.length){
+          msgContent.push(`影响模块：${pageModules.join('、')}`);
+          msgContent.push('\n');
+        }
+        if(fileList && fileList.length){
+          msgContent.push(`影响文件(未备注模块/页面名)：${fileList.join('、')}`);
+        }
+        msgContent.push('\n\n\n');
+      })
+      msgContent.push("\n\n\n\n## 提交记录:\n\n");
+      msgContent.push( `> 近2周共${submitList.length}commit\n\n`);
+
+      submitList.forEach(log => msgContent.push(`[提交人]:${log.author_name} \n[提交日期]:${log.date} \n[提交说明]:${log.message}\n\n\n\n`));
+      msgContent.push("\n\n\n\n请对应研发和测试参考以上内容进行回归");
+      users?.forEach(user => msgContent.push(`<@${user}>`));
+
       const wechatMsg = {
         "msgtype": "markdown",
         "markdown": {
-          "content": '## 文件影响范围:\n\n' +
-            "> 公共组件/模块 修改 所关联的引用文件，研发与测试根据此可确定回归范围\n\n" +
-            changeList.map(change => `**[公共文件变更]**：${change.source.replace(cwd_path, '')}\n**[关联文件]**：\n${change.dependencies.map(dep => dep.replace(cwd_path, '')).join('\n')}`).join('\n\n\n\n') +
-            "\n\n\n\n## 提交记录:\n\n" +
-            `> 近2周共${submitList.length}commit\n\n` +
-            submitList.slice(0, 3).map(log => `[提交人]:${log.author_name} \n[提交日期]:${log.date} \n[提交说明]:${log.message}`).join('\n\n\n\n') +
-            "\n\n\n\n请对应研发和测试参考以上内容进行回归" +
-            users?.map(user => `<@${user}>`).join(''),
+          "content": msgContent.join(''),
         },
       }
 
