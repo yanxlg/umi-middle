@@ -325,8 +325,6 @@ export class ChangeAnalyzerPlugin {
         return undefined;
       });
 
-
-      console.log(JSON.stringify(flatTreeList, null, 2));
       const logs = await git.log();
 
       const submitList = logs.all.filter(submit => dayjs().diff(dayjs(submit.date), 'day') < 14);
