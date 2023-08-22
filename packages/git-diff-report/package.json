@@ -1,6 +1,6 @@
 {
   "name": "git-diff-report",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "对比测试分支与主分支，生成公共代码影响范围表格，通过机器人进行推送",
   "main": "lib/index.js",
   "files": [
@@ -11,11 +11,11 @@
     "build": "father build"
   },
   "dependencies": {
+    "@documented-style-sheets/parser": "1.0.5",
     "chalk": "4.1.2",
     "dayjs": "^1.11.8",
     "request": "^2.88.2",
-    "simple-git": "3.19.0",
-    "@documented-style-sheets/parser": "1.0.5"
+    "simple-git": "3.19.0"
   },
   "engines": {
     "node": ">= 10"
