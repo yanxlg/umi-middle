@@ -20,8 +20,10 @@ const request = require('request');
 type Reason = {
   dependency: {
     originModule?: Module;
+    module?: Module;
   };
-  originModule: Module
+  originModule: Module;
+  module: Module;
 }
 
 type Module = {
@@ -147,36 +149,45 @@ export class ChangeAnalyzerPlugin {
             if (_[key] && _[key] === filePath) { // 向上查找，如果引用在组件目录中。 需要做缓存，减少时间消耗。
               const blocks = getCommentBlocks(filePath);
               const block = blocks.find(block => !!block.meta.component || !!block.meta.util || !!block.meta.module || !!block.meta.page); // 组件、工具、模块、页面。
-
               const leaf: RelationTree = {
                 path: filePath,
                 meta: block?.meta,
                 parents: []
               };
+              leafMap.set(filePath, leaf); // 缓存
               const reasons: Module['reasons'] = _.reasons ? _.reasons : moduleGraph ? Array.from(moduleGraph.getIncomingConnections(_)) : undefined;
               if (reasons) {// 查找引用，父级
                 reasons.forEach(reason => {
                   const dependency = reason.dependency;
                   const originModule = reason.originModule;
+                  // const module = reason.module; // webpack 3.x
+
                   if (originModule) {
                     // webpack 5.0
                     const file = originModule[key];
-                    if (!leaf.parents?.find(leaf => leaf.path === file)) {
+                    if (filePath !== file && !leaf.parents?.find(leaf => leaf.path === file)) {
                       leaf.parents!.push(getTreeLeaf(file)!);
                     }
                   }
                   // webpack 4.0
                   if (dependency) {
-                    if (dependency) {
-                      const originModule = dependency.originModule;
-                      if (originModule) {
-                        const file = originModule[key];
-                        if (!leaf.parents?.find(leaf => leaf.path === file)) {
-                          leaf.parents!.push(getTreeLeaf(file)!);
-                        }
+                    if(filePath.indexOf('Preview/index') > -1){
+                      console.log(dependency.module);
+                    }
+                    const originModule = dependency.originModule || dependency.module;
+                    if (originModule) {
+                      const file = originModule[key];
+                      if (filePath !== file && !leaf.parents?.find(leaf => leaf.path === file)) {
+                        leaf.parents!.push(getTreeLeaf(file)!);
                       }
                     }
                   }
+                  // if(module) {
+                  //   const file = module[key];
+                  //   if (filePath !== file && !leaf.parents?.find(leaf => leaf.path === file)) {
+                  //     leaf.parents!.push(getTreeLeaf(file)!);
+                  //   }
+                  // }
                 });
               }
               return leaf;
@@ -191,9 +202,7 @@ export class ChangeAnalyzerPlugin {
           }
         }
 
-        const leaf = checkModules(modules);
-        leafMap.set(filePath, leaf!); // 缓存
-        return leaf;
+        return checkModules(modules);
       }
 
 
@@ -225,6 +234,7 @@ export class ChangeAnalyzerPlugin {
         const flatParent: Array<FlatRelationTree> = [];
 
         tree.forEach(leaf => {
+          if(!leaf) return;
           const {parents} = leaf;
           const _flatParent = flatTree(parents);
           _flatParent.forEach(p => {
@@ -239,7 +249,6 @@ export class ChangeAnalyzerPlugin {
       }
 
       const flatTreeList = flatTree(treeList);
-
 
 
       const changes = flatTreeList.map((leaf) => {
