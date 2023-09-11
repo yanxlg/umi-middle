@@ -53,9 +53,12 @@ function parseOption(choice: ChoiceType) {
   };
 }
 
+
+const getOptions = fetch(`//unpkg.com/create-middle@0.3.14/dist/config.json`);
+
+
 const CliOptionsForm = ({
   form,
-  version = "latest",
   cols = 3,
   disabled: globalDisabled
 }: {
@@ -82,7 +85,7 @@ const CliOptionsForm = ({
 
   useEffect(() => {
     // 加载配置json
-    fetch(`//unpkg.com/create-middle@${version}/dist/config.json`)
+    getOptions
       .then<CliOptionsConfig>((res) => res.json())
       .then((json) => {
         setConfig(json);
