@@ -220,7 +220,7 @@ const CliOptionsForm = ({
         return (
           <React.Fragment key={group}>
             <Divider orientation="left">{group}</Divider>
-            <Row>
+            <Row gutter={[24,0]}>
               {filterOptions.map((option) => {
                 const { required, name, label, type, initial, choices } =
                   option;
