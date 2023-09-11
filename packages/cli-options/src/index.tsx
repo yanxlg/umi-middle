@@ -54,7 +54,7 @@ function parseOption(choice: ChoiceType) {
 }
 
 
-const getOptions = fetch(`//unpkg.com/create-middle@0.3.14/dist/config.json`);
+const getOptions = fetch(`//unpkg.com/create-middle@0.3.14/dist/config.json`).then<CliOptionsConfig>((res) => res.json());
 
 
 const CliOptionsForm = ({
@@ -86,7 +86,6 @@ const CliOptionsForm = ({
   useEffect(() => {
     // 加载配置json
     getOptions
-      .then<CliOptionsConfig>((res) => res.json())
       .then((json) => {
         setConfig(json);
         // 初始选项进行初始化
