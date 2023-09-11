@@ -60,12 +60,14 @@ const getOptions = fetch(`//unpkg.com/create-middle@0.3.14/dist/config.json`).th
 const CliOptionsForm = ({
   form,
   cols = 3,
-  disabled: globalDisabled
+  disabled: globalDisabled,
+  maxWidth
 }: {
   form: FormInstance;
   version?: string;
   cols?: number;
   disabled?: boolean;
+  maxWidth?: number;
 }) => {
   const disabledFieldsMapRef = useRef<Map<string, Set<string>>>(
     new Map<string, Set<string>>()
@@ -256,7 +258,7 @@ const CliOptionsForm = ({
                           initialValue={initial}
                           rules={rules}
                         >
-                          <Input disabled={disabled} allowClear />
+                          <Input disabled={disabled} allowClear style={{width: maxWidth}}/>
                         </Form.Item>
                       </Col>
                     );
@@ -270,7 +272,7 @@ const CliOptionsForm = ({
                           initialValue={initial}
                           rules={rules}
                         >
-                          <Input.Password disabled={disabled} allowClear />
+                          <Input.Password disabled={disabled} allowClear style={{width: maxWidth}}/>
                         </Form.Item>
                       </Col>
                     );
@@ -284,7 +286,7 @@ const CliOptionsForm = ({
                           initialValue={initial}
                           rules={rules}
                         >
-                          <InputNumber disabled={disabled} />
+                          <InputNumber disabled={disabled} style={{width: maxWidth}}/>
                         </Form.Item>
                       </Col>
                     );
@@ -333,6 +335,7 @@ const CliOptionsForm = ({
                             }
                             optionLabelProp={"title"}
                             options={choices?.map((_) => parseOption(_))}
+                            style={{width: maxWidth}}
                           />
                         </Form.Item>
                       </Col>
