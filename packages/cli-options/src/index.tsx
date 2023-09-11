@@ -81,16 +81,16 @@ const CliOptionsForm = ({
   useEffect(() => {
     // 加载配置json
     fetch(`//unpkg.com/create-middle@${version}/dist/config.json`)
-      .then((res) => res.json())
+      .then<CliOptionsConfig>((res) => res.json())
       .then((json) => {
         setConfig(json);
         // 初始选项进行初始化
         json.forEach((group) => {
           const options = group.options;
           options.forEach((option) => {
-            const { type, initial, choices, name } = option;
+            const { type, initial, choices=[], name } = option;
             if ((type === "list" || type === "select") && initial !== void 0) {
-              onSelectChange(name, parseOption(choices[initial]), json);
+              onSelectChange(name, parseOption(choices[initial as unknown as number]), json);
             }
             if (type === "multiselect" && initial !== void 0) {
               if (Array.isArray(initial)) {
@@ -100,7 +100,7 @@ const CliOptionsForm = ({
                   json
                 );
               } else {
-                onSelectChange(name, parseOption(choices[initial]), json);
+                onSelectChange(name, parseOption(choices[initial as unknown as number]), json);
               }
             }
           });
@@ -125,8 +125,8 @@ const CliOptionsForm = ({
     if (option) {
       if (Array.isArray(option)) {
         const resetValues = {};
-        let disabledFields = [];
-        let skipFields = [];
+        let disabledFields: string[] = [];
+        let skipFields: string[] = [];
         option.forEach((item) => {
           const {
             defaultOptions,
@@ -178,9 +178,9 @@ const CliOptionsForm = ({
   const onSwitchChange = (name: string, value: boolean, option: IOption) => {
     const { disabledFieldMap, skipFieldMap } = option;
     const disabledFields = disabledFieldMap
-      ? disabledFieldMap[String(value)]
+      ? disabledFieldMap[String(value) as unknown as 'true'|'false']
       : [];
-    const skipFields = skipFieldMap ? skipFieldMap[String(value)] : [];
+    const skipFields = skipFieldMap ? skipFieldMap[String(value) as unknown as 'true'|'false'] : [];
     disabledFieldsMapRef.current.set(name, new Set(disabledFields));
     skipFieldsMapRef.current.set(name, new Set(skipFields));
     forceUpdate();

@@ -1,8 +1,12 @@
 import { defineConfig } from "father";
 export default defineConfig({
-  cjs: { transformer: "babel" },
+  cjs: {
+    transformer: "babel",
+    output: 'cjs'
+  },
   esm: {
     transformer: "babel",
+    output: 'esm'
   },
   extraBabelPlugins: [
     [

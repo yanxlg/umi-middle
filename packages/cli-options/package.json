@@ -2,9 +2,9 @@
   "name": "@middle-cli/cli-options",
   "version": "0.3.1",
   "license": "MIT",
-  "main": "./dist/cjs/index.js",
-  "module": "./dist/esm/index.js",
-  "typings": "./dist/esm/index.d.ts",
+  "main": "./cjs/index.js",
+  "module": "./esm/index.js",
+  "typings": "./esm/index.d.ts",
   "files": [
     "dist"
   ],
