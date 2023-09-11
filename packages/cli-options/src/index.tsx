@@ -57,10 +57,12 @@ const CliOptionsForm = ({
   form,
   version = "latest",
   cols = 3,
+  disabled: globalDisabled
 }: {
   form: FormInstance;
   version?: string;
   cols?: number;
+  disabled?: boolean;
 }) => {
   const disabledFieldsMapRef = useRef<Map<string, Set<string>>>(
     new Map<string, Set<string>>()
@@ -240,7 +242,7 @@ const CliOptionsForm = ({
                   : undefined;
                 // 不同类型的使用不同的组件
                 // "text" | "password" | "invisible" | "number" | "confirm" | "list" | "toggle" | "select" | "multiselect" | "autocomplete" | "date" | "autocompleteMultiselect"
-                const disabled = disabledFields.has(name);
+                const disabled = globalDisabled || disabledFields.has(name);
                 switch (type) {
                   case "text":
                     return (
