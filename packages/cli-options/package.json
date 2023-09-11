@@ -6,7 +6,8 @@
   "module": "./esm/index.js",
   "typings": "./esm/index.d.ts",
   "files": [
-    "dist"
+    "cjs",
+    "esm"
   ],
   "scripts": {
     "build": "father build"
