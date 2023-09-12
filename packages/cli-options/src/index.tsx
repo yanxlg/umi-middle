@@ -74,7 +74,7 @@ const CliOptionsForm = (
     defaultValues?: { [key: string]: unknown }; // 默认值填充
   }) => {
   // 需要克隆一个新的config ，不然会相互影响
-  const config = useRef(defaultConfig).current;
+  const config = useRef({...defaultConfig}).current;
 
   const disabledFieldsMapRef = useRef<Map<string, Set<string>>>(
     new Map<string, Set<string>>()
