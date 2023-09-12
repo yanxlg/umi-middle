@@ -56,17 +56,20 @@ function parseOption(choice: ChoiceType) {
 
 const config = configJson as CliOptionsConfig;
 
-const CliOptionsForm = ({
-                          form,
-                          cols = 3,
-                          disabled: globalDisabled,
-                          maxWidth
-                        }: {
+const CliOptionsForm = (
+  {
+    form,
+    cols = 3,
+    disabled: globalDisabled,
+    maxWidth,
+    getPopupContainer
+  }: {
   form: FormInstance;
   version?: string;
   cols?: number;
   disabled?: boolean;
   maxWidth?: number;
+  getPopupContainer?: ()=> HTMLElement
 }) => {
   const disabledFieldsMapRef = useRef<Map<string, Set<string>>>(
     new Map<string, Set<string>>()
@@ -328,6 +331,7 @@ const CliOptionsForm = ({
                             optionLabelProp={"title"}
                             options={choices?.map((_) => parseOption(_))}
                             style={{width: maxWidth}}
+                            getPopupContainer={getPopupContainer}
                           />
                         </Form.Item>
                       </Col>
