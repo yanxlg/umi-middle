@@ -34,6 +34,7 @@ type ChoiceType = {
 interface IOption extends Omit<PromptObject, "choices" | "name" | "type"> {
   label: string; // 表单label
   name: string;
+  tooltip?: string;
   type: PromptType;
   required: true;
   skipFieldMap?: { true?: string[]; false?: string[] };
@@ -74,7 +75,7 @@ const CliOptionsForm = (
     defaultValues?: { [key: string]: unknown }; // 默认值填充
   }) => {
   // 需要克隆一个新的config ，不然会相互影响
-  const config = useRef(JSON.parse(JSON.stringify(defaultConfig))).current;
+  const config = useRef<CliOptionsConfig>(JSON.parse(JSON.stringify(defaultConfig))).current;
 
   const disabledFieldsMapRef = useRef<Map<string, Set<string>>>(
     new Map<string, Set<string>>()
@@ -250,7 +251,7 @@ const CliOptionsForm = (
             <Divider orientation="left">{group}</Divider>
             <Row gutter={[24, 0]}>
               {filterOptions.map((option) => {
-                const {required, name, label, type, initial, choices} =
+                const {required, name, label, type, initial, choices, tooltip} =
                   option;
                 const rules = required
                   ? [
@@ -279,6 +280,7 @@ const CliOptionsForm = (
                           name={name}
                           initialValue={initial}
                           rules={rules}
+                          tooltip={tooltip}
                         >
                           <Input disabled={disabled} allowClear style={{width: maxWidth}}/>
                         </Form.Item>
@@ -293,6 +295,7 @@ const CliOptionsForm = (
                           name={name}
                           initialValue={initial}
                           rules={rules}
+                          tooltip={tooltip}
                         >
                           <Input.Password disabled={disabled} allowClear style={{width: maxWidth}}/>
                         </Form.Item>
@@ -307,6 +310,7 @@ const CliOptionsForm = (
                           name={name}
                           initialValue={initial}
                           rules={rules}
+                          tooltip={tooltip}
                         >
                           <InputNumber disabled={disabled} style={{width: maxWidth}}/>
                         </Form.Item>
@@ -323,6 +327,7 @@ const CliOptionsForm = (
                           initialValue={initial}
                           valuePropName="checked"
                           rules={rules}
+                          tooltip={tooltip}
                         >
                           <Switch
                             disabled={disabled}
@@ -343,6 +348,7 @@ const CliOptionsForm = (
                           label={label}
                           name={name}
                           rules={rules}
+                          tooltip={tooltip}
                           initialValue={
                             initial == void 0
                               ? undefined
