@@ -62,14 +62,16 @@ const CliOptionsForm = (
     cols = 3,
     disabled: globalDisabled,
     maxWidth,
-    getPopupContainer
+    getPopupContainer,
+    defaultValues
   }: {
   form: FormInstance;
   version?: string;
   cols?: number;
   disabled?: boolean;
   maxWidth?: number;
-  getPopupContainer?: ()=> HTMLElement
+  getPopupContainer?: ()=> HTMLElement;
+  defaultValues?: {[key:string]: unknown}; // 默认值填充
 }) => {
   const disabledFieldsMapRef = useRef<Map<string, Set<string>>>(
     new Map<string, Set<string>>()
@@ -87,6 +89,26 @@ const CliOptionsForm = (
 
 
   useEffect(() => {
+    // 处理默认值
+    if(defaultValues){
+      config.forEach(group=>{
+        const options = group.options;
+        options.forEach((option) => {
+          const {type, initial, choices = [], name} = option;
+          const value = defaultValues[name];
+          if (type === "list" || type === "select") {
+            option.initial = choices.findIndex(_=>_===value);
+          } else if (type === "multiselect") {
+            option.initial = value && Array.isArray(value)?value.map(_=>choices.findIndex(__=>_===__)): undefined as unknown as any;
+          } else {
+            option.initial = value as unknown as any;
+          }
+        });
+      });
+    }
+
+
+
     config.forEach((group) => {
       const options = group.options;
       options.forEach((option) => {
