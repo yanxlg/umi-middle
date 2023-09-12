@@ -12,6 +12,9 @@
   "scripts": {
     "build": "father build"
   },
+  "dependencies": {
+    "create-middle": "0.3.15"
+  },
   "devDependencies": {
     "@types/prompts": "2.4.4",
     "antd": ">=4.0.0"

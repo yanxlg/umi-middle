@@ -18,10 +18,10 @@ import {
   Select,
   Switch,
 } from "antd";
-import { PromptObject, PromptType } from "prompts";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import {PromptObject, PromptType} from "prompts";
+import React, {useEffect, useMemo, useRef, useState} from "react";
+import configJson from 'create-middle/dist/config.json';
 
-// 从cdn 获取选项json
 
 type ChoiceType = {
   title: string;
@@ -54,15 +54,14 @@ function parseOption(choice: ChoiceType) {
 }
 
 
-const getOptions = fetch(`//unpkg.com/create-middle@0.3.14/dist/config.json`).then<CliOptionsConfig>((res) => res.json());
-
+const config = configJson as CliOptionsConfig;
 
 const CliOptionsForm = ({
-  form,
-  cols = 3,
-  disabled: globalDisabled,
-  maxWidth
-}: {
+                          form,
+                          cols = 3,
+                          disabled: globalDisabled,
+                          maxWidth
+                        }: {
   form: FormInstance;
   version?: string;
   cols?: number;
@@ -83,43 +82,36 @@ const CliOptionsForm = ({
     setUpdate((update) => ++update);
   };
 
-  const [config, setConfig] = useState<CliOptionsConfig>();
 
   useEffect(() => {
-    // 加载配置json
-    getOptions
-      .then((json) => {
-        setConfig(json);
-        // 初始选项进行初始化
-        json.forEach((group) => {
-          const options = group.options;
-          options.forEach((option) => {
-            const { type, initial, choices=[], name } = option;
-            if ((type === "list" || type === "select") && initial !== void 0) {
-              onSelectChange(name, parseOption(choices[initial as unknown as number]), json);
-            }
-            if (type === "multiselect" && initial !== void 0) {
-              if (Array.isArray(initial)) {
-                onSelectChange(
-                  name,
-                  initial.map((_) => parseOption(choices[_])),
-                  json
-                );
-              } else {
-                onSelectChange(name, parseOption(choices[initial as unknown as number]), json);
-              }
-            }
-          });
-
-          // 重新循环
-          options.forEach((option) => {
-            const { type, name } = option;
-            if (type === "confirm" || type === "toggle") {
-              onSwitchChange(name, form.getFieldValue(name) || false, option);
-            }
-          });
-        });
+    config.forEach((group) => {
+      const options = group.options;
+      options.forEach((option) => {
+        const {type, initial, choices = [], name} = option;
+        if ((type === "list" || type === "select") && initial !== void 0) {
+          onSelectChange(name, parseOption(choices[initial as unknown as number]), config);
+        }
+        if (type === "multiselect" && initial !== void 0) {
+          if (Array.isArray(initial)) {
+            onSelectChange(
+              name,
+              initial.map((_) => parseOption(choices[_])),
+              config
+            );
+          } else {
+            onSelectChange(name, parseOption(choices[initial as unknown as number]), config);
+          }
+        }
       });
+
+      // 重新循环
+      options.forEach((option) => {
+        const {type, name} = option;
+        if (type === "confirm" || type === "toggle") {
+          onSwitchChange(name, form.getFieldValue(name) || false, option);
+        }
+      });
+    });
   }, []);
 
   const onSelectChange = (
@@ -150,7 +142,7 @@ const CliOptionsForm = ({
         skipFieldsMapRef.current.set(name, new Set(skipFields));
         config.forEach((group) => {
           group.options.forEach((option) => {
-            const { type, name } = option;
+            const {type, name} = option;
             if (type === "confirm" || type === "toggle") {
               onSwitchChange(name, form.getFieldValue(name) || false, option);
             }
@@ -158,12 +150,12 @@ const CliOptionsForm = ({
         });
         forceUpdate();
       } else {
-        const { defaultOptions, disabledFields = [], skipFields = [] } = option;
+        const {defaultOptions, disabledFields = [], skipFields = []} = option;
         if (defaultOptions) {
           form.setFieldsValue(defaultOptions); // switch 需要触发更新
           config.forEach((group) => {
             group.options.forEach((option) => {
-              const { type, name } = option;
+              const {type, name} = option;
               if (type === "confirm" || type === "toggle") {
                 onSwitchChange(name, form.getFieldValue(name) || false, option);
               }
@@ -182,11 +174,11 @@ const CliOptionsForm = ({
   };
 
   const onSwitchChange = (name: string, value: boolean, option: IOption) => {
-    const { disabledFieldMap, skipFieldMap } = option;
+    const {disabledFieldMap, skipFieldMap} = option;
     const disabledFields = disabledFieldMap
-      ? disabledFieldMap[String(value) as unknown as 'true'|'false']
+      ? disabledFieldMap[String(value) as unknown as 'true' | 'false']
       : [];
-    const skipFields = skipFieldMap ? skipFieldMap[String(value) as unknown as 'true'|'false'] : [];
+    const skipFields = skipFieldMap ? skipFieldMap[String(value) as unknown as 'true' | 'false'] : [];
     disabledFieldsMapRef.current.set(name, new Set(disabledFields));
     skipFieldsMapRef.current.set(name, new Set(skipFields));
     forceUpdate();
@@ -215,7 +207,7 @@ const CliOptionsForm = ({
   return (
     <>
       {config?.map((subConfig) => {
-        const { group, options } = subConfig;
+        const {group, options} = subConfig;
         const filterOptions = options.filter((_) => {
           return !skipFields.has(_.name);
         });
@@ -226,23 +218,23 @@ const CliOptionsForm = ({
         return (
           <React.Fragment key={group}>
             <Divider orientation="left">{group}</Divider>
-            <Row gutter={[24,0]}>
+            <Row gutter={[24, 0]}>
               {filterOptions.map((option) => {
-                const { required, name, label, type, initial, choices } =
+                const {required, name, label, type, initial, choices} =
                   option;
                 const rules = required
                   ? [
-                      {
-                        required: true,
-                        message: `请${
-                          type === "select" ||
-                          type === "list" ||
-                          type === "multiselect"
-                            ? "选择"
-                            : "输入"
-                        }${label}`,
-                      },
-                    ]
+                    {
+                      required: true,
+                      message: `请${
+                        type === "select" ||
+                        type === "list" ||
+                        type === "multiselect"
+                          ? "选择"
+                          : "输入"
+                      }${label}`,
+                    },
+                  ]
                   : undefined;
                 // 不同类型的使用不同的组件
                 // "text" | "password" | "invisible" | "number" | "confirm" | "list" | "toggle" | "select" | "multiselect" | "autocomplete" | "date" | "autocompleteMultiselect"
