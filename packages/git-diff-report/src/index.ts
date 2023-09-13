@@ -10,6 +10,7 @@ import {simpleGit} from "simple-git";
 import {join} from 'path';
 import dayjs from 'dayjs';
 import * as fs from 'fs';
+import {uniqBy} from "lodash";
 
 import {parse} from './parser';
 
@@ -135,7 +136,7 @@ export class ChangeAnalyzerPlugin {
 
 
       // 需要溯源到非公共目录
-      function getTreeLeaf(filePath: string,rootTreeNode?: RelationTree) {
+      function getTreeLeaf(filePath: string, filesList: string[] = []) {
         const key = 'userRequest';// 还是使用 resource？？
         const modules = stats.compilation.modules;
         const moduleGraph = stats.compilation.moduleGraph;
@@ -144,12 +145,8 @@ export class ChangeAnalyzerPlugin {
           return leafMap.get(filePath);
         }
 
-        function isInDependence(rootTreeNode: RelationTree,path: string): boolean{
-          // 循环引用检测
-          if(rootTreeNode.path === path){
-            return true;
-          }
-          return !!(rootTreeNode.parents||[]).find(node=> isInDependence(node,path));
+        function isInDependence(path: string){
+          return !!filesList.find(_=>_===path);
         }
 
         function checkModules(modules: Array<Module> | Set<Module>): RelationTree | undefined {
@@ -163,7 +160,6 @@ export class ChangeAnalyzerPlugin {
                 parents: []
               };
               leafMap.set(filePath, leaf); // 缓存
-              const _rootTreeNode = rootTreeNode || leaf;
               const reasons: Module['reasons'] = _.reasons ? _.reasons : moduleGraph ? Array.from(moduleGraph.getIncomingConnections(_)) : undefined;
               if (reasons) {// 查找引用，父级
                 reasons.forEach(reason => {
@@ -173,8 +169,8 @@ export class ChangeAnalyzerPlugin {
                   if (originModule) {
                     // webpack 5.0
                     const file = originModule[key];
-                    if (filePath !== file && !leaf.parents?.find(leaf => leaf.path === file) && !isInDependence(_rootTreeNode, file)) {
-                      leaf.parents!.push(getTreeLeaf(file, _rootTreeNode)!);
+                    if (filePath !== file && !isInDependence(file)) {
+                      leaf.parents!.push(getTreeLeaf(file, [...filesList,file])!);
                       return;
                     }
                   }
@@ -183,8 +179,8 @@ export class ChangeAnalyzerPlugin {
                     const originModule = dependency.originModule;
                     if (originModule) {
                       const file = originModule[key];
-                      if (filePath !== file && !leaf.parents?.find(leaf => leaf.path === file) && !isInDependence(_rootTreeNode, file)) {
-                        leaf.parents!.push(getTreeLeaf(file, _rootTreeNode)!);
+                      if (filePath !== file && !isInDependence(file)) {
+                        leaf.parents!.push(getTreeLeaf(file, [...filesList,file])!);
                         return;
                       }
                     }
@@ -195,8 +191,8 @@ export class ChangeAnalyzerPlugin {
                   const module = reason.module; // webpack 3.x
                   if(module) {
                     const file = module[key];
-                    if (filePath !== file && !leaf.parents?.find(leaf => leaf.path === file) && !isInDependence(_rootTreeNode, file)) {
-                      leaf.parents!.push(getTreeLeaf(file, _rootTreeNode)!);
+                    if (filePath !== file && !isInDependence(file)) {
+                      leaf.parents!.push(getTreeLeaf(file, [...filesList,file])!);
                       return;
                     }
                   }
@@ -223,10 +219,10 @@ export class ChangeAnalyzerPlugin {
 
       // 解释查找，如果无法找到则使用配置目录外的第一个文件地址作为范围提示。
 
-    console.log(JSON.stringify(treeList));
+     console.log(treeList);
 
       // 存在循环引用的情况，会死循环。怎么处理。整条链路上不能包括自己
-      const flatTree = function (tree: RelationTree[] | undefined) {
+      const flatTree = function (tree: RelationTree[]) {
         if (!tree || !tree.length) {
           return [undefined];// 空的，向上
         }
@@ -234,8 +230,8 @@ export class ChangeAnalyzerPlugin {
 
         tree.forEach(leaf => {
           if(!leaf) return;
-          const {parents} = leaf;
-          const _flatParent = flatTree(parents);
+          const {parents=[]} = leaf;
+          const _flatParent = flatTree(parents.filter(Boolean));
           _flatParent.forEach(p => {
             flatParent.push({
               path: leaf.path,
@@ -250,7 +246,7 @@ export class ChangeAnalyzerPlugin {
       const flatTreeList = flatTree(treeList);
 
 
-      const changes = flatTreeList.map((leaf) => {
+      const changes = uniqBy(flatTreeList.map((leaf) => {
         const findByComponentName = function (leaf: FlatRelationTree):string|undefined {
           const {path, meta, parent} = leaf;
           if (!isInCommon(commonDirList, path)) {
@@ -331,7 +327,7 @@ export class ChangeAnalyzerPlugin {
           }
         }
         return undefined;
-      });
+      }).filter(Boolean),item=>JSON.stringify(item));
 
       const logs = await git.log();
 
@@ -347,14 +343,17 @@ export class ChangeAnalyzerPlugin {
       const changeMap = new Map<string,{
         pageModules?: string[];
         fileList?: string[];
+        title: string;
       }>();
       changes.filter(Boolean).forEach(change=>{
         const {component,util,page,module,rootPath,parentPath} = change!;
-        const key = component? `修改组件：${component}`: util? `修改工具类：${util}`: `修改文件：${rootPath}`;
+        const title = component? `修改组件：${component}`: util? `修改工具类：${util}`: `修改文件：${rootPath}`;
+        const key = JSON.stringify(change);
         if(!changeMap.has(key)){
           changeMap.set(key,{
             pageModules: [],
-            fileList: []
+            fileList: [],
+            title
           })
         }
         const pageModules = changeMap.get(key)?.pageModules!;
@@ -367,8 +366,11 @@ export class ChangeAnalyzerPlugin {
       });
 
 
-      changeMap.forEach((change,key)=>{
-        msgContent.push(key);
+      changeMap.forEach((change)=>{
+        if(!change.fileList?.length && !change.pageModules?.length){
+          return; // TODO 没有影响模块的，有问题吧，为什么没有上层引用？？？怎么都会向上追溯，是因为异步导入原因？？？
+        }
+        msgContent.push(change.title);
         msgContent.push('\n');
         const {pageModules,fileList} = change;
         if(pageModules && pageModules.length){

@@ -45,11 +45,12 @@ export default async (api: IApi) => {
   api.onGenerateFiles(() => {
     const vars = api.config.injectEnv || {}; // 默认值
     const indexPath = join(__dirname, "index.ts.tpl");
+    const keys = Object.keys(vars);
     api.writeTmpFile({
       path: "index.ts",
       tplPath: indexPath,
       context: {
-        keys: Object.keys(vars).map(key=>`'${key}'`).join(' | '),
+        keys: keys.length > 0? keys.map(key=>`'${key}'`).join(' | '): 'string',
         defaultValue: JSON.stringify(vars),
       },
     });
