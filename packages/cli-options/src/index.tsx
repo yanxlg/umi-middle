@@ -65,7 +65,7 @@ function getToolTip(tooltip?:string){
     view.push(v.trim());
     view.push(<br key={i}/>)
   });
-  return view;
+  return <div style={{whiteSpace:'nowrap'}}>{view}</div>;
 }
 
 const CliOptionsForm = (
