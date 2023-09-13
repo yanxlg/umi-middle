@@ -160,34 +160,38 @@ export class ChangeAnalyzerPlugin {
                 reasons.forEach(reason => {
                   const dependency = reason.dependency;
                   const originModule = reason.originModule;
-                  // const module = reason.module; // webpack 3.x
+
 
                   if (originModule) {
                     // webpack 5.0
                     const file = originModule[key];
                     if (filePath !== file && !leaf.parents?.find(leaf => leaf.path === file)) {
                       leaf.parents!.push(getTreeLeaf(file)!);
+                      return;
                     }
                   }
                   // webpack 4.0
                   if (dependency) {
-                    if(filePath.indexOf('Preview/index') > -1){
-                      console.log(dependency.module);
-                    }
-                    const originModule = dependency.originModule || dependency.module;
+                    const originModule = dependency.originModule;
                     if (originModule) {
                       const file = originModule[key];
                       if (filePath !== file && !leaf.parents?.find(leaf => leaf.path === file)) {
                         leaf.parents!.push(getTreeLeaf(file)!);
+                        return;
                       }
                     }
                   }
-                  // if(module) {
-                  //   const file = module[key];
-                  //   if (filePath !== file && !leaf.parents?.find(leaf => leaf.path === file)) {
-                  //     leaf.parents!.push(getTreeLeaf(file)!);
-                  //   }
-                  // }
+
+
+                  // 循环引用。
+                  const module = reason.module; // webpack 3.x
+                  if(module) {
+                    const file = module[key];
+                    if (filePath !== file && !leaf.parents?.find(leaf => leaf.path === file)) {
+                      leaf.parents!.push(getTreeLeaf(file)!);
+                      return;
+                    }
+                  }
                 });
               }
               return leaf;
@@ -206,27 +210,14 @@ export class ChangeAnalyzerPlugin {
       }
 
 
-      // const changeList: Array<{
-      //   source: string;
-      //   dependencies: string[];
-      // }> = [];
-      //
-      // publicFiles.forEach(originFile => {
-      //   const relationParent = getTreeLeaf(originFile);
-      //   changeList.push({
-      //     source: originFile,
-      //     dependencies: relationParent
-      //   })
-      // });
-
       const treeList = publicFiles.map(file => getTreeLeaf(file)).filter(Boolean) as RelationTree[];
 
 
       // 解释查找，如果无法找到则使用配置目录外的第一个文件地址作为范围提示。
 
-      // 先完成平铺
+    console.log(JSON.stringify(treeList));
 
-
+      // 存在循环引用的情况，会死循环。怎么处理。整条链路上不能包括自己
       const flatTree = function (tree: RelationTree[] | undefined) {
         if (!tree || !tree.length) {
           return [undefined];// 空的，向上

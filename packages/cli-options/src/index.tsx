@@ -57,6 +57,17 @@ function parseOption(choice: ChoiceType) {
 
 const defaultConfig = configJson as CliOptionsConfig;
 
+
+function getToolTip(tooltip?:string){
+  if(!tooltip) return void 0;
+  const view:React.ReactNode[] = [];
+  tooltip.split("\n").forEach((v,i)=>{
+    view.push(v.trim());
+    view.push(<br key={i}/>)
+  });
+  return view;
+}
+
 const CliOptionsForm = (
   {
     form,
@@ -280,7 +291,7 @@ const CliOptionsForm = (
                           name={name}
                           initialValue={initial}
                           rules={rules}
-                          tooltip={tooltip}
+                          tooltip={getToolTip(tooltip)}
                         >
                           <Input disabled={disabled} allowClear style={{width: maxWidth}}/>
                         </Form.Item>
@@ -295,7 +306,7 @@ const CliOptionsForm = (
                           name={name}
                           initialValue={initial}
                           rules={rules}
-                          tooltip={tooltip}
+                          tooltip={getToolTip(tooltip)}
                         >
                           <Input.Password disabled={disabled} allowClear style={{width: maxWidth}}/>
                         </Form.Item>
@@ -310,7 +321,7 @@ const CliOptionsForm = (
                           name={name}
                           initialValue={initial}
                           rules={rules}
-                          tooltip={tooltip}
+                          tooltip={getToolTip(tooltip)}
                         >
                           <InputNumber disabled={disabled} style={{width: maxWidth}}/>
                         </Form.Item>
@@ -327,7 +338,7 @@ const CliOptionsForm = (
                           initialValue={initial}
                           valuePropName="checked"
                           rules={rules}
-                          tooltip={tooltip}
+                          tooltip={getToolTip(tooltip)}
                         >
                           <Switch
                             disabled={disabled}
@@ -348,7 +359,7 @@ const CliOptionsForm = (
                           label={label}
                           name={name}
                           rules={rules}
-                          tooltip={tooltip}
+                          tooltip={getToolTip(tooltip)}
                           initialValue={
                             initial == void 0
                               ? undefined
