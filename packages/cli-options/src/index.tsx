@@ -65,7 +65,10 @@ function getToolTip(tooltip?:string){
     view.push(v.trim());
     view.push(<br key={i}/>)
   });
-  return <div style={{whiteSpace:'nowrap'}}>{view}</div>;
+  return {
+    title:<div style={{whiteSpace:'nowrap'}}>{view}</div>,
+    overlayStyle: { maxWidth: '1000px' },
+  };
 }
 
 const CliOptionsForm = (
