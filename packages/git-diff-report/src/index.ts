@@ -135,13 +135,21 @@ export class ChangeAnalyzerPlugin {
 
 
       // 需要溯源到非公共目录
-      function getTreeLeaf(filePath: string) {
+      function getTreeLeaf(filePath: string,rootTreeNode?: RelationTree) {
         const key = 'userRequest';// 还是使用 resource？？
         const modules = stats.compilation.modules;
         const moduleGraph = stats.compilation.moduleGraph;
 
         if (leafMap.has(filePath)) {
           return leafMap.get(filePath);
+        }
+
+        function isInDependence(rootTreeNode: RelationTree,path: string): boolean{
+          // 循环引用检测
+          if(rootTreeNode.path === path){
+            return true;
+          }
+          return !!(rootTreeNode.parents||[]).find(node=> isInDependence(node,path));
         }
 
         function checkModules(modules: Array<Module> | Set<Module>): RelationTree | undefined {
@@ -155,18 +163,18 @@ export class ChangeAnalyzerPlugin {
                 parents: []
               };
               leafMap.set(filePath, leaf); // 缓存
+              const _rootTreeNode = rootTreeNode || leaf;
               const reasons: Module['reasons'] = _.reasons ? _.reasons : moduleGraph ? Array.from(moduleGraph.getIncomingConnections(_)) : undefined;
               if (reasons) {// 查找引用，父级
                 reasons.forEach(reason => {
                   const dependency = reason.dependency;
                   const originModule = reason.originModule;
 
-
                   if (originModule) {
                     // webpack 5.0
                     const file = originModule[key];
-                    if (filePath !== file && !leaf.parents?.find(leaf => leaf.path === file)) {
-                      leaf.parents!.push(getTreeLeaf(file)!);
+                    if (filePath !== file && !leaf.parents?.find(leaf => leaf.path === file) && !isInDependence(_rootTreeNode, file)) {
+                      leaf.parents!.push(getTreeLeaf(file, _rootTreeNode)!);
                       return;
                     }
                   }
@@ -175,8 +183,8 @@ export class ChangeAnalyzerPlugin {
                     const originModule = dependency.originModule;
                     if (originModule) {
                       const file = originModule[key];
-                      if (filePath !== file && !leaf.parents?.find(leaf => leaf.path === file)) {
-                        leaf.parents!.push(getTreeLeaf(file)!);
+                      if (filePath !== file && !leaf.parents?.find(leaf => leaf.path === file) && !isInDependence(_rootTreeNode, file)) {
+                        leaf.parents!.push(getTreeLeaf(file, _rootTreeNode)!);
                         return;
                       }
                     }
@@ -187,8 +195,8 @@ export class ChangeAnalyzerPlugin {
                   const module = reason.module; // webpack 3.x
                   if(module) {
                     const file = module[key];
-                    if (filePath !== file && !leaf.parents?.find(leaf => leaf.path === file)) {
-                      leaf.parents!.push(getTreeLeaf(file)!);
+                    if (filePath !== file && !leaf.parents?.find(leaf => leaf.path === file) && !isInDependence(_rootTreeNode, file)) {
+                      leaf.parents!.push(getTreeLeaf(file, _rootTreeNode)!);
                       return;
                     }
                   }
