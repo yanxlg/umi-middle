@@ -1,6 +1,6 @@
 {
   "name": "git-diff-report",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "对比测试分支与主分支，生成公共代码影响范围表格，通过机器人进行推送",
   "main": "lib/index.js",
   "files": [
