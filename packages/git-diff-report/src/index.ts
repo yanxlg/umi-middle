@@ -145,8 +145,8 @@ export class ChangeAnalyzerPlugin {
           return leafMap.get(filePath);
         }
 
-        function isInDependence(path: string){
-          return !!filesList.find(_=>_===path);
+        function isInDependence(path: string) {
+          return !!filesList.find(_ => _ === path);
         }
 
         function checkModules(modules: Array<Module> | Set<Module>): RelationTree | undefined {
@@ -170,7 +170,7 @@ export class ChangeAnalyzerPlugin {
                     // webpack 5.0
                     const file = originModule[key];
                     if (filePath !== file && !isInDependence(file)) {
-                      leaf.parents!.push(getTreeLeaf(file, [...filesList,file])!);
+                      leaf.parents!.push(getTreeLeaf(file, [...filesList, file])!);
                       return;
                     }
                   }
@@ -180,7 +180,7 @@ export class ChangeAnalyzerPlugin {
                     if (originModule) {
                       const file = originModule[key];
                       if (filePath !== file && !isInDependence(file)) {
-                        leaf.parents!.push(getTreeLeaf(file, [...filesList,file])!);
+                        leaf.parents!.push(getTreeLeaf(file, [...filesList, file])!);
                         return;
                       }
                     }
@@ -189,10 +189,10 @@ export class ChangeAnalyzerPlugin {
 
                   // 循环引用。
                   const module = reason.module; // webpack 3.x
-                  if(module) {
+                  if (module) {
                     const file = module[key];
                     if (filePath !== file && !isInDependence(file)) {
-                      leaf.parents!.push(getTreeLeaf(file, [...filesList,file])!);
+                      leaf.parents!.push(getTreeLeaf(file, [...filesList, file])!);
                       return;
                     }
                   }
@@ -219,7 +219,7 @@ export class ChangeAnalyzerPlugin {
 
       // 解释查找，如果无法找到则使用配置目录外的第一个文件地址作为范围提示。
 
-     console.log(treeList);
+      console.log(treeList);
 
       // 存在循环引用的情况，会死循环。怎么处理。整条链路上不能包括自己
       const flatTree = function (tree: RelationTree[]) {
@@ -229,8 +229,8 @@ export class ChangeAnalyzerPlugin {
         const flatParent: Array<FlatRelationTree> = [];
 
         tree.forEach(leaf => {
-          if(!leaf) return;
-          const {parents=[]} = leaf;
+          if (!leaf) return;
+          const {parents = []} = leaf;
           const _flatParent = flatTree(parents.filter(Boolean));
           _flatParent.forEach(p => {
             flatParent.push({
@@ -247,7 +247,7 @@ export class ChangeAnalyzerPlugin {
 
 
       const changes = uniqBy(flatTreeList.map((leaf) => {
-        const findByComponentName = function (leaf: FlatRelationTree):string|undefined {
+        const findByComponentName = function (leaf: FlatRelationTree): string | undefined {
           const {path, meta, parent} = leaf;
           if (!isInCommon(commonDirList, path)) {
             return undefined;
@@ -259,7 +259,7 @@ export class ChangeAnalyzerPlugin {
             return findByComponentName(parent);
           }
         }
-        const findByUtilName = function (leaf: FlatRelationTree):string|undefined {
+        const findByUtilName = function (leaf: FlatRelationTree): string | undefined {
           const {path, meta, parent} = leaf;
           if (!isInCommon(commonDirList, path)) {
             return undefined;
@@ -283,7 +283,7 @@ export class ChangeAnalyzerPlugin {
             }
           }
 
-          if(parent){
+          if (parent) {
             return findModuleName(parent);
           }
         }
@@ -299,12 +299,12 @@ export class ChangeAnalyzerPlugin {
               return meta.page
             }
           }
-          if(parent){
+          if (parent) {
             return findPageName(parent);
           }
         }
 
-        const findPrivateParentPath = function (leaf: FlatRelationTree): string|undefined {
+        const findPrivateParentPath = function (leaf: FlatRelationTree): string | undefined {
           const {path, meta, parent} = leaf;
 
           if (isInCommon(commonDirList, path) && parent) {
@@ -327,7 +327,7 @@ export class ChangeAnalyzerPlugin {
           }
         }
         return undefined;
-      }).filter(Boolean),item=>JSON.stringify(item));
+      }).filter(Boolean), item => JSON.stringify(item));
 
       const logs = await git.log();
 
@@ -340,17 +340,17 @@ export class ChangeAnalyzerPlugin {
       msgContent.push('> 对比master代码，存在差异的公共组件/工具类，及其关联的页面/模块，研发与测试根据此可确定回归范围\n\n');
 
       // 需要根据key聚合
-      const changeMap = new Map<string,{
+      const changeMap = new Map<string, {
         pageModules?: string[];
         fileList?: string[];
         title: string;
       }>();
-      changes.filter(Boolean).forEach(change=>{
-        const {component,util,page,module,rootPath,parentPath} = change!;
-        const title = component? `修改组件：${component}`: util? `修改工具类：${util}`: `修改文件：${rootPath}`;
+      changes.filter(Boolean).forEach(change => {
+        const {component, util, page, module, rootPath, parentPath} = change!;
+        const title = component ? `修改组件：${component}` : util ? `修改工具类：${util}` : `修改文件：${rootPath}`;
         const key = JSON.stringify(change);
-        if(!changeMap.has(key)){
-          changeMap.set(key,{
+        if (!changeMap.has(key)) {
+          changeMap.set(key, {
             pageModules: [],
             fileList: [],
             title
@@ -358,32 +358,32 @@ export class ChangeAnalyzerPlugin {
         }
         const pageModules = changeMap.get(key)?.pageModules!;
         const fileList = changeMap.get(key)?.fileList!;
-        if(page){
-          pageModules.push(`「${page}」页面${module?`-「${module}」模块`:''}`);
-        }else if(parentPath){
+        if (page) {
+          pageModules.push(`「${page}」页面${module ? `-「${module}」模块` : ''}`);
+        } else if (parentPath) {
           fileList.push(parentPath);
         }
       });
 
 
-      changeMap.forEach((change)=>{
-        if(!change.fileList?.length && !change.pageModules?.length){
+      changeMap.forEach((change) => {
+        if (!change.fileList?.length && !change.pageModules?.length) {
           return; // TODO 没有影响模块的，有问题吧，为什么没有上层引用？？？怎么都会向上追溯，是因为异步导入原因？？？
         }
         msgContent.push(change.title);
         msgContent.push('\n');
-        const {pageModules,fileList} = change;
-        if(pageModules && pageModules.length){
+        const {pageModules, fileList} = change;
+        if (pageModules && pageModules.length) {
           msgContent.push(`影响模块：${pageModules.join('、')}`);
           msgContent.push('\n');
         }
-        if(fileList && fileList.length){
+        if (fileList && fileList.length) {
           msgContent.push(`影响文件(未备注模块/页面名)：${fileList.join('、')}`);
         }
         msgContent.push('\n\n\n');
       })
       msgContent.push("\n\n\n\n## 提交记录:\n\n");
-      msgContent.push( `> 近2周共${submitList.length}commit\n\n`);
+      msgContent.push(`> 近2周共${submitList.length}commit\n\n`);
 
       submitList.forEach(log => msgContent.push(`[提交人]:${log.author_name} \n[提交日期]:${log.date} \n[提交说明]:${log.message}\n\n\n\n`));
       msgContent.push("\n\n\n\n请对应研发和测试参考以上内容进行回归");
@@ -395,6 +395,88 @@ export class ChangeAnalyzerPlugin {
           "content": msgContent.join(''),
         },
       }
+
+
+      // 获取对应app的access_token
+      const access_token = await new Promise((resolve, reject) => {
+        request({
+          url: `https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid=ww7fdfa78f53f96dca&corpsecret=77h4YUvtPzKroB2UFtymyZNPRZbbRtvSYSV_xQAyLV4`,
+          method: 'GET',
+        }, (error: any, response: any, body: any) => {
+          if (error) {
+            reject();
+          }
+          if (body.errcode === 0) {
+            resolve(body.access_token);
+          } else {
+            reject();
+          }
+        });
+      });
+
+      // 创建excel
+      const { url, docid } = await new Promise<{url:string; docid: string}>((resolve, reject) => {
+        request({
+          url: `https://qyapi.weixin.qq.com/cgi-bin/wedoc/create_doc?access_token=${access_token}`,
+          method: 'POST',
+          body: JSON.stringify({
+            // "spaceid": "SPACEID",
+            // "fatherid": "FATHERID",
+            "doc_type": "4",
+            "doc_name": "检测测试",
+            "admin_users": ["81087708",]
+          })
+        }, (error: any, response: any, body: any) => {
+          if (error) {
+            reject();
+          }
+          if (body.errcode === 0) {
+            resolve(body);
+          } else {
+            reject();
+          }
+        });
+      });
+      console.log(url);
+
+
+      await new Promise(()=>{
+        request({
+          url: `https://qyapi.weixin.qq.com/cgi-bin/wedoc/spreadsheet/batch_update?access_token=${access_token}`,
+          method: 'POST',
+          body: JSON.stringify({
+            "docid": docid,
+            "requests": [
+              {
+                "add_sheet_request": {
+                  "title": "sheet_cdefgab",
+                  "row_count": 10,
+                  "column_count": 10
+                }
+              },
+              {
+                "update_range_request": {
+                  "sheet_id": "sheet_cdefgab",
+                  "grid_data": {
+                    "start_row": 1,
+                    "start_column": 1,
+                    "rows": [
+                      {
+                        values: [{
+                          "cell_value": {
+                            "text": "hello world"
+                          },
+                        }]
+                      }
+                    ]
+                  }
+                }
+              },
+            ]
+          })
+        })
+      })
+
 
       // 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=90d04116-5345-45b8-92a9-c156c1e905f1'
       request({
