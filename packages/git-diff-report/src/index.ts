@@ -14,9 +14,10 @@ import {uniqBy} from "lodash";
 
 import {parse} from './parser';
 
+const fetch = require('node-fetch');
+
 const git = simpleGit({baseDir: process.cwd()});
 
-const request = require('request');
 
 type Reason = {
   dependency: {
@@ -389,102 +390,47 @@ export class ChangeAnalyzerPlugin {
       msgContent.push("\n\n\n\n请对应研发和测试参考以上内容进行回归");
       users?.forEach(user => msgContent.push(`<@${user}>`));
 
-      const wechatMsg = {
-        "msgtype": "markdown",
-        "markdown": {
-          "content": msgContent.join(''),
-        },
-      }
 
+      const excelContent = [['变更文件', '变更组件', '影响文件', '影响页面', '影响模块']];
 
-      // 获取对应app的access_token
-      const access_token = await new Promise((resolve, reject) => {
-        request({
-          url: `https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid=ww7fdfa78f53f96dca&corpsecret=77h4YUvtPzKroB2UFtymyZNPRZbbRtvSYSV_xQAyLV4`,
-          method: 'GET',
-        }, (error: any, response: any, body: any) => {
-          if (error) {
-            reject();
-          }
-          if (body.errcode === 0) {
-            resolve(body.access_token);
-          } else {
-            reject();
-          }
-        });
+      changes.filter(Boolean).forEach(change => {
+        const {component, util, page, module, rootPath, parentPath} = change!;
+        excelContent.push([rootPath.replace(cwd_path, ''), component || util || '', (parentPath || '').replace(cwd_path, ''), page || '', module || '']);
       });
 
-      // 创建excel
-      const { url, docid } = await new Promise<{url:string; docid: string}>((resolve, reject) => {
-        request({
-          url: `https://qyapi.weixin.qq.com/cgi-bin/wedoc/create_doc?access_token=${access_token}`,
-          method: 'POST',
-          body: JSON.stringify({
-            // "spaceid": "SPACEID",
-            // "fatherid": "FATHERID",
-            "doc_type": "4",
-            "doc_name": "检测测试",
-            "admin_users": ["81087708",]
-          })
-        }, (error: any, response: any, body: any) => {
-          if (error) {
-            reject();
-          }
-          if (body.errcode === 0) {
-            resolve(body);
-          } else {
-            reject();
-          }
-        });
-      });
-      console.log(url);
-
-
-      await new Promise(()=>{
-        request({
-          url: `https://qyapi.weixin.qq.com/cgi-bin/wedoc/spreadsheet/batch_update?access_token=${access_token}`,
-          method: 'POST',
-          body: JSON.stringify({
-            "docid": docid,
-            "requests": [
-              {
-                "add_sheet_request": {
-                  "title": "sheet_cdefgab",
-                  "row_count": 10,
-                  "column_count": 10
-                }
-              },
-              {
-                "update_range_request": {
-                  "sheet_id": "sheet_cdefgab",
-                  "grid_data": {
-                    "start_row": 1,
-                    "start_column": 1,
-                    "rows": [
-                      {
-                        values: [{
-                          "cell_value": {
-                            "text": "hello world"
-                          },
-                        }]
-                      }
-                    ]
-                  }
-                }
-              },
-            ]
-          })
-        })
-      })
-
-
-      // 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=90d04116-5345-45b8-92a9-c156c1e905f1'
-      request({
-        url: webhook,
+      fetch('http://localhost:3000/doc-msg/send', {
         method: "POST",
-        body: JSON.stringify(wechatMsg)
-      })
-      callback();
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          name: '项目1提测变更记录2',
+          users: ['81087708'],
+          content: excelContent,
+          webhook: webhook,
+          channel: 'wx'
+        })
+      }).then((response: any) => response.json()).then((data: any) => {
+        console.log(data);
+        callback();
+      });
+
+
+      // const wechatMsg = {
+      //   "msgtype": "markdown",
+      //   "markdown": {
+      //     "content": msgContent.join(''),
+      //   },
+      // }
+      //
+      //
+      // // 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=90d04116-5345-45b8-92a9-c156c1e905f1'
+      // request({
+      //   url: webhook,
+      //   method: "POST",
+      //   body: JSON.stringify(wechatMsg)
+      // })
+      // callback();
     };
 
     if (compiler.hooks) {
