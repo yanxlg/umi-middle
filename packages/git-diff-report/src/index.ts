@@ -67,8 +67,8 @@ function getCommentBlocks(filePath: string) {
 
 export class ChangeAnalyzerPlugin {
   private readonly options: {
-    sitBranch?: string;
-    mainBranch?: string;
+    fromBranch?: string;
+    toBranch?: string;
     commonDirs: string;
     webhook: string;
     users?: string[];
@@ -95,9 +95,9 @@ export class ChangeAnalyzerPlugin {
       callback = callback || (() => {
       });
 
-      const {sitBranch, mainBranch, commonDirs, webhook, users, channel, msgType, msgTemplate} = this.options || {};
+      const {fromBranch, toBranch, commonDirs, webhook, users, channel, msgType, msgTemplate} = this.options || {};
 
-      if (!sitBranch || !mainBranch || !commonDirs || !webhook) {
+      if (!fromBranch || !toBranch || !commonDirs || !webhook) {
         console.log('---------------------git diff report: 配置不完善----------------------');
         callback();
         return;
@@ -106,13 +106,13 @@ export class ChangeAnalyzerPlugin {
       const {current: _current, all} = await git.branch(); // 是不是所有的远程分支都能拿到
       const current = process.env.CI_COMMIT_REF_NAME || _current;
 
-      if (current !== sitBranch) {
+      if (current !== fromBranch) {
         console.log(`---------------------git diff report: ${current}分支不做检测----------------------`);
         callback();
         return;
       }
 
-      const diff = await git.diffSummary([`origin/${mainBranch}`, `origin/${sitBranch}`]);
+      const diff = await git.diffSummary([`origin/${toBranch}`, `origin/${fromBranch}`]);
       const {files} = diff;
 
       const commonDirList = commonDirs.split(',').map(_ => join(cwd_path, _));
