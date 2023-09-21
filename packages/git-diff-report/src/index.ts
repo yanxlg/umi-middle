@@ -13,6 +13,7 @@ import * as fs from 'fs';
 import {uniqBy} from "lodash";
 
 import {parse} from './parser';
+import * as path from "path";
 
 const fetch = require('node-fetch');
 
@@ -68,12 +69,15 @@ export class ChangeAnalyzerPlugin {
   private readonly options: {
     sitBranch?: string;
     mainBranch?: string;
-    commonDirs?: string;
-    webhook?: string;
+    commonDirs: string;
+    webhook: string;
     users?: string[];
-  } = {};
+    channel: 'wx';
+    msgType: 'text' | 'markdown';
+    msgTemplate?: string;
+  } | undefined = undefined;
 
-  constructor(opts = {}) {
+  constructor(opts = undefined) {
     this.options = opts;
   }
 
@@ -91,7 +95,7 @@ export class ChangeAnalyzerPlugin {
       callback = callback || (() => {
       });
 
-      const {sitBranch, mainBranch, commonDirs, webhook, users} = this.options;
+      const {sitBranch, mainBranch, commonDirs, webhook, users, channel, msgType, msgTemplate} = this.options || {};
 
       if (!sitBranch || !mainBranch || !commonDirs || !webhook) {
         console.log('---------------------git diff report: 配置不完善----------------------');
@@ -220,8 +224,6 @@ export class ChangeAnalyzerPlugin {
 
       // 解释查找，如果无法找到则使用配置目录外的第一个文件地址作为范围提示。
 
-      console.log(treeList);
-
       // 存在循环引用的情况，会死循环。怎么处理。整条链路上不能包括自己
       const flatTree = function (tree: RelationTree[]) {
         if (!tree || !tree.length) {
@@ -335,11 +337,6 @@ export class ChangeAnalyzerPlugin {
       const submitList = logs.all.filter(submit => dayjs().diff(dayjs(submit.date), 'day') < 14);
 
 
-      // 构建消息内容
-      const msgContent = [];
-      msgContent.push('## 变更影响:\n\n');
-      msgContent.push('> 对比master代码，存在差异的公共组件/工具类，及其关联的页面/模块，研发与测试根据此可确定回归范围\n\n');
-
       // 需要根据key聚合
       const changeMap = new Map<string, {
         pageModules?: string[];
@@ -366,71 +363,30 @@ export class ChangeAnalyzerPlugin {
         }
       });
 
-
-      changeMap.forEach((change) => {
-        if (!change.fileList?.length && !change.pageModules?.length) {
-          return; // TODO 没有影响模块的，有问题吧，为什么没有上层引用？？？怎么都会向上追溯，是因为异步导入原因？？？
-        }
-        msgContent.push(change.title);
-        msgContent.push('\n');
-        const {pageModules, fileList} = change;
-        if (pageModules && pageModules.length) {
-          msgContent.push(`影响模块：${pageModules.join('、')}`);
-          msgContent.push('\n');
-        }
-        if (fileList && fileList.length) {
-          msgContent.push(`影响文件(未备注模块/页面名)：${fileList.join('、')}`);
-        }
-        msgContent.push('\n\n\n');
-      })
-      msgContent.push("\n\n\n\n## 提交记录:\n\n");
-      msgContent.push(`> 近2周共${submitList.length}commit\n\n`);
-
-      submitList.forEach(log => msgContent.push(`[提交人]:${log.author_name} \n[提交日期]:${log.date} \n[提交说明]:${log.message}\n\n\n\n`));
-      msgContent.push("\n\n\n\n请对应研发和测试参考以上内容进行回归");
-      users?.forEach(user => msgContent.push(`<@${user}>`));
-
-
-      const excelContent = [['变更文件', '变更组件', '影响文件', '影响页面', '影响模块']];
+      const excelContent = [['变更源文件', '变更公共组件/工具库', '引用文件', '引用页面', '引用模块', '确认回归结果']];
 
       changes.filter(Boolean).forEach(change => {
         const {component, util, page, module, rootPath, parentPath} = change!;
-        excelContent.push([rootPath.replace(cwd_path, ''), component || util || '', (parentPath || '').replace(cwd_path, ''), page || '', module || '']);
+        excelContent.push([rootPath.replace(cwd_path, '.'), component || util || '', (parentPath || '').replace(cwd_path, '.'), page || '', module || '']);
       });
 
-      fetch('http://localhost:3000/doc-msg/send', {
+      fetch('http://xm-qdjg-dev.msg-service.devgw.yonghui.cn/doc-msg/send', {
         method: "POST",
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          name: '项目1提测变更记录2',
-          users: ['81087708'],
+          name: `${path.basename(cwd_path)}_${dayjs().format('YYYY-MM-DD HH:mm:ss')}_提测`,// 项目、日期
+          users: users,
           content: excelContent,
           webhook: webhook,
-          channel: 'wx'
+          channel: channel,
+          msgType: msgType,
+          msgTemplate: msgTemplate || '## 提测检测:\n\n变更影响文档：[${url}](${url})\n\n请对应研发补充完善提供测试参考回归确认${users.map(user => `<@${user}`)}>'
         })
       }).then((response: any) => response.json()).then((data: any) => {
-        console.log(data);
         callback();
       });
-
-
-      // const wechatMsg = {
-      //   "msgtype": "markdown",
-      //   "markdown": {
-      //     "content": msgContent.join(''),
-      //   },
-      // }
-      //
-      //
-      // // 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=90d04116-5345-45b8-92a9-c156c1e905f1'
-      // request({
-      //   url: webhook,
-      //   method: "POST",
-      //   body: JSON.stringify(wechatMsg)
-      // })
-      // callback();
     };
 
     if (compiler.hooks) {
