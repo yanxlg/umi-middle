@@ -1,6 +1,6 @@
 {
   "name": "@middle-cli/middle",
-  "version": "0.3.4",
+  "version": "0.3.5",
   "description": "工程化启动包",
   "main": "lib/index.js",
   "bin": {
@@ -14,8 +14,8 @@
     "build": "father build"
   },
   "dependencies": {
-    "@middle-cli/plugin-asset": "^0.3.1",
-    "@middle-cli/plugin-asset-dev": "^0.3.1",
+    "@middle-cli/plugin-asset": "^0.3.2",
+    "@middle-cli/plugin-asset-dev": "^0.3.2",
     "@middle-cli/plugin-body-scripts": "^0.3.1",
     "@middle-cli/plugin-click-to-component": "^0.3.1",
     "@middle-cli/plugin-default-config": "^0.3.1",
