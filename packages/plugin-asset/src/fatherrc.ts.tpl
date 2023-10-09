@@ -14,6 +14,7 @@ export default defineConfig({
           lodash: "_",
           "react-router": "ReactRouter",
           "react-router-dom": "ReactRouterDOM",
+          "@meditor/config-provider": "LowAppConfigProvider",// 环境变量配置Provider
           "dayjs": "dayjs",
           "moment": "dayjs", // moment强制转换成dayjs
           "@meditor/core": {
@@ -72,6 +73,7 @@ export default defineConfig({
           lodash: "_",
           "react-router": "ReactRouter",
           "react-router-dom": "ReactRouterDOM",
+          "@meditor/config-provider": "LowAppConfigProvider",// 环境变量配置Provider
           "dayjs": "dayjs",
           "moment": "dayjs", // moment强制转换成dayjs
           "@meditor/core": {

@@ -27,19 +27,6 @@ export default (api: IApi) => {
   });
 
   api.modifyConfig((memo, { paths }) => {
-    // memo.externals = {
-    //   ...memo.externals,
-    //   "@formily/reactive": "Formily.Reactive", // iframe中获取到的是父页面全局变量。为什么需要用父元素的
-    //   react: "React",
-    //   "react-dom": "ReactDOM",
-    // };
-    // memo.headScripts = [
-    //   `//unpkg.com/react@17.0.2/umd/react.production.min.js`,
-    //   `//unpkg.com/react-dom@17.0.2/umd/react-dom.production.min.js`,
-    //   `//unpkg.com/@formily/reactive@2.2.13/dist/formily.reactive.umd.${
-    //     isDev ? "development" : "production"
-    //   }.js`,
-    // ];
     // 地址
     memo.routes = [
       {
