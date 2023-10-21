@@ -149,6 +149,7 @@ function TabLabel({index, widthType, name, badge, onReload}:{index:number; width
   )
 }
 
+const TabPanel = Tabs.TabPane;
 
 export let setTabBadge = (tabKey: string, badge?: number)=>{};
 
@@ -236,13 +237,21 @@ export default function WindowTabs(props: IWindowTabsProps) {
         onChange={onTabChange}
         onEdit={onEdit}
         animated={false}
-        items={wins.map((node, index) => ({
+        items={!!TabPanel ? undefined : wins.map((node, index) => ({
           key: node.pathname,
           label: <TabLabel index={index} widthType={widthType} name={node.name} badge={node.badge} onReload={reloadIcon ? refreshPage: null}/>,
           closable: wins.length === 1 ? firstTabCloseable : closeable,
         }))}
         onContextMenu={rightMenu ? handleContextMenu : null}
-      />
+      >
+        {
+          !!TabPanel ? wins.map((win, index) => {
+            return <Tabs.TabPane closable={wins.length === 1 ? firstTabCloseable : closeable} key={win.pathname}
+                                 tab={<TabLabel index={index} widthType={widthType as any} name={win.name!}
+                                                badge={win.badge} onReload={reloadIcon ? refreshPage : undefined}/>}/>
+          }) : null
+        }
+      </Tabs>
       {
         rightMenu? (
           <Menu id={MENU_ID} style={ { padding: 0 } }>
