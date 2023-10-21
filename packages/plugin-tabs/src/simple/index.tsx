@@ -61,8 +61,8 @@ function wrapPageWithComponent(route: RouteObject, routes: Array<RouteObject>) {
     route.element = (
       <KeepAliveWrapper routes={routes}>{originElement}</KeepAliveWrapper>
     );
-  }else if(typeof originElement === 'function'){
-    const OriginElement = originElement as React.ComponentType;
+  }else{
+    const OriginElement = originElement as unknown as React.ComponentType;
     route.element = (
       <KeepAliveWrapper routes={routes}><OriginElement/></KeepAliveWrapper>
     );
