@@ -1,22 +1,18 @@
-{{#useYhDesign}}
+// @ts-ignore
 import { YHMenu as AntdMenu, MenuProps, YHTabs as Tabs, YHTooltip as Tooltip, YHBadge as Badge } from "@yh/yh-design";
-{{/useYhDesign}}
-{{^useYhDesign}}
-import { Menu as AntdMenu, MenuProps, Tabs, Tooltip, Badge } from "antd";
-{{/useYhDesign}}
-import type { MenuInfo } from "rc-menu/lib/interface";
-import React, { useCallback, useEffect } from "react";
-import { history, useAppData } from "umi";
-import "./themes/otb/index.less";
-import { useTabs } from "./useTabs";
+import type {MenuInfo} from "rc-menu/lib/interface";
+import React, {useCallback, useEffect} from "react";
+import {RouteObject, useNavigate} from 'react-router-dom';
+import {useTabs} from "./useTabs";
 import ReloadOutlined from '@ant-design/icons/ReloadOutlined';
 
-import { Menu, useContextMenu } from "react-contexify";
+import {Menu, useContextMenu} from "react-contexify";
 import "react-contexify/dist/ReactContexify.css";
+
 const MENU_ID = "tab_context_menu";
 
 
-const antPrefixCls = "{{{antdPrefix}}}"; // TODO 需要插件生成
+const antPrefixCls = "antd";
 
 const id = "__window-tabs";
 const tabClassSelector = `${antPrefixCls}-tabs-tab`;
@@ -72,7 +68,7 @@ const ReplaceMenuWithAnt = (props: {
   removeAll: () => void;
   refreshPage: (index: number) => void;
 }) => {
-  const { removeTabByIndex, removeOthers, removeAll, refreshPage } = props;
+  const {removeTabByIndex, removeOthers, removeAll, refreshPage} = props;
   const handleMenuClick = (info: MenuInfo) => {
     const key = info.key;
     const actionIndex = props.propsFromTrigger?.index!;
@@ -92,7 +88,7 @@ const ReplaceMenuWithAnt = (props: {
     }
   };
 
-  return <AntdMenu onClick={handleMenuClick} items={contextMenus} />;
+  return <AntdMenu onClick={handleMenuClick} items={contextMenus}/>;
 };
 
 
@@ -100,7 +96,6 @@ const defaultWidthConfig = {
   type: 'maxWidth',
   width: 120
 };
-
 
 
 interface IWindowTabsProps {
@@ -117,22 +112,32 @@ interface IWindowTabsProps {
   defaultTabs?: string[];// 默认显示的tabs，通过path自动显示默认标签
   rightMenu?: boolean;// 是否显示右键操作按钮。
   reloadIcon?: boolean; // 是否显示刷新图标
+
+  routes: RouteObject[];
 }
 
 
-function TabLabel({index, widthType, name, badge, onReload}:{index:number; widthType: IWindowTabsProps['widthType']; name: string; badge?: number; onReload?: Function}) {
-  const content = widthType === 'fit-content' ? name : <Tooltip title={name}><div style={ {[widthType.type]: widthType.width, textOverflow: 'ellipsis', overflow: 'hidden'} }>{name}</div></Tooltip>;
-  if(void 0 === badge) {
+function TabLabel({index, widthType, name, badge, onReload}: {
+  index: number;
+  widthType: Exclude<IWindowTabsProps['widthType'], undefined>;
+  name: string;
+  badge?: number;
+  onReload?: Function
+}) {
+  const content = widthType === 'fit-content' ? name : <Tooltip title={name}>
+    <div style={{[widthType.type]: widthType.width, textOverflow: 'ellipsis', overflow: 'hidden'}}>{name}</div>
+  </Tooltip>;
+  if (void 0 === badge) {
     return (
       <>
         {content}
         {
-          onReload?(
+          onReload ? (
             <ReloadOutlined
-             style={ { marginLeft: 10, marginRight: 0 } }
-             onClick={()=>onReload(index)}
-           />
-          ):null
+              style={{marginLeft: 10, marginRight: 0}}
+              onClick={() => onReload(index)}
+            />
+          ) : null
         }
       </>
     );
@@ -142,21 +147,24 @@ function TabLabel({index, widthType, name, badge, onReload}:{index:number; width
       <Badge count={badge}>
         {content}
         {
-          onReload?(
+          onReload ? (
             <ReloadOutlined
-             style={ { marginLeft: 10, marginRight: 0 } }
-             onClick={()=>onReload(index)}
-           />
-          ):null
+              style={{marginLeft: 10, marginRight: 0}}
+              onClick={() => onReload(index)}
+            />
+          ) : null
         }
       </Badge>
     </>
   )
 }
 
-const TabPanel = Tabs.TabPane;
 
-export let setTabBadge = (tabKey: string, badge?: number)=>{};
+export let setTabBadge = (tabKey: string, badge?: number) => {
+};
+
+
+const TabPanel = Tabs.TabPane; // 如果有TabPanel 则使用TabPanel，否则antd>5.0,则使用items
 
 export default function WindowTabs(props: IWindowTabsProps) {
   const {
@@ -168,13 +176,21 @@ export default function WindowTabs(props: IWindowTabsProps) {
     removeAll,
     refreshPage,
     setTabBadge: _setTabBadge,
-  } = useTabs(props.defaultTabs);
+  } = useTabs(props.defaultTabs, props.routes);
 
-  const { pluginManager } = useAppData();
-
-  const { firstTabCloseable = true, closeable = true, widthType = defaultWidthConfig, showWhenEmptyTabs = true, style, className, theme, rightMenu = true, reloadIcon = false } = props;
-
-  const { show } = useContextMenu({
+  const {
+    firstTabCloseable = true,
+    closeable = true,
+    widthType = defaultWidthConfig,
+    showWhenEmptyTabs = true,
+    style,
+    className,
+    theme,
+    rightMenu = true,
+    reloadIcon = false
+  } = props;
+  const navigate = useNavigate();
+  const {show} = useContextMenu({
     id: MENU_ID,
   });
 
@@ -219,35 +235,36 @@ export default function WindowTabs(props: IWindowTabsProps) {
 
   const onTabChange = useCallback((pathname: string) => {
     // 切换到新的页面
-    history.push(pathname);
+    navigate(pathname);
   }, []);
 
 
-  useEffect(()=>{
+  useEffect(() => {
     setTabBadge = _setTabBadge;
-  },[]);
+  }, []);
 
 
   return (
     <>
       <Tabs
         id={id}
-        className={`${theme === 'otb'? 'window-tabs-theme-otb':''} --window-tab-container ${className||''}`}
+        className={`--window-tab-container ${className || ''}`}
         activeKey={activeKey}
         type="editable-card"
         hideAdd
-        style={ {...style, ...showWhenEmptyTabs === false && wins.length ===0? {display:'none'}:{} } }
-        tabBarStyle={ { marginBottom: 0 } }
+        style={{...style, ...showWhenEmptyTabs === false && wins.length === 0 ? {display: 'none'} : {}}}
+        tabBarStyle={{marginBottom: 0}}
         tabBarGutter={8}
         onChange={onTabChange}
         onEdit={onEdit}
         animated={false}
         items={!!TabPanel ? undefined : wins.map((node, index) => ({
           key: node.pathname,
-          label: <TabLabel index={index} widthType={widthType} name={node.name} badge={node.badge} onReload={reloadIcon ? refreshPage: null}/>,
+          label: <TabLabel index={index} widthType={widthType as any} name={node.name!} badge={node.badge}
+                           onReload={reloadIcon ? refreshPage : undefined}/>,
           closable: wins.length === 1 ? firstTabCloseable : closeable,
         }))}
-        onContextMenu={rightMenu ? handleContextMenu : null}
+        onContextMenu={rightMenu ? handleContextMenu : undefined}
       >
         {
           !!TabPanel ? wins.map((win, index) => {
@@ -258,8 +275,8 @@ export default function WindowTabs(props: IWindowTabsProps) {
         }
       </Tabs>
       {
-        rightMenu? (
-          <Menu id={MENU_ID} style={ { padding: 0 } }>
+        rightMenu ? (
+          <Menu id={MENU_ID} style={{padding: 0}}>
             <ReplaceMenuWithAnt
               removeTabByIndex={removeTabByIndex}
               removeOthers={removeOthers}
@@ -267,7 +284,7 @@ export default function WindowTabs(props: IWindowTabsProps) {
               refreshPage={refreshPage}
             />
           </Menu>
-        ):null
+        ) : null
       }
     </>
   );

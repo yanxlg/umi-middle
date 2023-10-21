@@ -11,7 +11,7 @@ import "react-contexify/dist/ReactContexify.css";
 const MENU_ID = "tab_context_menu";
 
 
-const antPrefixCls = "{{{antdPrefix}}}"; // TODO 需要插件生成
+const antPrefixCls = "antd";
 
 const id = "__window-tabs";
 const tabClassSelector = `${antPrefixCls}-tabs-tab`;

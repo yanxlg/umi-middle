@@ -162,12 +162,22 @@ export default (api: IApi) => {
 
     // 获取配置的antd样式前缀
     const antdPrefix = api.config.antd?.configProvider?.prefixCls || "ant";
+
+    const useYhDesign = (()=>{
+      try {
+        require.resolve('@yh/yh-design');
+        return true
+      }catch (e){
+        return false
+      }
+    })();
     // 配置
     api.writeTmpFile({
       path: "WindowTabs/index.tsx",
       tplPath: join(__dirname, "WindowTabs/index.tsx.tpl"),
       context: {
         antdPrefix,
+        useYhDesign
       },
     });
     const base = api.config.base || "/";
