@@ -9,6 +9,7 @@ import React from 'react';
 import {AliveScope, NodeKey, autoFixContext, createContext} from 'react-activation';
 import {KeepAliveWrapper} from './KeepAliveWrapper';
 import {RouteObject} from "react-router-dom";
+import {type} from "os";
 
 // 全局React 修复, umd 引入问题
 // @ts-ignore
@@ -59,6 +60,11 @@ function wrapPageWithComponent(route: RouteObject, routes: Array<RouteObject>) {
   if (React.isValidElement(originElement)) {
     route.element = (
       <KeepAliveWrapper routes={routes}>{originElement}</KeepAliveWrapper>
+    );
+  }else if(typeof originElement === 'function'){
+    const OriginElement = originElement as React.ComponentType;
+    route.element = (
+      <KeepAliveWrapper routes={routes}><OriginElement/></KeepAliveWrapper>
     );
   }
 }
