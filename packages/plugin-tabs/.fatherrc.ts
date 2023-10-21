@@ -5,6 +5,6 @@ export default defineConfig({
   esm: {
     output: 'esm',
     platform: 'browser',
-    input: 'src/simple'
+    input: 'simple'
   }
 });
