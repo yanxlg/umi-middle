@@ -247,7 +247,7 @@ const useTabs = (defaultTabs: string[] = [], routes: RouteObject[]) => {
   useEffect(() => {
     if(!initRef.current){
       const pathname = location.pathname; // 这个会包括base部分需要截掉
-      onPathChange(pathname.replace(new RegExp("^{{{base}}}"), '/'));
+      onPathChange(pathname);
     }else{
       initRef.current = false;
     }
