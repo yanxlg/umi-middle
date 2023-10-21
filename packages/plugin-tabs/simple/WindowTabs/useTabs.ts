@@ -61,7 +61,7 @@ function getDynamicTabName(pattern: string, params: object) {
   return parseTemplateString(pattern, params);
 }
 
-function getTargetTab(routes: RouteObject[], pathname: string) {
+function getTargetTab(routes: RouteObject[], pathname: string, search?: string) {
   const matchedRoutes = getMatchRoutes(routes, pathname);
   if (matchedRoutes && matchedRoutes.length > 0) {
     const extractRoute = matchedRoutes.pop()!;
@@ -85,7 +85,7 @@ function getTargetTab(routes: RouteObject[], pathname: string) {
           name: parent.route.tabTemplate
             ? getDynamicTabName(parent.route.tabTemplate, params)
             : parent.route.name,
-          pathname,
+          pathname: pathname + search,
           pages: [
             {
               ...omit(route, ['element']),
@@ -99,7 +99,7 @@ function getTargetTab(routes: RouteObject[], pathname: string) {
     const page = {
       ...omit(route, ['element']),
       name: tabTemplate ? getDynamicTabName(tabTemplate, params) : name,
-      pathname,
+      pathname: pathname + search,
     };
     return {
       tabKey,
@@ -123,12 +123,12 @@ function addPage(pages: PageType[], page: PageType) {
 }
 
 
-function getWindowTabList(paths: string[], routes: RouteObject[]) {
+function getWindowTabList(paths: string[], routes: RouteObject[], search?: string) {
   const tabPathList = Array.from(new Set(paths));// 可能会存在重复，
   let windowTabList: IWindow[] = [];
   for (let i = 0; i < tabPathList.length; i++) {
     const path = tabPathList[i];
-    const target = getTargetTab(routes, path);
+    const target = getTargetTab(routes, path, search);
     if (target) {
       const sameIndex = windowTabList.findIndex(_ => _.initPathName === target.initPathName)
       if (sameIndex > -1) {
@@ -156,16 +156,17 @@ const useTabs = (defaultTabs: string[] = [], routes: RouteObject[]) => {
   const [tabState, setTabState] = useSessionStorageState<TabState>('__window_tabs_cache__', {
     defaultValue: () => {
       const pathname = location.pathname;
-      const targetTabList = getWindowTabList([...defaultTabs, pathname], routes);
+      const defaultTabList = getWindowTabList([...defaultTabs], routes);
+      const targetTabList = getWindowTabList([pathname], routes, location.search);
       return {
         activeKey: pathname,
-        wins: targetTabList || [],
+        wins: [...defaultTabList,...targetTabList],
       };
     }
   }) as [TabState, (value?: TabState | ((before: TabState) => TabState)) => void];
 
-  const onPathChange = useCallback((pathname: string) => {
-    const targetTab = getTargetTab(routes, pathname);
+  const onPathChange = useCallback((pathname: string, search?: string) => {
+    const targetTab = getTargetTab(routes, pathname, search);
     if (targetTab) {
       const {tabMode} = targetTab;
       setTabState((tabState: TabState) => {
@@ -247,7 +248,7 @@ const useTabs = (defaultTabs: string[] = [], routes: RouteObject[]) => {
   useEffect(() => {
     if(!initRef.current){
       const pathname = location.pathname; // 这个会包括base部分需要截掉
-      onPathChange(pathname);
+      onPathChange(pathname, location.search);
     }else{
       initRef.current = false;
     }
