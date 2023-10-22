@@ -19,7 +19,8 @@
     "ahooks": "*",
     "lodash": "*",
     "react-activation": "0.12.1",
-    "react-contexify": "6.0.0"
+    "react-contexify": "6.0.0",
+    "babel-plugin-import": "*"
   },
   "devDependencies": {
     "@types/node": "^18.15.11",

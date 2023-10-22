@@ -112,10 +112,10 @@ export default (api: IApi) => {
   }); // 因 keep-alive 的 runtime 部分选择不渲染其 children，可能会丢失默认的用户 rootContainer，因此第一个注册，作为最深 Container
 
   // Babel Plugin for react-activation
-  api.addExtraBabelPlugins(() => require.resolve("react-activation/babel"));
+  // api.addExtraBabelPlugins(() => require.resolve("react-activation/babel"));
+  // api.addExtraBabelPlugins(() => withTmpPath({api, path: "babel"}));
 
-  api.addExtraBabelPlugins(() => withTmpPath({api, path: "babel"}));
-
+  api.addExtraBabelPresets(()=>require.resolve('./babel-preset.js'))
   // 约定式路由需要从代码中解析相关配置
   api.modifyRoutes((memo) => {
     Object.keys(memo).forEach((id) => {
@@ -134,12 +134,6 @@ export default (api: IApi) => {
     api.writeTmpFile({
       path: "index.tsx",
       tplPath: join(__dirname, "index.tsx.tpl"),
-      context: {},
-    });
-
-    api.writeTmpFile({
-      path: "babel.js",
-      tplPath: join(__dirname, "babel.js"),
       context: {},
     });
 
