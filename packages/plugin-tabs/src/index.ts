@@ -115,7 +115,7 @@ export default (api: IApi) => {
   // api.addExtraBabelPlugins(() => require.resolve("react-activation/babel"));
   // api.addExtraBabelPlugins(() => withTmpPath({api, path: "babel"}));
 
-  api.addExtraBabelPresets(()=>require.resolve('./babel-preset.js'))
+  api.addExtraBabelPresets(()=>withTmpPath({api, path: "babel-preset"}))
   // 约定式路由需要从代码中解析相关配置
   api.modifyRoutes((memo) => {
     Object.keys(memo).forEach((id) => {
@@ -134,6 +134,12 @@ export default (api: IApi) => {
     api.writeTmpFile({
       path: "index.tsx",
       tplPath: join(__dirname, "index.tsx.tpl"),
+      context: {},
+    });
+
+    api.writeTmpFile({
+      path: "babel-preset.js",
+      tplPath: join(__dirname, "babel-preset.js"),
       context: {},
     });
 
