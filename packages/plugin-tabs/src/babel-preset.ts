@@ -17,7 +17,7 @@ export default ()=>{
     plugins: [
       require('react-activation/babel'),
       require("./babel"),
-      ...hasYhDesign && !hasAntd?[require("./babel-plugin-import"),{
+      ...hasYhDesign && !hasAntd?[[require("./babel-plugin-import"),{
         "libraryName": "antd",
         "style": true,
         "customName": (name: string) => {
@@ -27,7 +27,7 @@ export default ()=>{
           return `YH${name}`;
         },
         "include": [join(__dirname,'../')]
-      }]:[],
+      }]]:[],
     ],
   }
 }
