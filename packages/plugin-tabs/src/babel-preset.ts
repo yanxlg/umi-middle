@@ -20,6 +20,7 @@ export default ()=>{
       ...hasYhDesign && !hasAntd?[[require("./babel-plugin-import"),{
         "libraryName": "antd",
         "style": true,
+        "camel2DashComponentName": false,
         "customName": (name: string) => {
           return `@yh/yh-design/lib/YH${name}`;
         },

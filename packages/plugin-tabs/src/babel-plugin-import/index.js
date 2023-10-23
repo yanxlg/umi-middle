@@ -81,6 +81,7 @@ export default function ({ types }) {
               opts.customName,
               opts.transformToDefaultImport,
               types,
+              0,
               opts.customComponentName,
               opts.include
             ),
