@@ -139,7 +139,7 @@ export default (api: IApi) => {
 
     api.writeTmpFile({
       path: "babel-preset.js",
-      tplPath: join(__dirname, "babel-preset.js"),
+      tplPath: join(__dirname, "babel-preset.js.tpl"),
       context: {},
     });
 
