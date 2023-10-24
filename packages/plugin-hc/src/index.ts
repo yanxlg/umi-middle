@@ -64,17 +64,20 @@ export default async (api: IApi) => {
         shouldNotModifyRuntimePublicPath: true,
       },
     }
+
+    memo.headScripts = [...memo.headScripts, `window.publicPath = "${publicPath}"`];
     return memo;
   })
   
-  api.addPolyfillImports({
-    stage: 99999,
-    name: 'publicPath',
-    fn: ()=>[{
-      source: withTmpPath({api, path: 'publicPath.ts'}),
-    }]
-  }); // 公共路径
-  
+  // 公共路径不是在项目最顶部设置，会出问题
+//  api.addPolyfillImports({
+//    stage: 99999,
+//    name: 'publicPath',
+//    fn: ()=>[{
+//      source: withTmpPath({api, path: 'publicPath.ts'}),
+//    }]
+//  }); // 公共路径
+//
   // runtime 修改
   api.onGenerateFiles(() => {
     api.writeTmpFile({
@@ -82,13 +85,13 @@ export default async (api: IApi) => {
       tplPath: join(__dirname, "useMenu.ts.tpl"),
       context: {},
     });
-    api.writeTmpFile({
-      path: "publicPath.ts",
-      tplPath: join(__dirname, "publicPath.ts.tpl"),
-      context: {
-        publicPath
-      },
-    });
+//    api.writeTmpFile({
+//      path: "publicPath.ts",
+//      tplPath: join(__dirname, "publicPath.ts.tpl"),
+//      context: {
+//        publicPath
+//      },
+//    });
     api.writeTmpFile({
       path: "usePermissions.ts",
       tplPath: join(__dirname, "usePermissions.ts.tpl"),
