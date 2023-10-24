@@ -85,13 +85,10 @@ export default async (api: IApi) => {
       tplPath: join(__dirname, "useMenu.ts.tpl"),
       context: {},
     });
-//    api.writeTmpFile({
-//      path: "publicPath.ts",
-//      tplPath: join(__dirname, "publicPath.ts.tpl"),
-//      context: {
-//        publicPath
-//      },
-//    });
+    api.writeTmpFile({
+      path: "index.ts",
+      tplPath: join(__dirname, "index.ts.tpl"),
+    });
     api.writeTmpFile({
       path: "usePermissions.ts",
       tplPath: join(__dirname, "usePermissions.ts.tpl"),
