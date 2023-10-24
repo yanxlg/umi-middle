@@ -35,7 +35,7 @@ function useMenu(appCode: string){
       menus: [],
     });
     const xhr = new XMLHttpRequest();
-    xhr.open('post', `/app/api/auth-hub/auth/menus?app=${appCode}&timestamp=${Date.now()}`);
+    xhr.open('post', `/app/api/auth-hub/auth/menus?timestamp=${Date.now()}`);
     xhr.onload = function () {
       let responseText = xhr.responseText;
       if (xhr.status == 200) {
