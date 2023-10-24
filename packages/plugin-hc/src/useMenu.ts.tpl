@@ -7,15 +7,81 @@
  *
  * Copyright (c) 2023 by yanxlg, All Rights Reserved.
  */
-import React,{useState} from 'react';
+import {useState, useEffect} from 'react';
 
-function useMenu(){
-  const [menuState,setMenuState] = useState({
+
+type Menu = {
+  icon: string;
+  key: string;
+  permission: string;
+  title: string;
+  url: string;
+  children?: Array<Menu>;
+}
+
+function useMenu(appCode: string){
+  const [menuState,setMenuState] = useState<{
+    loading: boolean;
+    menus: Array<Menu>;
+    responseXHR?: XMLHttpRequest;
+  }>({
     loading: false,
-    menus: []
+    menus: [],
   });
-  // 请求
-  
+
+  useEffect(() => {
+    setMenuState({
+      loading: true,
+      menus: [],
+    });
+    const xhr = new XMLHttpRequest();
+    xhr.open('post', `/app/api/auth-hub/auth/menus?app=${appCode}&timestamp=${Date.now()}`);
+    xhr.onload = function () {
+      let responseText = xhr.responseText;
+      if (xhr.status == 200) {
+        try {
+          const {code,data} = JSON.parse(responseText);
+          if(code === 0){
+            setMenuState({
+              loading: false,
+              menus: data,
+              responseXHR: xhr
+            });
+          }else{
+            setMenuState({
+              loading: false,
+              menus: [],
+              responseXHR: xhr
+            });
+          }
+        } catch (e) {
+          setMenuState({
+            loading: false,
+            menus: [],
+            responseXHR: xhr
+          });
+        }
+      } else {
+        setMenuState({
+          loading: false,
+          menus: [],
+          responseXHR: xhr
+        });
+      }
+    };
+    xhr.onerror = function (e){
+      setMenuState({
+        loading: false,
+        menus: [],
+        responseXHR: xhr
+      });
+    }
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.setRequestHeader("Accept", "application/json");
+
+    xhr.send(JSON.stringify({app: appCode}));
+    }, []);
+  return menuState;
 }
 
 export { useMenu };
