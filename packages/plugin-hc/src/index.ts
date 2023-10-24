@@ -17,6 +17,9 @@ export default async (api: IApi) => {
   api.describe({
     key: "hc",
     config: {
+      schema({ zod }) {
+        return zod.boolean();
+      },
       onChange: api.ConfigChangeType.regenerateTmpFiles,
     },
     enableBy: api.EnableBy.config, // 配置时生效
