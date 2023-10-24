@@ -10,6 +10,24 @@
  */
 import { join } from "path";
 import { IApi } from "umi";
+import { winPath } from "umi/plugin-utils";
+
+function withTmpPath(opts: {
+  api: IApi;
+  path: string;
+  noPluginDir?: boolean;
+}) {
+  return winPath(
+    join(
+      opts.api.paths.absTmpPath,
+      opts.api.plugin.key && !opts.noPluginDir
+        ? `plugin-${opts.api.plugin.key}`
+        : "",
+      opts.path
+      )
+      );
+}
+
 
 const isProduction = process.env.NODE_ENV === "production";
 
@@ -49,7 +67,13 @@ export default async (api: IApi) => {
     return memo;
   })
   
-  api.addEntryCodeAhead(() => `window.publicPath = "${publicPath}"`); // 公共路径
+  api.addPolyfillImports({
+    stage: 99999,
+    name: 'publicPath',
+    fn: ()=>[{
+      source: withTmpPath({api, path: 'publicPath.ts'}),
+    }]
+  }); // 公共路径
   
   // runtime 修改
   api.onGenerateFiles(() => {
@@ -57,6 +81,13 @@ export default async (api: IApi) => {
       path: "useMenu.ts",
       tplPath: join(__dirname, "useMenu.ts.tpl"),
       context: {},
+    });
+    api.writeTmpFile({
+      path: "publicPath.ts",
+      tplPath: join(__dirname, "publicPath.ts.tpl"),
+      context: {
+        publicPath
+      },
     });
     api.writeTmpFile({
       path: "usePermissions.ts",
