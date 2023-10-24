@@ -144,6 +144,12 @@ export default (api: IApi) => {
     });
 
     api.writeTmpFile({
+      path: "babel.js",
+      tplPath: join(__dirname, "babel.js"),
+      context: {},
+    });
+
+    api.writeTmpFile({
       path: "KeepAliveWrapper.tsx",
       tplPath: join(__dirname, "KeepAliveWrapper.tsx.tpl"),
       context: {},
