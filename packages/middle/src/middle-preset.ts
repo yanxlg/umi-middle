@@ -20,7 +20,8 @@ export default () => {
       require.resolve("@middle-cli/plugin-click-to-component"),
       require.resolve("@middle-cli/plugin-sauron"),
       require.resolve("@middle-cli/plugin-history-inject"),
-      require.resolve("@middle-cli/plugin-body-scripts")
+      require.resolve("@middle-cli/plugin-body-scripts"),
+      require.resolve("@middle-cli/plugin-hc")
     ],
   };
 };
