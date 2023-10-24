@@ -88,6 +88,7 @@ export default async (api: IApi) => {
     api.writeTmpFile({
       path: "index.ts",
       tplPath: join(__dirname, "index.ts.tpl"),
+      context: {},
     });
     api.writeTmpFile({
       path: "usePermissions.ts",
