@@ -64,7 +64,7 @@ export default async (api: IApi) => {
         shouldNotModifyRuntimePublicPath: true,
       },
     }
-
+    memo.hash = memo.hash === void 0 ? true:memo.hash;
     memo.headScripts = [...memo.headScripts||[], `window.publicPath = "${publicPath}"`];
     return memo;
   })
