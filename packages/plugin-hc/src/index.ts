@@ -65,7 +65,7 @@ export default async (api: IApi) => {
       },
     }
 
-    memo.headScripts = [...memo.headScripts, `window.publicPath = "${publicPath}"`];
+    memo.headScripts = [...memo.headScripts||[], `window.publicPath = "${publicPath}"`];
     return memo;
   })
   
