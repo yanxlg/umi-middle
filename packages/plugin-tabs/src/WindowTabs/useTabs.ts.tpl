@@ -139,7 +139,7 @@ function getWindowTabList(paths: string[], routes: RouteObject[]){
 }
 
 // 跟sessionStorage 联动
-const useTabs = (defaultTabs?: string[]) => {
+const useTabs = (defaultTabs: string[] = []) => {
   const location = useLocation();
   const { clientRoutes } = useAppData();
   const { dropScope, refresh, getCachingNodes } = useAliveController();
