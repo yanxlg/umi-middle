@@ -30,7 +30,7 @@ export function withTmpPath(opts: {
 }
 
 
-function getConfigPropertiesFromSource(content: string, properties: string[]) {
+function getConfigPropertiesFromSource(content: string,file: string, properties: string[]) {
   const ast = parser.parse(content, {
     sourceType: 'module',
     allowImportExportEverywhere: false,
@@ -43,11 +43,11 @@ function getConfigPropertiesFromSource(content: string, properties: string[]) {
       'decoratorAutoAccessors',
       'doExpressions',
       'exportDefaultFrom',
-      'flow',
       'functionBind',
       'importAssertions',
       'jsx',
       'regexpUnicodeSets',
+      /\.tsx?/.test(file)?'typescript':'flow'
     ],
     // decoratorOptions: { version: "2022-03", decoratorsBeforeExport: false, allowCallParenthesized: true },
     // pipelineOptions: { proposal: 'hack', hackTopicToken: '%' },
@@ -122,7 +122,7 @@ export default (api: IApi) => {
       const route = memo[id];
       const content = route.__content;// 内容
       if (content) { // 解析内容
-        const properties = getConfigPropertiesFromSource(content, ['tabTemplate', 'tabMode', 'saveScrollPosition', 'tabKey']);
+        const properties = getConfigPropertiesFromSource(content, route.file,['tabTemplate', 'tabMode', 'saveScrollPosition', 'tabKey']);
         Object.assign(route,properties);
       }
     });
