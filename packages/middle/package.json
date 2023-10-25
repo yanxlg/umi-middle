@@ -1,6 +1,6 @@
 {
   "name": "@middle-cli/middle",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "工程化启动包",
   "main": "lib/index.js",
   "bin": {
@@ -26,7 +26,7 @@
     "@middle-cli/plugin-release-check": "^0.4.0",
     "@middle-cli/plugin-sauron": "^0.4.0",
     "@middle-cli/plugin-sentry": "^0.4.0",
-    "@middle-cli/plugin-tabs": "^0.4.0",
+    "@middle-cli/plugin-tabs": "^0.4.1",
     "@middle-cli/plugin-watermark": "^0.4.0",
     "@umijs/max": "^4.0.67",
     "commander": "^9.4.0",
