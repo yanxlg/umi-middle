@@ -14,6 +14,11 @@ import path from 'path';
 const isProduction = process.env.NODE_ENV === "production";
 
 function getUmdFilePath(api: IApi, pkg: string, fileName: string){
+  // lodash 特殊处理
+  if(pkg === 'lodash'){
+    return isProduction? `node_modules/${pkg}/lodash.min.js`: `node_modules/${pkg}/lodash.js`;
+  }
+
   return isProduction?
               fs.existsSync(path.join(api.paths.absNodeModulesPath,pkg,'umd',`${fileName}.production.min.js`))? `node_modules/${pkg}/umd/${fileName}.production.min.js`:
               fs.existsSync(path.join(api.paths.absNodeModulesPath,pkg,'umd',`${fileName}.production.js`))? `node_modules/${pkg}/umd/${fileName}.production.js`:
