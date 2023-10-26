@@ -58,7 +58,7 @@ function getConfigPropertiesFromSource(content: string,file: string, properties:
       if (expression.type === 'AssignmentExpression') {
         const left = expression.left;
         const right = expression.right;
-        if (left.type === 'MemberExpression' && left.object && (left.object as Identifier).name === exportDefaultName && (left.property as Identifier).name === property && right.type === 'StringLiteral') {
+        if (left.type === 'MemberExpression' && left.object && (left.object as Identifier).name === exportDefaultName && (left.property as Identifier).name === property && (right.type === 'StringLiteral' || right.type ==='BooleanLiteral')) {
           propertyValues[property] = right.value;
         }
       }
