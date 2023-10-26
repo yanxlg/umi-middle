@@ -1,6 +1,6 @@
 {
   "name": "release-check",
-  "version": "0.3.21",
+  "version": "0.3.22",
   "description": "工程化启动包",
   "main": "lib/index.js",
   "bin": {
