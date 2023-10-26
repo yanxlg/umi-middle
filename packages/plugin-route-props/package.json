@@ -1,6 +1,6 @@
 {
   "name": "@middle-cli/plugin-route-props",
-  "version": "0.4.5",
+  "version": "0.5.0-alpha.0",
   "keywords": [],
   "license": "MIT",
   "author": "yanxlg <yanxlg2@yonghui.cn>",
