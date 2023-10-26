@@ -81,7 +81,7 @@ export default (api: IApi) => {
   });
  
   api.modifyRoutes((memo) => {
-    const fields = api.config.routeProps||['layout','login'];
+    const fields = api.config.extendRouteProps||['layout','login'];
     Object.keys(memo).forEach((id) => {
       const route = memo[id];
       const content = route.__content;// 内容
