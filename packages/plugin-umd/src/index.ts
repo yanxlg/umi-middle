@@ -7,7 +7,7 @@
  *
  * Copyright (c) 2023 by yanxlg, All Rights Reserved.
  */
-import { IApi } from "umi";
+import { IApi, terminal } from "umi";
 import fs from 'fs';
 import path from 'path';
 
@@ -65,7 +65,7 @@ export default (api: IApi) => {
               const exportsVersion = require(`${library}/package.json`).version;
               const umdFilePath = getUmdFilePath(api,library,library);
               if(!umdFilePath){
-                console.warn(`找不到${library}对应的umd文件，请确认目录格式是否规范`);
+                terminal.warn(`找不到${library}对应的umd文件，请确认目录格式是否规范`);
               }else{
                 memo.copy.push({
                   from: umdFilePath,
@@ -82,7 +82,7 @@ export default (api: IApi) => {
                 files.forEach((file)=>{
                   const umdFilePath = getUmdFilePath(api,name,file);
                   if(!umdFilePath){
-                    console.warn(`找不到包${name}中${file}对应的umd文件，请确认目录格式是否规范`);
+                    terminal.warn(`找不到包${name}中${file}对应的umd文件，请确认目录格式是否规范`);
                   }else{
                     memo.copy.push({
                       from: umdFilePath,
