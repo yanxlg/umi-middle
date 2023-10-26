@@ -1,6 +1,6 @@
 {
   "name": "@middle-cli/middle",
-  "version": "0.4.6",
+  "version": "0.4.7",
   "description": "工程化启动包",
   "main": "lib/index.js",
   "bin": {
@@ -14,7 +14,7 @@
     "build": "father build"
   },
   "dependencies": {
-    "@middle-cli/plugin-alias": "^0.4.1",
+    "@middle-cli/plugin-alias": "^0.4.2",
     "@middle-cli/plugin-asset": "^0.4.0",
     "@middle-cli/plugin-asset-dev": "^0.4.0",
     "@middle-cli/plugin-body-scripts": "^0.4.0",
@@ -29,7 +29,7 @@
     "@middle-cli/plugin-sauron": "^0.4.0",
     "@middle-cli/plugin-sentry": "^0.4.0",
     "@middle-cli/plugin-tabs": "^0.4.1",
-    "@middle-cli/plugin-umd": "^0.4.1",
+    "@middle-cli/plugin-umd": "^0.4.2",
     "@middle-cli/plugin-watermark": "^0.4.0",
     "@umijs/max": "^4.0.67",
     "commander": "^9.4.0",
