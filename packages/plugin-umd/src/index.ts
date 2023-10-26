@@ -35,7 +35,7 @@ export default (api: IApi) => {
           zod.string(),
           zod.object({
             pkg: zod.string(),
-            files: zod.string(),
+            files: zod.array(zod.string()),
           })
         ])).optional(); // 需要导入的umd包，支持本地和cdn。cdn自动插入到headScripts中。
       },
