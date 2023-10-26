@@ -71,7 +71,7 @@ function getConfigPropertiesFromSource(content: string,file: string, properties:
 
 export default (api: IApi) => {
   api.describe({
-    key: "routeProps",
+    key: "extendRouteProps",
     config: {
       schema({zod}) {
         return zod.array(zod.string()).optional();
