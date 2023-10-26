@@ -1,0 +1,38 @@
+{
+  "name": "@middle-cli/plugin-route-props",
+  "version": "0.4.1",
+  "keywords": [],
+  "license": "MIT",
+  "author": "yanxlg <yanxlg2@yonghui.cn>",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "lib",
+    "esm"
+  ],
+  "scripts": {
+    "build": "father build",
+    "dev": "father dev"
+  },
+  "dependencies": {
+    "@tanem/react-nprogress": "^5.0.0",
+    "ahooks": "*",
+    "babel-plugin-import": "*",
+    "lodash": "*",
+    "react-activation": "0.12.1",
+    "react-contexify": "6.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^18.15.11",
+    "@types/react": "*",
+    "father": "^4.1.8",
+    "react": "*",
+    "typescript": "^5.0.3",
+    "umi": "^4.0.66"
+  },
+  "authors": {
+    "name": "yanxlg <yanxlg2@yonghui.cn>",
+    "email": "yanxlg2@yonghui.cn"
+  },
+  "gitHead": "fb3ee8a1c3c08acfe37be3f5eea339adb7157738"
+}
