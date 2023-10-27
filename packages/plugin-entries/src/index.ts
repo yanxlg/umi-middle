@@ -14,8 +14,9 @@ export default (api: IApi) => {
     key: "entries",
     config: {
       schema({zod}) {
-        return zod.map(zod.string(),zod.string()).optional();
+        return zod.record(zod.string(),zod.string()).optional();
       },
+      onChange: api.ConfigChangeType.regenerateTmpFiles,
     },
     enableBy: api.EnableBy.config,
   });
@@ -30,7 +31,7 @@ export default (api: IApi) => {
   const compileMap: {[name: string]: string[]} = {}; // 查找对应的entry文件。
   
   api.modifyHTML(($) => {
-    $('body script:first').prepend([`window.__middle_entry_map__=${JSON.stringify(compileMap)}`]);
+    $('body script:first').before(`<script>window.__middle_entry_map__=${JSON.stringify(compileMap)}</script>`)
     return $;
   })
   api.onBuildComplete(({stats})=>{
@@ -38,6 +39,21 @@ export default (api: IApi) => {
     const entryMap = api.config.entries;
     Object.keys(entryMap).forEach(name=>{
       compileMap[name]= fileList.filter(file=> file.split('.')[0] === name);
+    });
+  });
+
+  api.onGenerateFiles(() => {
+    const entryMap = api.config.entries;
+    api.writeTmpFile({
+      path: "index.tsx",
+      content: `
+      declare global {
+        interface Window {
+          __middle_entry_map__: {
+            ${Object.keys(entryMap).map(entry=>[entry,'string[]'].join(':')).join(',')}
+          };
+        }
+      }`,
     });
   });
 };
