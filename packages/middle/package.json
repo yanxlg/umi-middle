@@ -1,6 +1,6 @@
 {
   "name": "@middle-cli/middle",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "工程化启动包",
   "main": "lib/index.js",
   "bin": {
@@ -21,6 +21,7 @@
     "@middle-cli/plugin-click-to-component": "^0.5.0",
     "@middle-cli/plugin-default-config": "^0.5.0",
     "@middle-cli/plugin-dva-ts": "^0.5.0",
+    "@middle-cli/plugin-entries": "^0.5.1",
     "@middle-cli/plugin-hc": "^0.5.0",
     "@middle-cli/plugin-history-inject": "^0.5.0",
     "@middle-cli/plugin-inject-env": "^0.5.0",
@@ -31,7 +32,6 @@
     "@middle-cli/plugin-tabs": "^0.5.0",
     "@middle-cli/plugin-umd": "^0.5.0",
     "@middle-cli/plugin-watermark": "^0.5.0",
-    "@middle-cli/plugin-entries": "^0.5.0",
     "@umijs/max": "^4.0.67",
     "commander": "^9.4.0",
     "father": "^4.1.8"
