@@ -18,6 +18,8 @@ import { cwd } from "process";
 import { IApi } from "umi";
 import { winPath } from "umi/plugin-utils";
 
+const MonacoEditorWebpackPlugin = require("monaco-editor-webpack-plugin");
+
 export function withTmpPath(opts: {
   api: IApi;
   path: string;
@@ -83,7 +85,7 @@ function getMetaFile(dir: string) {
   return undefined;
 }
 
-export const pluginKey = "asset";
+export const pluginKey = "material";
 
 export default (api: IApi) => {
   api.describe({
@@ -94,7 +96,7 @@ export default (api: IApi) => {
       },
       onChange: api.ConfigChangeType.regenerateTmpFiles, // 发生变化之后重新生成文件
     },
-    enableBy: api.EnableBy.register,
+    enableBy: api.EnableBy.config,
   });
 
   const cwdPath = cwd();
@@ -362,5 +364,28 @@ export default widgets;
         fs.writeFileSync(destPath, JSON.stringify(initJson, null, 2));
       }
     }
+  });
+
+
+  api.modifyConfig((memo, { paths }) => {
+    // 地址
+    memo.routes = [
+      {
+        path: "/",
+        component: require.resolve("@meditor/designer/es/devtools/index.js"),
+      },
+      ];
+    return memo;
+  });
+
+  api.chainWebpack((memo, { webpack, env }) => {
+    memo
+      .entry("sandbox")
+      .add(require.resolve("@meditor/designer/es/devtools/sandbox/index.js")); // sandbox 配置不同的externals
+    memo
+      .plugin("MonacoEditorWebpackPlugin")
+      .use(MonacoEditorWebpackPlugin, [
+        { languages: ["css", "javascript", "typescript", "json", "less"] },
+        ]);
   });
 };
