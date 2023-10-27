@@ -19,7 +19,7 @@ import { Service } from "umi/dist/service/service";
 import * as process from "process";
 
 import {Config, Env} from '@umijs/core';
-import {DEFAULT_CONFIG_FILES} from 'umi/dist/constants';
+import {DEFAULT_CONFIG_FILES, DEV_COMMAND} from 'umi/dist/constants';
 
 program.name("middle");
 
@@ -164,7 +164,6 @@ program.action(() => {
     boolean: ["version"],
   });
   const command = args._[0];
-  const FEATURE_COMMANDS = ["mfsu", "setup", "deadcode"];
   const env = command === 'build'? 'production': 'development';
 
   const configManager = new Config({
@@ -172,8 +171,15 @@ program.action(() => {
     env: Env[env],// 根据命令来获取
     defaultConfigFiles: DEFAULT_CONFIG_FILES,
   });
+  const config = configManager.getUserConfig().config;
+  if((config as any).material && command === 'build'){
+      // 构建
+    return;
+  }
 
-  console.log(configManager.getUserConfig().config);
+  if((config as any).material && command === DEV_COMMAND){
+    // 本地运行
+  }
 
   // max命令
   run({

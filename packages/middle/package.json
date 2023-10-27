@@ -15,8 +15,7 @@
   },
   "dependencies": {
     "@middle-cli/plugin-alias": "^0.5.0",
-    "@middle-cli/plugin-asset": "^0.5.0",
-    "@middle-cli/plugin-asset-dev": "^0.5.0",
+    "@middle-cli/plugin-material": "^0.5.1",
     "@middle-cli/plugin-body-scripts": "^0.5.0",
     "@middle-cli/plugin-click-to-component": "^0.5.0",
     "@middle-cli/plugin-default-config": "^0.5.0",
