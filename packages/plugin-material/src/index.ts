@@ -374,7 +374,14 @@ export default widgets;
         path: "/",
         component: require.resolve("@meditor/designer/es/devtools/index.js"),
       },
-      ];
+    ];
+    memo.alias = {
+      ...memo.alias,
+      'antd/es/locale/en_US.js': 'antd/es/locale/zh_CN.js',
+      'antd/es/locale/default.js': 'antd/es/locale/zh_CN.js',
+      'antd/lib/locale/en_US.js': 'antd/es/locale/zh_CN.js',
+      'antd/lib/locale/default.js': 'antd/es/locale/zh_CN.js',
+    }
     return memo;
   });
 
