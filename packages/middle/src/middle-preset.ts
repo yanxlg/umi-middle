@@ -24,7 +24,8 @@ export default () => {
       require.resolve("@middle-cli/plugin-hc"),
       require.resolve("@middle-cli/plugin-route-props"),
       require.resolve("@middle-cli/plugin-alias"),
-      require.resolve("@middle-cli/plugin-umd")
+      require.resolve("@middle-cli/plugin-umd"),
+      require.resolve("@middle-cli/plugin-entries")
     ],
   };
 };

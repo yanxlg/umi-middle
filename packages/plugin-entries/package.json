@@ -1,0 +1,22 @@
+{
+  "name": "@middle-cli/plugin-entries",
+  "version": "0.5.0",
+  "description": "额外entries编译，结果注入到html中",
+  "keywords": [],
+  "license": "MIT",
+  "author": "yanxlg <yanxlg2@yonghui.cn>",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "build": "father build",
+    "dev": "father dev"
+  },
+  "authors": {
+    "name": "yanxlg <yanxlg2@yonghui.cn>",
+    "email": "yanxlg2@yonghui.cn"
+  },
+  "gitHead": "8842ee80e261ae5e34d16bf99bac967832857244"
+}

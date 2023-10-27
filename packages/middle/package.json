@@ -31,6 +31,7 @@
     "@middle-cli/plugin-tabs": "^0.5.0",
     "@middle-cli/plugin-umd": "^0.5.0",
     "@middle-cli/plugin-watermark": "^0.5.0",
+    "@middle-cli/plugin-entries": "^0.5.0",
     "@umijs/max": "^4.0.67",
     "commander": "^9.4.0",
     "father": "^4.1.8"

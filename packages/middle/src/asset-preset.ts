@@ -15,7 +15,8 @@ export default () => {
       require.resolve("@middle-cli/plugin-history-inject"),
       require.resolve("@middle-cli/plugin-body-scripts"),
       require.resolve("@middle-cli/plugin-alias"),
-      require.resolve("@middle-cli/plugin-umd")
+      require.resolve("@middle-cli/plugin-umd"),
+      require.resolve("@middle-cli/plugin-entries")
     ],
   };
 };
