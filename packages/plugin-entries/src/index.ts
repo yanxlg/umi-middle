@@ -42,10 +42,18 @@ export default (api: IApi) => {
     });
   });
 
+  api.onDevCompileDone(({ stats })=>{
+    const fileList = Object.keys(stats.compilation.assets);
+    const entryMap = api.config.entries;
+    Object.keys(entryMap).forEach((name) => {
+      compileMap[name] = fileList.filter((file) => file.split(".")[0] === name);
+    });
+  })
+
   api.onGenerateFiles(() => {
     const entryMap = api.config.entries;
     api.writeTmpFile({
-      path: "index.tsx",
+      path: "types.d.ts",
       content: `
       declare global {
         interface Window {
