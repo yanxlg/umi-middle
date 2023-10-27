@@ -14,6 +14,7 @@ import { program } from "commander";
 import { Service as FatherService } from "father/dist/service/service";
 import { join } from "path";
 import { run } from "umi";
+import fs from 'fs';
 import { Service } from "umi/dist/service/service";
 import * as process from "process";
 
@@ -43,6 +44,10 @@ program.action(() => {
   if((config as any).material && command === 'build'){
     (async ()=>{
       process.env.NODE_ENV = "production";
+      await fs.rmSync(join(process.cwd(),'src','.umi'),{
+        force: true,
+        recursive: true
+      });
       await new Service({
         presets:[
           require.resolve("@umijs/max/dist/preset"), // preset 默认是max的preset

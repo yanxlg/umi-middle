@@ -1,9 +1,6 @@
 import { defineConfig } from "father";
 
 export default defineConfig({
-  alias: {
-    "@@/core/history": "{{{historyAlias}}}"
-  },
   umd: {
     entry: {
       "view": {
