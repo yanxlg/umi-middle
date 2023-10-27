@@ -42,7 +42,13 @@ program.action(() => {
   const config = configManager.getUserConfig().config;
   if((config as any).material && command === 'build'){
     (async ()=>{
-      await new Service().run2({
+      process.env.NODE_ENV = "production";
+      await new Service({
+        presets:[
+          require.resolve("@umijs/max/dist/preset"), // preset 默认是max的preset
+          require.resolve("./middle-preset"),
+        ],
+      }).run2({
         name: "setup",
         args,
       });
