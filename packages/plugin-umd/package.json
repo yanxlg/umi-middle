@@ -1,6 +1,6 @@
 {
   "name": "@middle-cli/plugin-umd",
-  "version": "0.5.0",
+  "version": "0.6.0-alpha.0",
   "description": "umd自动导入",
   "keywords": [],
   "license": "MIT",

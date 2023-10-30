@@ -1,6 +1,6 @@
 {
   "name": "@middle-cli/plugin-entries",
-  "version": "0.5.3",
+  "version": "0.6.0-alpha.0",
   "description": "额外entries编译，结果注入到html中",
   "keywords": [],
   "license": "MIT",
