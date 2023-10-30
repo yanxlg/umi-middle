@@ -391,6 +391,7 @@ export default widgets;
       'antd/es/locale/default.js': 'antd/es/locale/zh_CN.js',
       'antd/lib/locale/en_US.js': 'antd/es/locale/zh_CN.js',
       'antd/lib/locale/default.js': 'antd/es/locale/zh_CN.js',
+      '@@material': withTmpPath({api, path: ''}),
     }
     return memo;
   });
