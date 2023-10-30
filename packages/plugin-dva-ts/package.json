@@ -1,6 +1,6 @@
 {
   "name": "@middle-cli/plugin-dva-ts",
-  "version": "0.6.0-alpha.0",
+  "version": "0.6.0",
   "description": "dva typescript 扩展，自动生成models限制，增加connect类型限制",
   "keywords": [],
   "license": "MIT",
