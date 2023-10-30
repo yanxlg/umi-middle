@@ -278,7 +278,17 @@ export default widgets;
 
     api.writeTmpFile({
       path: `history.ts`,
-      content: "export const history = undefined;",
+      content: `
+      export function getHistoryInstance() {
+          var umiRuntimeHistory = window['__history__'];
+
+          if (!umiRuntimeHistory) {
+            console.warn('当前运行时无法解析到history实例，相关内置问题会出现问题，可以将项目中的history保存到window对象__history__属性中');
+          }
+
+          return umiRuntimeHistory;
+        }
+      `,
     });
 
     api.writeTmpFile({

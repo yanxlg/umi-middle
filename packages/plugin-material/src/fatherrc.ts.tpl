@@ -1,6 +1,10 @@
 import { defineConfig } from "father";
 
 export default defineConfig({
+  alias: {
+    "@middle/utils/es/getHistoryInstance": "{{{historyAlias}}}",
+    "@middle/utils/lib/getHistoryInstance": "{{{historyAlias}}}"
+  },
   umd: {
     entry: {
       "view": {

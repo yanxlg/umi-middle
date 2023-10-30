@@ -44,14 +44,14 @@ program.action(() => {
   if((config as any).material && command === 'build'){
     (async ()=>{
       process.env.NODE_ENV = "production";
-      await fs.rmSync(join(process.cwd(),'src','.umi'),{
-        force: true,
-        recursive: true
-      });
+//      await fs.rmSync(join(process.cwd(),'src','.umi'),{
+//        force: true,
+//        recursive: true
+//      });
       await new Service({
         presets:[
           require.resolve("@umijs/max/dist/preset"), // preset 默认是max的preset
-          require.resolve("./middle-preset"),
+          require.resolve("./preset"),
         ],
       }).run2({
         name: "setup",
@@ -71,7 +71,7 @@ program.action(() => {
   run({
     presets: [
       require.resolve("@umijs/max/dist/preset"), // preset 默认是max的preset
-      require.resolve("./middle-preset"),
+      require.resolve("./preset"),
     ],
   }).catch((e) => {
     console.error(e);
