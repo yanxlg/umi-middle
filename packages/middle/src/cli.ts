@@ -9,7 +9,7 @@
  * Copyright (c) 2023 by yanxlg, All Rights Reserved.
  */
 import { pluginKey } from "@middle-cli/plugin-material";
-import { yParser } from "@umijs/utils";
+import { yParser, logger, chalk } from "@umijs/utils";
 import { program } from "commander";
 import { Service as FatherService } from "father/dist/service/service";
 import { join } from "path";
@@ -20,8 +20,9 @@ import * as process from "process";
 import {Config, Env} from '@umijs/core';
 import {DEFAULT_CONFIG_FILES} from 'umi/dist/constants';
 
-program.name("middle");
+const version = require('../package.json').version;
 
+program.name("middle");
 
 program.action(() => {
   const args = yParser(process.argv.slice(2), {
@@ -32,6 +33,13 @@ program.action(() => {
     boolean: ["version"],
   });
   const command = args._[0];
+
+  if(command === 'version' || args.version){
+    logger.info(chalk.yellow('[你知道吗？] 如果想要了解更多，详见 https://middle.yonghui.cn/scaffold/react/overflow'));
+    console.log(`middle@${version}`);
+    return;
+  }
+
   const env = command === 'build'? 'production': 'development';
 
   const configManager = new Config({
@@ -72,6 +80,6 @@ program.action(() => {
     console.error(e);
     process.exit(1);
   });
-});
+}).allowUnknownOption(true);
 
 program.parse();
