@@ -150,6 +150,13 @@ const useTabs = (defaultTabs: string[] = []) => {
     activeKey: string;
     wins: IWindow[];
   }>('__window_tabs_cache__',{
+    deserializer:(value)=>{
+      const state = JSON.parse(value);
+      return {
+        ...state,
+        activeKey: location.pathname,
+      };
+    },
     defaultValue: () => {
       const pathname = location.pathname;
       const targetTabList = getWindowTabList([...defaultTabs, pathname],clientRoutes);

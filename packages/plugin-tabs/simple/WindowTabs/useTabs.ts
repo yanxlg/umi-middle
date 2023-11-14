@@ -154,6 +154,13 @@ const useTabs = (defaultTabs: string[] = [], routes: RouteObject[]) => {
   const initRef= useRef(true);
 
   const [tabState, setTabState] = useSessionStorageState<TabState>('__window_tabs_cache__', {
+    deserializer:(value)=>{
+      const state = JSON.parse(value);
+      return {
+        ...state,
+        activeKey: location.pathname,
+      };
+    },
     defaultValue: () => {
       const pathname = location.pathname;
       const defaultTabList = getWindowTabList([...defaultTabs], routes);
