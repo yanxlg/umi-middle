@@ -122,36 +122,20 @@ interface IWindowTabsProps {
 
 function TabLabel({index, widthType, name, badge, onReload}:{index:number; widthType: IWindowTabsProps['widthType']; name: string; badge?: number; onReload?: Function}) {
   const content = widthType === 'fit-content' ? name : <Tooltip title={name}><div style={ {[widthType.type]: widthType.width, textOverflow: 'ellipsis', overflow: 'hidden'} }>{name}</div></Tooltip>;
-  if(void 0 === badge) {
-    return (
-      <>
-        {content}
-        {
-          onReload?(
-            <ReloadOutlined
-             style={ { marginLeft: 10, marginRight: 0 } }
-             onClick={()=>onReload(index)}
-           />
-          ):null
-        }
-      </>
-    );
-  }
   return (
     <>
-      <Badge count={badge}>
-        {content}
-        {
-          onReload?(
-            <ReloadOutlined
-             style={ { marginLeft: 10, marginRight: 0 } }
-             onClick={()=>onReload(index)}
-           />
-          ):null
-        }
-      </Badge>
+      {content}
+      { badge === void 0 ? null:<Badge count={badge} offset={[15,-20]} style={ {position:'absolute'} }/>}
+      {
+        onReload?(
+          <ReloadOutlined
+           style={ { marginLeft: 10, marginRight: 0 } }
+           onClick={()=>onReload(index)}
+         />
+        ):null
+      }
     </>
-  )
+  );
 }
 
 const TabPanel = Tabs.TabPane;
