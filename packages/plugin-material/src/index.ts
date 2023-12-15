@@ -20,6 +20,8 @@ import { winPath } from "umi/plugin-utils";
 
 const MonacoEditorWebpackPlugin = require("monaco-editor-webpack-plugin");
 
+const isProduction = process.env.NODE_ENV === "production";
+
 export function withTmpPath(opts: {
   api: IApi;
   path: string;
@@ -296,8 +298,8 @@ export default widgets;
       content: `export const assetPackageName = "${libraryName}"`,
     });
 
-    const devPlugin = api.isPluginEnable("asset-dev");
-    if (devPlugin) {
+    const devPlugin = api.isPluginEnable(pluginKey);
+    if (devPlugin && !isProduction) {
       // 生成asset.json文件
       // 读取当前已经存在的json文件
       const destPath = path.join(cwdPath, "src/asset.json");//
