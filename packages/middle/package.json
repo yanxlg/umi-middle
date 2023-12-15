@@ -1,6 +1,6 @@
 {
   "name": "@middle-cli/middle",
-  "version": "0.6.3",
+  "version": "0.6.4",
   "description": "工程化启动包",
   "main": "lib/index.js",
   "bin": {
@@ -23,7 +23,7 @@
     "@middle-cli/plugin-hc": "^0.6.0",
     "@middle-cli/plugin-history-inject": "^0.6.0",
     "@middle-cli/plugin-inject-env": "^0.6.0",
-    "@middle-cli/plugin-material": "^0.6.0",
+    "@middle-cli/plugin-material": "^0.6.1",
     "@middle-cli/plugin-release-check": "^0.6.0",
     "@middle-cli/plugin-route-props": "^0.6.0",
     "@middle-cli/plugin-sauron": "^0.6.0",
