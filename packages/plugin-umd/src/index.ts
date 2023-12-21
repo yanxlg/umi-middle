@@ -10,6 +10,11 @@
 import { IApi, terminal } from "umi";
 import fs from 'fs';
 import path from 'path';
+import { winPath } from "umi/plugin-utils";
+
+function join(...pathList: string[]){
+  return winPath(path.join(...pathList));
+}
 
 const isProduction = process.env.NODE_ENV === "production";
 
@@ -20,14 +25,14 @@ function getUmdFilePath(api: IApi, pkg: string, fileName: string){
   }
 
   return isProduction?
-              fs.existsSync(path.join(api.paths.absNodeModulesPath,pkg,'umd',`${fileName}.production.min.js`))? `node_modules/${pkg}/umd/${fileName}.production.min.js`:
-              fs.existsSync(path.join(api.paths.absNodeModulesPath,pkg,'umd',`${fileName}.production.js`))? `node_modules/${pkg}/umd/${fileName}.production.js`:
-              fs.existsSync(path.join(api.paths.absNodeModulesPath,pkg,'umd',`${fileName}.min.js`)) ? `node_modules/${pkg}/umd/${fileName}.min.js`:
-              fs.existsSync(path.join(api.paths.absNodeModulesPath,pkg,'umd',`${fileName}.js`)) ? `node_modules/${pkg}/umd/${fileName}.js`:'':
-              fs.existsSync(path.join(api.paths.absNodeModulesPath,pkg,'umd',`${fileName}.development.min.js`))? `node_modules/${pkg}/umd/${fileName}.development.min.js`:
-              fs.existsSync(path.join(api.paths.absNodeModulesPath,pkg,'umd',`${fileName}.development.js`))? `node_modules/${pkg}/umd/${fileName}.development.js`:
-              fs.existsSync(path.join(api.paths.absNodeModulesPath,pkg,'umd',`${fileName}.min.js`)) ? `node_modules/${pkg}/umd/${fileName}.min.js`:
-              fs.existsSync(path.join(api.paths.absNodeModulesPath,pkg,'umd',`${fileName}.js`)) ? `node_modules/${pkg}/umd/${fileName}.js`:'';
+              fs.existsSync(join(api.paths.absNodeModulesPath,pkg,'umd',`${fileName}.production.min.js`))? `node_modules/${pkg}/umd/${fileName}.production.min.js`:
+              fs.existsSync(join(api.paths.absNodeModulesPath,pkg,'umd',`${fileName}.production.js`))? `node_modules/${pkg}/umd/${fileName}.production.js`:
+              fs.existsSync(join(api.paths.absNodeModulesPath,pkg,'umd',`${fileName}.min.js`)) ? `node_modules/${pkg}/umd/${fileName}.min.js`:
+              fs.existsSync(join(api.paths.absNodeModulesPath,pkg,'umd',`${fileName}.js`)) ? `node_modules/${pkg}/umd/${fileName}.js`:'':
+              fs.existsSync(join(api.paths.absNodeModulesPath,pkg,'umd',`${fileName}.development.min.js`))? `node_modules/${pkg}/umd/${fileName}.development.min.js`:
+              fs.existsSync(join(api.paths.absNodeModulesPath,pkg,'umd',`${fileName}.development.js`))? `node_modules/${pkg}/umd/${fileName}.development.js`:
+              fs.existsSync(join(api.paths.absNodeModulesPath,pkg,'umd',`${fileName}.min.js`)) ? `node_modules/${pkg}/umd/${fileName}.min.js`:
+              fs.existsSync(join(api.paths.absNodeModulesPath,pkg,'umd',`${fileName}.js`)) ? `node_modules/${pkg}/umd/${fileName}.js`:'';
 }
 
 
@@ -47,7 +52,7 @@ export default (api: IApi) => {
     },
     enableBy: api.EnableBy.config,
   });
-  
+
   api.modifyConfig((memo)=>{
     const umd = memo.umd;
     memo.copy = memo.copy||[];
@@ -69,7 +74,7 @@ export default (api: IApi) => {
               }else{
                 memo.copy.push({
                   from: umdFilePath,
-                  to: path.join(outPath,`${library}@${exportsVersion}${isProduction?'.min':''}.js`)
+                  to: join(outPath,`${library}@${exportsVersion}${isProduction?'.min':''}.js`)
                 });
                 memo.headScripts.push(`/${library}@${exportsVersion}${isProduction?'.min':''}.js`)
               }
@@ -86,7 +91,7 @@ export default (api: IApi) => {
                   }else{
                     memo.copy.push({
                       from: umdFilePath,
-                      to: path.join(outPath,`${file}@${exportsVersion}${isProduction?'.min':''}.js`)
+                      to: join(outPath,`${file}@${exportsVersion}${isProduction?'.min':''}.js`)
                     });
                     memo.headScripts.push(`/${file}@${exportsVersion}${isProduction?'.min':''}.js`)
                   }

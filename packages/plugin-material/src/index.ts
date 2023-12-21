@@ -22,6 +22,10 @@ const MonacoEditorWebpackPlugin = require("monaco-editor-webpack-plugin");
 
 const isProduction = process.env.NODE_ENV === "production";
 
+function join(...pathList: string[]){
+  return winPath(path.join(...pathList));
+}
+
 export function withTmpPath(opts: {
   api: IApi;
   path: string;
@@ -54,7 +58,7 @@ function getEditFile(dir: string) {
   const files = ["edit.tsx", "edit.jsx", "edit.js"];
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
-    const editComponentFile = path.join(dir, file);
+    const editComponentFile = join(dir, file);
     if (fs.existsSync(editComponentFile)) {
       return editComponentFile;
     }
@@ -66,7 +70,7 @@ function getMainFile(dir: string) {
   const files = ["index.tsx", "index.jsx", "index.js"];
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
-    const editComponentFile = path.join(dir, file);
+    const editComponentFile = join(dir, file);
     if (fs.existsSync(editComponentFile)) {
       return editComponentFile;
     }
@@ -78,7 +82,7 @@ function getMetaFile(dir: string) {
   const files = ["meta.json", "meta.tsx", "meta.ts", "meta.jsx", "meta.js"];
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
-    const metaFile = path.join(dir, file);
+    const metaFile = join(dir, file);
     if (fs.existsSync(metaFile)) {
       // 存在文件
       return metaFile;
@@ -102,7 +106,7 @@ export default (api: IApi) => {
   });
 
   const cwdPath = cwd();
-  const componentsDir = path.join(cwdPath, "components");
+  const componentsDir = join(cwdPath, "components");
 
   function generateSubComponentFile(
     componentDir: string,
@@ -111,7 +115,7 @@ export default (api: IApi) => {
     hasEditView: boolean,
     parentDir?: string
   ) {
-    const dirPath = path.join(componentDir, dir);
+    const dirPath = join(componentDir, dir);
     const isDirectory = fs.statSync(dirPath).isDirectory();
     if (isDirectory) {
       const componentFile = getMainFile(dirPath);
@@ -153,7 +157,7 @@ export default ${componentName};
 
       // 对于子文件夹，自动进行关联处理。
       fs.readdirSync(dirPath).forEach((subPath) => {
-        const fullPath = path.join(dirPath, subPath);
+        const fullPath = join(dirPath, subPath);
         if (fs.statSync(fullPath).isDirectory()) {
           // 存在子文件夹
           const _parentDir = parentDir ? `${parentDir}-${dir}` : dir; // 重复了，包括所有的
@@ -242,11 +246,11 @@ export default widgets;
 
     // 读取项目package.json
     const packageJson = JSON.parse(
-      fs.readFileSync(path.join(cwd(), "package.json"), "utf-8")
+      fs.readFileSync(join(cwd(), "package.json"), "utf-8")
     );
 
     // 支持项目自定义.babelrc
-    const customBabelRcFile = path.join(cwd(), ".babelrc");
+    const customBabelRcFile = join(cwd(), ".babelrc");
     let babelPresets = undefined;
     let babelPlugins = undefined;
     if (fs.existsSync(customBabelRcFile)) {
@@ -265,11 +269,11 @@ export default widgets;
     const libraryName = toCamelCase(removeSymbol(packageJson.name));
     api.writeTmpFile({
       path: `.fatherrc.ts`,
-      tplPath: path.join(__dirname, "fatherrc.ts.tpl"),
+      tplPath: join(__dirname, "fatherrc.ts.tpl"),
       context: {
         hasEditView,
         pluginKey: api.plugin.key,
-        output: path.join(cwdPath, "umd"), // 修改为项目根目录
+        output: join(cwdPath, "umd"), // 修改为项目根目录
         // output: path.join(cwdPath, "dist", packageJson.version), // 修改为项目根目录
         babelPresets,
         babelPlugins,
@@ -302,7 +306,7 @@ export default widgets;
     if (devPlugin && !isProduction) {
       // 生成asset.json文件
       // 读取当前已经存在的json文件
-      const destPath = path.join(cwdPath, "src/asset.json");//
+      const destPath = join(cwdPath, "src/asset.json");//
       // 需要点的
       // 组合修改json
       if (fs.existsSync(destPath)) {
