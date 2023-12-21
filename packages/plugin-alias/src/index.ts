@@ -10,16 +10,21 @@
 import { IApi } from "umi";
 import fs from 'fs';
 import path from 'path';
+import { winPath } from "umi/plugin-utils";
+
+function join(...pathList:string[]){
+  return winPath(path.join(...pathList));
+}
 
 export default (api: IApi) => {
   api.describe({
     key: "auto-alias",
     enableBy: api.EnableBy.register,
   });
-  
+
   api.modifyConfig((memo)=>{
     // art-template 自动适配
-    if(fs.existsSync(path.join(api.paths.absNodeModulesPath,'art-template'))){
+    if(fs.existsSync(join(api.paths.absNodeModulesPath,'art-template'))){
       memo.alias = {
         'art-template': require.resolve('art-template/lib/template-web.js'),
         ...memo.alias||{},
