@@ -184,6 +184,8 @@ export default ${componentName};
     });
   }
 
+  api.addTmpGenerateWatcherPaths(()=>componentsDir);
+
   api.onGenerateFiles(() => {
     // 遍历 components 目录，生成对应的入口。
     // const componentDirs = fs.readdirSync(componentsDir);
