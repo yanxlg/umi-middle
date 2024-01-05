@@ -1,6 +1,6 @@
 {
   "name": "@middle-cli/plugin-default-config",
-  "version": "0.6.3",
+  "version": "0.6.4",
   "description": "umijs 默认配置修改",
   "keywords": [],
   "license": "MIT",
@@ -14,12 +14,12 @@
     "build": "father build",
     "dev": "father dev"
   },
+  "dependencies": {
+    "@middle-cli/plugin-tabs": "^0.6.3"
+  },
   "authors": {
     "name": "yanxlg <yanxlg2@yonghui.cn>",
     "email": "yanxlg2@yonghui.cn"
-  },
-  "dependencies": {
-    "@middle-cli/plugin-tabs": "^0.6.2"
   },
   "gitHead": "fb3ee8a1c3c08acfe37be3f5eea339adb7157738"
 }
