@@ -24,7 +24,8 @@ export default (api: IApi) => {
         /\/configs\//,
         /\/utils\//,
         /\/redux-slices\//,
-        /README.md/i,
+        /README\.md/i,
+        /\.d\.ts$/,
       ],
     };
     return memo;
