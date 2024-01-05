@@ -21,6 +21,8 @@ export default (api: IApi) => {
         /\/components\//,
         /\/models\//,
         /\/services\//,
+        /\/configs\//,
+        /\/utils\//,
         /\/redux-slices\//,
         /README.md/i,
       ],
