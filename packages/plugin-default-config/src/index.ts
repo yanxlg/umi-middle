@@ -8,6 +8,7 @@
  * Copyright (c) 2023 by yanxlg, All Rights Reserved.
  */
 import { IApi } from "umi";
+import {getConfigPropertiesFromSource} from "@middle-cli/plugin-tabs";
 
 export default (api: IApi) => {
   api.describe({
@@ -29,6 +30,26 @@ export default (api: IApi) => {
         /\.d\.ts$/,
       ],
     };
+
+    // 将title 传递到运行时中
+    if(memo.title){
+      memo.define = {
+        'process.env.Title': memo.title,
+        ...memo.define,
+      }
+    }
     return memo;
   });
+
+  api.modifyRoutes((memo) => {
+    Object.keys(memo).forEach((id) => {
+      const route = memo[id];
+      const content = route.__content;// 内容
+      if (content) { // 解析内容
+        const properties = getConfigPropertiesFromSource(content, route.file,['title']);
+        Object.assign(route,properties);
+      }
+    });
+    return memo;
+  })
 };

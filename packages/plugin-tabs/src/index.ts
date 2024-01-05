@@ -30,7 +30,7 @@ export function withTmpPath(opts: {
 }
 
 
-function getConfigPropertiesFromSource(content: string,file: string, properties: string[]) {
+export function getConfigPropertiesFromSource(content: string,file: string, properties: string[]) {
   const ast = parser.parse(content, {
     sourceType: 'module',
     allowImportExportEverywhere: false,
