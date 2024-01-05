@@ -16,7 +16,8 @@ export default (api: IApi) => {
     enableBy: api.EnableBy.register,
   });
 
-  api.modifyDefaultConfig((memo) => {
+  api.modifyConfig((memo) => {
+    // 将title 传递到运行时中
     memo.conventionRoutes = memo.conventionRoutes ?? {
       exclude: [
         /\/components\//,
@@ -30,16 +31,14 @@ export default (api: IApi) => {
         /\.d\.ts$/,
       ],
     };
-
-    // 将title 传递到运行时中
-    if(memo.title){
+    if (memo.title) {
       memo.define = {
-        'process.env.Title': memo.title,
-        ...memo.define,
-      }
+        "process.env.Title": memo.title,
+        ...memo.define
+      };
     }
     return memo;
-  });
+  })
 
   api.modifyRoutes((memo) => {
     Object.keys(memo).forEach((id) => {
