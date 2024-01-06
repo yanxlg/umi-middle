@@ -10,19 +10,19 @@
 import {useState, useEffect} from 'react';
 
 
-export type Menu = {
+export type MenuItem = {
   icon: string;
   key: string;
   permission: string;
   title: string;
   url: string;
-  children?: Array<Menu>;
+  children?: Array<MenuItem>;
 }
 
 function useMenu(appCode: string){
   const [menuState,setMenuState] = useState<{
     loading: boolean;
-    menus: Array<Menu>;
+    menus: Array<MenuItem>;
     responseXHR?: XMLHttpRequest;
   }>({
     loading: false,

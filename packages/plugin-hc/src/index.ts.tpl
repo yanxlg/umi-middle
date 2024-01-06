@@ -8,7 +8,7 @@
  * Copyright (c) 2023 by yanxlg, All Rights Reserved.
  */
 
-import { useMenu, Menu } from './useMenu';
+import { useMenu, MenuItem } from './useMenu';
 import { usePermissions } from './usePermissions';
 
-export { useMenu, usePermissions, Menu };
+export { useMenu, usePermissions, MenuItem };
