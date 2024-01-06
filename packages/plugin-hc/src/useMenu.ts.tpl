@@ -10,7 +10,7 @@
 import {useState, useEffect} from 'react';
 
 
-type Menu = {
+export type Menu = {
   icon: string;
   key: string;
   permission: string;

@@ -82,10 +82,5 @@ export default (api: IApi) => {
         title: config.title
       },
     });
-    api.writeTmpFile({
-      path: "typings.d.ts",
-      tplPath: join(__dirname, "typings.d.ts.tpl"),
-      context: {},
-    });
   })
 };
