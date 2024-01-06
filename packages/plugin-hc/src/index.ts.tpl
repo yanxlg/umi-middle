@@ -8,7 +8,16 @@
  * Copyright (c) 2023 by yanxlg, All Rights Reserved.
  */
 
-import { useMenu, MenuItem } from './useMenu';
+import { useMenu } from './useMenu';
 import { usePermissions } from './usePermissions';
 
-export { useMenu, usePermissions, MenuItem };
+export { useMenu, usePermissions };
+
+export type MenuItem = {
+  icon: string;
+  key: string;
+  permission: string;
+  title: string;
+  url: string;
+  children?: Array<MenuItem>;
+}

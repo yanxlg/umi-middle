@@ -8,16 +8,7 @@
  * Copyright (c) 2023 by yanxlg, All Rights Reserved.
  */
 import {useState, useEffect} from 'react';
-
-
-export type MenuItem = {
-  icon: string;
-  key: string;
-  permission: string;
-  title: string;
-  url: string;
-  children?: Array<MenuItem>;
-}
+import type {MenuItem} from './index';
 
 function useMenu(appCode: string){
   const [menuState,setMenuState] = useState<{
