@@ -9,6 +9,7 @@
  */
 import { IApi } from "umi";
 import {getConfigPropertiesFromSource} from "@middle-cli/plugin-tabs";
+import {join} from "path";
 
 export default (api: IApi) => {
   api.describe({
@@ -31,11 +32,26 @@ export default (api: IApi) => {
         /\.d\.ts$/,
       ],
     };
-    if (memo.title) {
-      memo.define = {
-        "process.env.Title": memo.title,
-        ...memo.define
-      };
+
+    const useYhDesign = (()=>{
+      try {
+        require.resolve('@yh/yh-design');
+        return true
+      }catch (e){
+        return false
+      }
+    })();
+
+    if(useYhDesign && !memo.extraBabelPlugins?.find((plugin: any)=>Array.isArray(plugin) && plugin[2] === '@yh/yh-design')){
+      memo.extraBabelPlugins = [
+        ...memo.extraBabelPlugins,
+        ['import', {
+          libraryName: '@yh/yh-design',
+          libraryDirectory: 'es',
+          camel2DashComponentName: false,
+          style: true
+        },'@yh/yh-design']
+      ];
     }
     return memo;
   })
@@ -50,5 +66,22 @@ export default (api: IApi) => {
       }
     });
     return memo;
+  })
+
+  api.onGenerateFiles(() => {
+    const config = api.config;
+    api.writeTmpFile({
+      path: "index.tsx",
+      tplPath: join(__dirname, "index.tsx.tpl"),
+      context: {
+        antdPrefix: config.theme?.['@ant-prefix']??'ant',
+        title: config.title
+      },
+    });
+    api.writeTmpFile({
+      path: "typings.d.ts",
+      tplPath: join(__dirname, "typings.d.ts.tpl"),
+      context: {},
+    });
   })
 };
