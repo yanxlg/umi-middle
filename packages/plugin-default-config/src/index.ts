@@ -44,7 +44,7 @@ export default (api: IApi) => {
 
     if(useYhDesign && !memo.extraBabelPlugins?.find((plugin: any)=>Array.isArray(plugin) && plugin[2] === '@yh/yh-design')){
       memo.extraBabelPlugins = [
-        ...memo.extraBabelPlugins,
+        ...memo.extraBabelPlugins||[],
         ['import', {
           libraryName: '@yh/yh-design',
           libraryDirectory: 'es',
@@ -52,6 +52,10 @@ export default (api: IApi) => {
           style: true
         },'@yh/yh-design']
       ];
+    }
+    memo.define = {
+      'process.env.NODE_ENV' : process.env.NODE_ENV,
+      ...memo.define||{},
     }
     return memo;
   })
