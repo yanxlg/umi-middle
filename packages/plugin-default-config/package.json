@@ -15,7 +15,7 @@
     "dev": "father dev"
   },
   "dependencies": {
-    "@middle-cli/plugin-tabs": "^0.6.4"
+    "@middle-cli/utils": "0.0.1"
   },
   "authors": {
     "name": "yanxlg <yanxlg2@yonghui.cn>",

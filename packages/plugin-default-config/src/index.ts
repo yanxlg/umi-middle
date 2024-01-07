@@ -8,7 +8,7 @@
  * Copyright (c) 2023 by yanxlg, All Rights Reserved.
  */
 import { IApi } from "umi";
-import {getConfigPropertiesFromSource} from "@middle-cli/plugin-tabs";
+import {getConfigPropertiesFromSource} from '@middle-cli/utils';
 import {join} from "path";
 
 export default (api: IApi) => {
