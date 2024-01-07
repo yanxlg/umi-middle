@@ -19,7 +19,7 @@ export default (api: IApi) => {
 
   api.addRuntimePlugin({
     fn: () => "@@/plugin-hc/runtime",
-    stage: Number.MAX_SAFE_INTEGER,
+    stage: -1 * Number.MAX_SAFE_INTEGER,
   });
 
   api.modifyConfig((memo) => {
