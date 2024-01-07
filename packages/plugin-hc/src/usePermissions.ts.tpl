@@ -52,8 +52,8 @@ function hasPermission(permission: string){
 }
 
 function useHasPermissions(permissions: string[]){
-  const {permissions} = usePermissions();
-  const set = new Set(permissions);
+  const {permissions: list} = usePermissions();
+  const set = new Set(list);
   return permissions.map(permission => set.has(permission));
 }
 
