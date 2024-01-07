@@ -7,7 +7,7 @@
  */
 
 import * as parser from "@babel/parser";
-import {ExportDefaultDeclaration, ExpressionStatement, Identifier} from "@babel/types";
+import {ExportDefaultDeclaration, ExpressionStatement, Identifier, FunctionDeclaration} from "@babel/types";
 
 export function getConfigPropertiesFromSource(content: string, file: string, properties: string[]) {
   const ast = parser.parse(content, {
@@ -26,7 +26,7 @@ export function getConfigPropertiesFromSource(content: string, file: string, pro
       'importAssertions',
       'jsx',
       'regexpUnicodeSets',
-      /\.tsx?/.test(file)?'typescript':'flow'
+      /\.tsx?/.test(file) ? 'typescript' : 'flow'
     ],
     // decoratorOptions: { version: "2022-03", decoratorsBeforeExport: false, allowCallParenthesized: true },
     // pipelineOptions: { proposal: 'hack', hackTopicToken: '%' },
@@ -39,7 +39,8 @@ export function getConfigPropertiesFromSource(content: string, file: string, pro
     return undefined;
   }
 
-  const exportDefaultName = (exportDefaultDeclaration.declaration as Identifier)?.name;
+  const declaration = exportDefaultDeclaration.declaration;
+  const exportDefaultName = (declaration as Identifier)?.name || (declaration as FunctionDeclaration)?.id?.name;
   if (!exportDefaultName) {
     return undefined;
   }
@@ -57,7 +58,7 @@ export function getConfigPropertiesFromSource(content: string, file: string, pro
       if (expression.type === 'AssignmentExpression') {
         const left = expression.left;
         const right = expression.right;
-        if (left.type === 'MemberExpression' && left.object && (left.object as Identifier).name === exportDefaultName && (left.property as Identifier).name === property && right.type === 'StringLiteral') {
+        if (left.type === 'MemberExpression' && left.object && (left.object as Identifier).name === exportDefaultName && (left.property as Identifier).name === property && (right.type === 'StringLiteral' || right.type === 'BooleanLiteral' || right.type === 'NumericLiteral')) {
           propertyValues[property] = right.value;
         }
       }

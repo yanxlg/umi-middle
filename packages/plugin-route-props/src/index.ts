@@ -8,71 +8,7 @@
  * Copyright (c) 2023 by yanxlg, All Rights Reserved.
  */
 import {IApi} from "umi";
-import * as parser from '@babel/parser';
-import {ExportDefaultDeclaration, ExpressionStatement, Identifier} from "@babel/types";
-function getConfigPropertiesFromSource(content: string,file: string, properties: string[]) {
-  const ast = parser.parse(content, {
-    sourceType: 'module',
-    allowImportExportEverywhere: false,
-    allowReturnOutsideFunction: false,
-    createParenthesizedExpressions: false,
-    ranges: false,
-    tokens: false,
-    plugins: [
-      'decorators',
-      'decoratorAutoAccessors',
-      'doExpressions',
-      'exportDefaultFrom',
-      'functionBind',
-      'importAssertions',
-      'jsx',
-      'regexpUnicodeSets',
-      /\.tsx?/.test(file)?'typescript':'flow'
-    ],
-    // decoratorOptions: { version: "2022-03", decoratorsBeforeExport: false, allowCallParenthesized: true },
-    // pipelineOptions: { proposal: 'hack', hackTopicToken: '%' },
-    // typescriptOptions: { dts: false, disallowAmbiguousJSXLike: false },
-  });
-  const program = ast.program;
-  const body = program.body;
-  const exportDefaultDeclaration = body.find(statement => statement.type === 'ExportDefaultDeclaration') as ExportDefaultDeclaration;
-  if (!exportDefaultDeclaration) {
-    return undefined;
-  }
-
-  const exportDefaultName = (exportDefaultDeclaration.declaration as Identifier)?.name;
-  if (!exportDefaultName) {
-    return undefined;
-  }
-
-  const expressionStatementList = body.filter(statement => statement.type === 'ExpressionStatement') as ExpressionStatement[];
-  if (!expressionStatementList || expressionStatementList.length === 0) {
-    return undefined;
-  }
-
-  const propertyValues: { [key: string]: string | boolean | number } = {};
-
-  properties.forEach(property => {
-    expressionStatementList.forEach(statement => {
-      const expression = statement.expression;
-      if (expression.type === 'AssignmentExpression') {
-        const left = expression.left;
-        const right = expression.right;
-        if (
-          left.type === 'MemberExpression' &&
-          left.object && (left.object as Identifier).name === exportDefaultName
-          && (left.property as Identifier).name === property &&
-          (right.type === 'StringLiteral' || right.type ==='BooleanLiteral' || right.type === 'NumericLiteral')
-        ) {
-          propertyValues[property] = right.value;
-        }
-      }
-    });
-  });
-
-  return propertyValues;
-}
-
+import {getConfigPropertiesFromSource} from '@middle-cli/utils';
 
 export default (api: IApi) => {
   api.describe({
@@ -84,7 +20,7 @@ export default (api: IApi) => {
     },
     enableBy: api.EnableBy.register,
   });
- 
+
   api.modifyRoutes((memo) => {
     const fields = api.config.extendRouteProps||['layout','login'];
     Object.keys(memo).forEach((id) => {
