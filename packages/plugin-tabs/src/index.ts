@@ -165,9 +165,12 @@ export default (api: IApi) => {
     });
 
     // windowTabs 组件生成
-
+    const config = api.config;
+    // 可能
+    const prefixCls = config.antd?.configProvider?.prefixCls;
+    const themePrefixCls = config.theme?.['@ant-prefix'];
     // 获取配置的antd样式前缀
-    const antdPrefix = api.config.antd?.configProvider?.prefixCls || "ant";
+    const antdPrefix = prefixCls || themePrefixCls || "ant";
 
     const useYhDesign = (()=>{
       try {
