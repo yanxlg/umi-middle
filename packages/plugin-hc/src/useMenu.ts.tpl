@@ -25,7 +25,7 @@ function useMenu(appCode: string){
     responseXHR?: XMLHttpRequest;
   }>({
     loading: false,
-    menus: [],y
+    menus: [],
   });
 
   useEffect(() => {
