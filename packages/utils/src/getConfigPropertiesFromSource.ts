@@ -50,7 +50,7 @@ export function getConfigPropertiesFromSource(content: string, file: string, pro
     return undefined;
   }
 
-  const propertyValues: { [key: string]: string } = {};
+  const propertyValues: { [key: string]: string | number | boolean } = {};
 
   properties.forEach(property => {
     expressionStatementList.forEach(statement => {
