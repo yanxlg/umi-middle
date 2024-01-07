@@ -65,7 +65,7 @@ export default (api: IApi) => {
       const route = memo[id];
       const content = route.__content;// 内容
       if (content) { // 解析内容
-        const properties = getConfigPropertiesFromSource(content, route.file,['title']);
+        const properties = getConfigPropertiesFromSource(content, route.file,['title', 'permission','layout','login']);
         Object.assign(route,properties);
       }
     });

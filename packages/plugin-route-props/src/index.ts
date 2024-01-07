@@ -15,14 +15,14 @@ export default (api: IApi) => {
     key: "extendRouteProps",
     config: {
       schema({zod}) {
-        return zod.array(zod.string()).optional();
+        return zod.array(zod.string());
       },
     },
-    enableBy: api.EnableBy.register,
+    enableBy: api.EnableBy.config,
   });
 
   api.modifyRoutes((memo) => {
-    const fields = api.config.extendRouteProps||['layout','login'];
+    const fields = api.config.extendRouteProps;
     Object.keys(memo).forEach((id) => {
       const route = memo[id];
       const content = route.__content;// 内容
