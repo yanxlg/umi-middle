@@ -10,11 +10,11 @@
 import {useState, useEffect} from 'react';
 
 export type MenuItem = {
-  icon: string;
-  key: string;
-  permission: string;
+  icon?: string;
+  key?: string;
+  permission?: string;
   title: string;
-  url: string;
+  url?: string;
   children?: Array<MenuItem>;
 }
 
