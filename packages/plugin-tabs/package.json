@@ -1,6 +1,6 @@
 {
   "name": "@middle-cli/plugin-tabs",
-  "version": "0.6.7",
+  "version": "0.6.8",
   "keywords": [],
   "license": "MIT",
   "author": "yanxlg <yanxlg2@yonghui.cn>",
@@ -15,7 +15,7 @@
     "dev": "father dev"
   },
   "dependencies": {
-    "@middle-cli/utils": "^0.0.4",
+    "@middle-cli/utils": "^0.0.5",
     "@tanem/react-nprogress": "^5.0.0",
     "ahooks": "*",
     "babel-plugin-import": "*",
