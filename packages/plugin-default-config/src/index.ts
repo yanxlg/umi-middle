@@ -17,6 +17,11 @@ export default (api: IApi) => {
     enableBy: api.EnableBy.register,
   });
 
+  api.addRuntimePlugin({
+    fn: () => "@@/plugin-hc/runtime",
+    stage: Number.MAX_SAFE_INTEGER,
+  });
+
   api.modifyConfig((memo) => {
     // 将title 传递到运行时中
     memo.conventionRoutes = memo.conventionRoutes ?? {
@@ -84,6 +89,13 @@ export default (api: IApi) => {
       context: {
         antdPrefix: prefixCls || themePrefixCls || 'ant',
         title: config.title
+      },
+    });
+
+    api.writeTmpFile({
+      path: "runtime.tsx",
+      tplPath: join(__dirname, "runtime.tsx.tpl"),
+      context: {
       },
     });
   })
