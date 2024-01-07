@@ -1,6 +1,6 @@
 {
   "name": "@middle-cli/plugin-default-config",
-  "version": "0.6.14",
+  "version": "0.6.15",
   "description": "umijs 默认配置修改",
   "keywords": [],
   "license": "MIT",
