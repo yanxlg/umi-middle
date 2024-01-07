@@ -9,6 +9,6 @@
  */
 
 import { useMenu } from './useMenu';
-import { usePermissions } from './usePermissions';
+import { usePermissions, hasPermission, useHasPermissions } from './usePermissions';
 
-export { useMenu, usePermissions };
+export { useMenu, usePermissions, hasPermission, useHasPermissions };

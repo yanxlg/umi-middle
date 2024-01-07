@@ -8,8 +8,8 @@
  * Copyright (c) 2023 by yanxlg, All Rights Reserved.
  */
 import {useState, useEffect} from 'react';
-
-
+import {fetchPermissions} from './fetchPermissions';
+import { permissionsRef } from './permissionsRef';
 
 function usePermissions(){
   const [permissionState,setPermissionState] = useState<{
@@ -18,63 +18,43 @@ function usePermissions(){
     responseXHR?: XMLHttpRequest;
   }>({
     loading: false,
-    permissions: [],
+    permissions: permissionsRef.current?Array.from(permissionsRef.current): [],
   });
 
   useEffect(() => {
-    setPermissionState({
-      loading: true,
-      permissions: [],
-    });
-    const xhr = new XMLHttpRequest();
-    xhr.open('get', `/user/permissions`);
-    xhr.onload = function () {
-      let responseText = xhr.responseText;
-      if (xhr.status == 200) {
-        try {
-          const {code,data} = JSON.parse(responseText);
-          if(code === 0){
-            setPermissionState({
-              loading: false,
-              permissions: data.permissions.split(','),
-              responseXHR: xhr
-            });
-          }else{
-            setPermissionState({
-              loading: false,
-              permissions: [],
-              responseXHR: xhr
-            });
-          }
-        } catch (e) {
-          setPermissionState({
-            loading: false,
-            permissions: [],
-            responseXHR: xhr
-          });
-        }
-      } else {
+    if(!permissionsRef.current){
+      setPermissionState({
+        loading: true,
+        permissions: [],
+      });
+      fetchPermissions().then(({permissions,responseXHR})=>{
+        permissionsRef.current = new Set(permissions);
+        setPermissionState({
+          loading: false,
+          permissions: permissions,
+          responseXHR: responseXHR
+        });
+      }).catch((xhr)=>{
         setPermissionState({
           loading: false,
           permissions: [],
           responseXHR: xhr
         });
-      }
-    };
-    xhr.onerror = function (e){
-      setPermissionState({
-        loading: false,
-        permissions: [],
-        responseXHR: xhr
       });
     }
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.setRequestHeader("Accept", "application/json, text/plain, */*");
-
-    xhr.send();
   }, []);
-  
+
   return permissionState;
 }
 
-export { usePermissions };
+function hasPermission(permission: string){
+  return permissionsRef.current?.has(permission);
+}
+
+function useHasPermissions(permissions: string[]){
+  const {permissions} = usePermissions();
+  const set = new Set(permissions);
+  return permissions.map(permission => set.has(permission));
+}
+
+export { usePermissions, hasPermission, useHasPermissions };

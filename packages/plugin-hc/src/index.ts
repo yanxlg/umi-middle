@@ -3,7 +3,7 @@
  * @Date: 2023-10-24 21:15:00
  * @LastEditors: yanxlg
  * @LastEditTime: 2023-05-30 15:06:06
- * @Description: 辉创接入插件 
+ * @Description: 辉创接入插件
  *
  *
  * Copyright (c) 2023 by yanxlg, All Rights Reserved.
@@ -11,6 +11,7 @@
 import { join } from "path";
 import { IApi } from "umi";
 import { winPath } from "umi/plugin-utils";
+import fs from 'fs';
 
 function withTmpPath(opts: {
   api: IApi;
@@ -31,6 +32,9 @@ function withTmpPath(opts: {
 
 const isProduction = process.env.NODE_ENV === "production";
 
+
+
+
 export default async (api: IApi) => {
   api.describe({
     key: "hc",
@@ -42,7 +46,12 @@ export default async (api: IApi) => {
     },
     enableBy: api.EnableBy.config, // 配置时生效
   });
-  
+
+  api.addRuntimePlugin({
+    fn: () => "@@/plugin-hc/runtime",
+    stage: Number.MAX_SAFE_INTEGER,
+  });
+
   const appName = require(`${api.paths.cwd}/package.json`).name; // 组件中注册的name
   const publicPath = `/app/${appName}/static/`;
   // 修改项目配置
@@ -51,7 +60,7 @@ export default async (api: IApi) => {
     if(!appName){
       throw new Error('辉创应用需要配置对应的应用code，请在项目package.json中通过name字段配置');
     }
-   
+
     if(memo.publicPath && memo.publicPath !== publicPath){
       console.warn(`配置中已经自定义了公共路径，检测发现与项目应用编码生成的辉创路径不一致，请检查并确保其正确，publicPath值应为：${publicPath}`);
     }
@@ -68,16 +77,7 @@ export default async (api: IApi) => {
     memo.headScripts = [...memo.headScripts||[], `window.publicPath = "${publicPath}"`];
     return memo;
   })
-  
-  // 公共路径不是在项目最顶部设置，会出问题
-//  api.addPolyfillImports({
-//    stage: 99999,
-//    name: 'publicPath',
-//    fn: ()=>[{
-//      source: withTmpPath({api, path: 'publicPath.ts'}),
-//    }]
-//  }); // 公共路径
-//
+
   // runtime 修改
   api.onGenerateFiles(() => {
     api.writeTmpFile({
@@ -94,6 +94,63 @@ export default async (api: IApi) => {
       path: "usePermissions.ts",
       tplPath: join(__dirname, "usePermissions.ts.tpl"),
       context: {},
+    });
+    api.writeTmpFile({
+      path: "fetchPermissions.ts",
+      tplPath: join(__dirname, "fetchPermissions.ts.tpl"),
+      context: {},
+    });
+    api.writeTmpFile({
+      path: "permissionRef.ts",
+      tplPath: join(__dirname, "permissionRef.ts.tpl"),
+      context: {},
+    });
+    // 默认403页面生成
+    const useAntd = (()=>{
+      try {
+        require.resolve('antd');
+        return true
+      }catch (e){
+        return false
+      }
+    })();
+
+    const useYhDesign = (()=>{
+      try {
+        require.resolve('@yh/yh-design');
+        return true
+      }catch (e){
+        return false
+      }
+    })();
+
+    if(useAntd){
+      api.writeTmpFile({
+        path: "403.tsx",
+        tplPath: join(__dirname, "403.antd.tsx.tpl"),
+        context: {},
+      });
+    }
+    if(useYhDesign){
+      api.writeTmpFile({
+        path: "403.tsx",
+        tplPath: join(__dirname, "403.yh-design.tsx.tpl"),
+        context: {},
+      });
+    }
+
+    // 自定义的403 检测
+    const withCustom403 = fs.existsSync(join(api.paths.absSrcPath,'pages','403.tsx')) ||
+      fs.existsSync(join(api.paths.absSrcPath,'pages','403.js')) ||
+      fs.existsSync(join(api.paths.absSrcPath,'pages','403.jsx'));
+
+    // 403 页面路径
+    api.writeTmpFile({
+      path: "runtime.tsx",
+      tplPath: join(__dirname, "runtime.tsx.tpl"),
+      context: {
+        page403: withCustom403?'@/pages/403':withTmpPath({api, path: '403.tsx'})
+      },
     });
   });
 };
