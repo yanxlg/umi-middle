@@ -18,7 +18,7 @@ export default (api: IApi) => {
   });
 
   api.addRuntimePlugin({
-    fn: () => "@@/plugin-hc/runtime",
+    fn: () => "@@/plugin-default-config/runtime",
     stage: -1 * Number.MAX_SAFE_INTEGER,
   });
 
