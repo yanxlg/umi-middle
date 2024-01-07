@@ -74,11 +74,15 @@ export default (api: IApi) => {
 
   api.onGenerateFiles(() => {
     const config = api.config;
+    // 可能
+    const prefixCls = config.antd?.configProvider?.prefixCls;
+    const themePrefixCls = config.theme?.['@ant-prefix'];
+
     api.writeTmpFile({
       path: "index.tsx",
       tplPath: join(__dirname, "index.tsx.tpl"),
       context: {
-        antdPrefix: config.theme?.['@ant-prefix']??'ant',
+        antdPrefix: prefixCls || themePrefixCls || 'ant',
         title: config.title
       },
     });
