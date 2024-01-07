@@ -1,6 +1,6 @@
 {
   "name": "@middle-cli/plugin-tabs",
-  "version": "0.6.4",
+  "version": "0.6.5",
   "keywords": [],
   "license": "MIT",
   "author": "yanxlg <yanxlg2@yonghui.cn>",
@@ -15,13 +15,13 @@
     "dev": "father dev"
   },
   "dependencies": {
+    "@middle-cli/utils": "^0.0.2",
     "@tanem/react-nprogress": "^5.0.0",
     "ahooks": "*",
     "babel-plugin-import": "*",
     "lodash": "*",
     "react-activation": "0.12.1",
-    "react-contexify": "6.0.0",
-    "@middle-cli/utils": "0.0.1"
+    "react-contexify": "6.0.0"
   },
   "devDependencies": {
     "@types/node": "^18.15.11",
