@@ -101,8 +101,8 @@ export default async (api: IApi) => {
       context: {},
     });
     api.writeTmpFile({
-      path: "permissionRef.ts",
-      tplPath: join(__dirname, "permissionRef.ts.tpl"),
+      path: "permissionsRef.ts",
+      tplPath: join(__dirname, "permissionsRef.ts.tpl"),
       context: {},
     });
     // 默认403页面生成
