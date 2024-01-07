@@ -58,6 +58,14 @@ export default (api: IApi) => {
         },'@yh/yh-design']
       ];
     }
+    memo.extraBabelPlugins = [
+      ...memo.extraBabelPlugins||[],
+      ['import', {
+        libraryName: 'lodash',
+        libraryDirectory: '',
+        camel2DashComponentName: false,
+      },'lodash']
+    ];
     memo.define = {
       'process.env.NODE_ENV' : process.env.NODE_ENV,
       ...memo.define||{},
