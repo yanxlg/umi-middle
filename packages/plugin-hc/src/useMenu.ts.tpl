@@ -8,7 +8,15 @@
  * Copyright (c) 2023 by yanxlg, All Rights Reserved.
  */
 import {useState, useEffect} from 'react';
-import type {MenuItem} from './index';
+
+export type MenuItem = {
+  icon: string;
+  key: string;
+  permission: string;
+  title: string;
+  url: string;
+  children?: Array<MenuItem>;
+}
 
 function useMenu(appCode: string){
   const [menuState,setMenuState] = useState<{
@@ -17,7 +25,7 @@ function useMenu(appCode: string){
     responseXHR?: XMLHttpRequest;
   }>({
     loading: false,
-    menus: [],
+    menus: [],y
   });
 
   useEffect(() => {

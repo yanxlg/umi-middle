@@ -12,12 +12,3 @@ import { useMenu } from './useMenu';
 import { usePermissions } from './usePermissions';
 
 export { useMenu, usePermissions };
-
-export type MenuItem = {
-  icon: string;
-  key: string;
-  permission: string;
-  title: string;
-  url: string;
-  children?: Array<MenuItem>;
-}
