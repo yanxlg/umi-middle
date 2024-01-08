@@ -35,12 +35,13 @@ const isProduction = process.env.NODE_ENV === "production";
 
 
 
+
 export default async (api: IApi) => {
   api.describe({
     key: "hc",
     config: {
       schema({ zod }) {
-        return zod.boolean();
+        return zod.boolean(); // docker 不能添加
       },
       onChange: api.ConfigChangeType.regenerateTmpFiles,
     },
@@ -52,29 +53,44 @@ export default async (api: IApi) => {
     stage: Number.MAX_SAFE_INTEGER,
   });
 
-  const appName = require(`${api.paths.cwd}/package.json`).name; // 组件中注册的name
-  const publicPath = `/app/${appName}/static/`;
+
+
+  function isUseNginxBuild(){
+    const dockerFile = `${api.paths.cwd}/Dockerfile`;
+    return !fs.existsSync(dockerFile);
+  }
+
+
   // 修改项目配置
   api.modifyConfig((memo, { paths }) => {
-    // 辉创默认开启微前端，通知修改publicPath
-    if(!appName){
-      throw new Error('辉创应用需要配置对应的应用code，请在项目package.json中通过name字段配置');
+
+    // 检测是使用docker部署??
+    const useNginxBuild = isUseNginxBuild();
+    if(useNginxBuild){
+      const appName = require(`${api.paths.cwd}/package.json`).name; // 组件中注册的name
+      const publicPath = `/app/${appName}/static/`;
+
+      // 辉创默认开启微前端，通知修改publicPath
+      if(!appName){
+        throw new Error('辉创应用需要配置对应的应用code，请在项目package.json中通过name字段配置');
+      }
+
+      if(memo.publicPath && memo.publicPath !== publicPath){
+        console.warn(`配置中已经自定义了公共路径，检测发现与项目应用编码生成的辉创路径不一致，请检查并确保其正确，publicPath值应为：${publicPath}`);
+      }
+      memo.publicPath = memo.publicPath || publicPath;
+      memo.runtimePublicPath = {};
+      memo.headScripts = [...memo.headScripts||[], `window.publicPath = "${publicPath}"`];
     }
 
-    if(memo.publicPath && memo.publicPath !== publicPath){
-      console.warn(`配置中已经自定义了公共路径，检测发现与项目应用编码生成的辉创路径不一致，请检查并确保其正确，publicPath值应为：${publicPath}`);
-    }
-    memo.publicPath = memo.publicPath || publicPath;
-    memo.runtimePublicPath = {};
     memo.qiankun = {
       ...memo.qiankun,
       slave: {
         ...memo.qiankun?.slave,
-        shouldNotModifyRuntimePublicPath: true,
+        ...useNginxBuild?{shouldNotModifyRuntimePublicPath: true,}:{},
       },
     }
     memo.hash = memo.hash === void 0 ? true:memo.hash;
-    memo.headScripts = [...memo.headScripts||[], `window.publicPath = "${publicPath}"`];
     return memo;
   })
 
