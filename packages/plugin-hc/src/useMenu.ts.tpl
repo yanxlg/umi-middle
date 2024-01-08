@@ -8,6 +8,9 @@
  * Copyright (c) 2023 by yanxlg, All Rights Reserved.
  */
 import {useState, useEffect} from 'react';
+{{#withGlobalResponseInterceptor}}
+import interceptor from '@/interceptors/response.interceptor';
+{{/withGlobalResponseInterceptor}}
 
 export type MenuItem = {
   icon?: string;
@@ -52,6 +55,9 @@ function useMenu(appCode: string){
               menus: [],
               responseXHR: xhr
             });
+            {{#withGlobalResponseInterceptor}}
+            interceptor.success(responseText);
+            {{/withGlobalResponseInterceptor}}
           }
         } catch (e) {
           setMenuState({
@@ -59,6 +65,9 @@ function useMenu(appCode: string){
             menus: [],
             responseXHR: xhr
           });
+          {{#withGlobalResponseInterceptor}}
+          interceptor.success(responseText);
+          {{/withGlobalResponseInterceptor}}
         }
       } else {
         setMenuState({
@@ -66,6 +75,9 @@ function useMenu(appCode: string){
           menus: [],
           responseXHR: xhr
         });
+        {{#withGlobalResponseInterceptor}}
+        interceptor.fail(xhr);
+        {{/withGlobalResponseInterceptor}}
       }
     };
     xhr.onerror = function (e){
@@ -74,6 +86,9 @@ function useMenu(appCode: string){
         menus: [],
         responseXHR: xhr
       });
+      {{#withGlobalResponseInterceptor}}
+      interceptor.fail(xhr);
+      {{/withGlobalResponseInterceptor}}
     }
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.setRequestHeader("Accept", "application/json");

@@ -78,12 +78,20 @@ export default async (api: IApi) => {
     return memo;
   })
 
+
   // runtime 修改
   api.onGenerateFiles(() => {
+
+    const withGlobalResponseInterceptor = fs.existsSync(join(api.paths.absSrcPath,'interceptors','response.interceptor.tsx')) ||
+      fs.existsSync(join(api.paths.absSrcPath,'interceptors','response.interceptor.ts')) ||
+      fs.existsSync(join(api.paths.absSrcPath,'interceptors','response.interceptor.js'));
+
     api.writeTmpFile({
       path: "useMenu.ts",
       tplPath: join(__dirname, "useMenu.ts.tpl"),
-      context: {},
+      context: {
+        withGlobalResponseInterceptor: withGlobalResponseInterceptor
+      },
     });
     api.writeTmpFile({
       path: "index.ts",
@@ -95,10 +103,13 @@ export default async (api: IApi) => {
       tplPath: join(__dirname, "usePermissions.ts.tpl"),
       context: {},
     });
+
     api.writeTmpFile({
       path: "fetchPermissions.ts",
       tplPath: join(__dirname, "fetchPermissions.ts.tpl"),
-      context: {},
+      context: {
+        withGlobalResponseInterceptor: withGlobalResponseInterceptor
+      },
     });
     api.writeTmpFile({
       path: "permissionsRef.ts",
@@ -144,12 +155,13 @@ export default async (api: IApi) => {
       fs.existsSync(join(api.paths.absSrcPath,'pages','403.js')) ||
       fs.existsSync(join(api.paths.absSrcPath,'pages','403.jsx'));
 
+
     // 403 页面路径
     api.writeTmpFile({
       path: "runtime.tsx",
       tplPath: join(__dirname, "runtime.tsx.tpl"),
       context: {
-        page403: withCustom403?'@/pages/403':withTmpPath({api, path: '403.tsx'})
+        page403: withCustom403?'@/pages/403':withTmpPath({api, path: '403.tsx'}),
       },
     });
   });

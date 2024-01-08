@@ -1,3 +1,7 @@
+{{#withGlobalResponseInterceptor}}
+import interceptor from '@/interceptors/response.interceptor';
+{{/withGlobalResponseInterceptor}}
+
 function fetchPermissions(){
   return new Promise((resolve,reject)=>{
     const xhr = new XMLHttpRequest();
@@ -13,16 +17,28 @@ function fetchPermissions(){
                responseXHR: xhr
             });
           }else{
+            {{#withGlobalResponseInterceptor}}
+            interceptor.success(responseText);
+            {{/withGlobalResponseInterceptor}}
             reject(xhr);
           }
         } catch (e) {
+          {{#withGlobalResponseInterceptor}}
+          interceptor.success(responseText);
+          {{/withGlobalResponseInterceptor}}
           reject(xhr);
         }
       } else {
+        {{#withGlobalResponseInterceptor}}
+        interceptor.fail(xhr);
+        {{/withGlobalResponseInterceptor}}
         reject(xhr);
       }
     };
     xhr.onerror = function (e){
+      {{#withGlobalResponseInterceptor}}
+      interceptor.fail(xhr);
+      {{/withGlobalResponseInterceptor}}
       reject(xhr);
     }
     xhr.setRequestHeader('Content-Type', 'application/json');
