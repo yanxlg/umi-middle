@@ -22,6 +22,9 @@ export function patchClientRoutes({ routes }) {
 }
 
 export function render(oldRender) {
+  if(location.pathname === '/signin'){
+    return oldRender();
+  }
   fetchPermissions().then(({permissions})=>{
     permissionsRef.current = new Set(permissions);
     oldRender();
