@@ -91,6 +91,12 @@ export default async (api: IApi) => {
       },
     }
     memo.hash = memo.hash === void 0 ? true:memo.hash;
+
+    // qiankun插件需要手动来强制开启
+    process.env.INITIAL_QIANKUN_SLAVE_OPTIONS = process.env.INITIAL_QIANKUN_SLAVE_OPTIONS || "{}"; // 强制开启slave插件
+    if(memo.qiankun.master){
+      process.env.INITIAL_QIANKUN_MASTER_OPTIONS = process.env.INITIAL_QIANKUN_MASTER_OPTIONS || "{}"; // 强制开启master插件
+    }
     return memo;
   })
 
