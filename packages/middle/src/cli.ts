@@ -16,9 +16,11 @@ import { join } from "path";
 import { run } from "umi";
 import { Service } from "umi/dist/service/service";
 import * as process from "process";
+import fsExtra from 'fs-extra';
 
 import {Config, Env} from '@umijs/core';
 import {DEFAULT_CONFIG_FILES} from 'umi/dist/constants';
+import path from "path";
 
 const version = require('../package.json').version;
 
@@ -51,6 +53,11 @@ program.action(() => {
   if((config as any).material && command === 'build'){
     (async ()=>{
       process.env.NODE_ENV = "production";
+      // 需要删除.umi文件夹
+      fsExtra.rmSync(path.join(process.cwd(), 'src/.umi'),{
+        recursive: true,
+        force: true
+      });
       await new Service({
         presets:[
           require.resolve("@umijs/max/dist/preset"), // preset 默认是max的preset
