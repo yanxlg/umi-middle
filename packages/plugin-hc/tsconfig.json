@@ -17,5 +17,6 @@
     "noEmit": false,
     "declaration": true,
     "incremental": false
-  }
+  },
+  "exclude": ["src/template"]
 }
