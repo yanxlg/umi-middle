@@ -15,6 +15,9 @@
     "build": "father build",
     "dev": "father dev"
   },
+  "devDependencies": {
+    "@middle-cli/utils": "^0.0.5"
+  },
   "authors": {
     "name": "yanxlg <yanxlg2@yonghui.cn>",
     "email": "yanxlg2@yonghui.cn"

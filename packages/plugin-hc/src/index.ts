@@ -13,6 +13,7 @@ import {IApi, RUNTIME_TYPE_FILE_NAME} from "umi";
 import {winPath} from "umi/plugin-utils";
 import fs from 'fs';
 import path from 'path';
+import {withTmpPath} from '@middle-cli/utils';
 
 const tmpDir = winPath(join(__dirname, "..", "template"));
 
@@ -25,30 +26,13 @@ function writeDirectory(templateDir: string, directoryPath: string, api: IApi) {
     if (fs.statSync(itemPath).isFile()) {
       api.writeTmpFile({
         path: itemPath.replace(templateDir, 'layout'), // 生成目录文件
-        content:  fs.readFileSync(itemPath, "utf-8")
+        content: fs.readFileSync(itemPath, "utf-8")
       })
     } else if (fs.statSync(itemPath).isDirectory()) {
       writeDirectory(templateDir, itemPath, api);
     }
   }
 }
-
-function withTmpPath(opts: {
-  api: IApi;
-  path: string;
-  noPluginDir?: boolean;
-}) {
-  return winPath(
-    join(
-      opts.api.paths.absTmpPath,
-      opts.api.plugin.key && !opts.noPluginDir
-        ? `plugin-${opts.api.plugin.key}`
-        : "",
-      opts.path
-    )
-  );
-}
-
 
 export default async (api: IApi) => {
   api.describe({
@@ -64,7 +48,7 @@ export default async (api: IApi) => {
     enableBy: api.EnableBy.config, // 配置时生效
   });
 
-  api.addRuntimePluginKey(() => ["hcLayout","onSiderCollapse"]);// runtime中函数注册支持
+  api.addRuntimePluginKey(() => ["hcLayout", "onHcSiderCollapse"]);// runtime中函数注册支持
   api.addRuntimePlugin({
     fn: () => withTmpPath({api, path: "runtime.tsx"}),
     stage: Number.MAX_SAFE_INTEGER,
@@ -237,8 +221,16 @@ export default async (api: IApi) => {
       if (generateLayout) {
         const templateDir = path.join(tmpDir, `layout/${generateLayout}`);
         writeDirectory(templateDir, templateDir, api);
-
         // 注册 addLayout操作。 检测和 layout 是否冲突，只能存在一个，如果layout也设置了则给出报错提示。
+        api.addLayouts(() => {
+          return {
+            id: 'hc-layout',
+            file: withTmpPath({api, path: "layout/index.tsx"}),
+            test: (route: { layout?: boolean }) => {
+              return route.layout !== false; // layout 可以配置，从而部分页面不加载布局。
+            }
+          }
+        })
       }
     }
 

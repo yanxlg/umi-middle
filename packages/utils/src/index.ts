@@ -7,3 +7,4 @@
  */
 
 export * from './getConfigPropertiesFromSource';
+export * from './withTmpPath';
