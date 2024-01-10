@@ -114,7 +114,7 @@ export function resolveLayout(api: IApi) {
 
       api.writeTmpFile({
         path: RUNTIME_TYPE_FILE_NAME,
-        tplPath: join(templateDir, "runtimeConfig.d.ts"),
+        tplPath: join(tmpDir, "runtimeConfig.d.ts"),
       });
     }
   });
