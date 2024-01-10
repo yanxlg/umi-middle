@@ -5,7 +5,6 @@
  *
  * Copyright (c) 2024 by yanxianliang, All Rights Reserved.
  */
-import { clientMenus } from './clientMenus.ts';
 import { MenuItem } from '@@/plugin-hc/useMenu';
 import { MenuDataItem } from '@umijs/route-utils';
 
@@ -41,30 +40,5 @@ export const toMenuDataItems = (menus: MenuItem[]): MenuDataItem[] => {
 };
 
 export const fillClientMenus = (menus: MenuItem[]) => {
-  // Apply 菜单手动添加
-  const workSet = menus.find((item) => item.key === 'work-setting');
-  if (workSet !== undefined) {
-    const publicReply = {
-      title: '公共回复模板',
-      key: '#/setting/reply',
-      url: '/setting/reply',
-    };
-    workSet.children = workSet.children || [];
-    workSet.children.push(publicReply);
-  }
-  const order = menus.find((item) => item.key === 'wos-order');
-  if (order !== undefined) {
-    const myOrder = order.children?.find((t) => t.key === '/order/my');
-    if (myOrder !== undefined) {
-      const personalReply = {
-        title: '个人回复模板',
-        key: '#/order/my/reply',
-        url: '/order/my/reply',
-      };
-      myOrder.children = myOrder.children || [];
-      myOrder.children.push(personalReply);
-    }
-  }
-  menus.push(...clientMenus);
   return toMenuDataItems(menus);
 };
