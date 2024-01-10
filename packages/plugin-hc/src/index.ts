@@ -42,7 +42,7 @@ function writeDirectory(templateDir: string, directoryPath: string, api: IApi) {
         api,
       });
       fs.mkdirSync(file, {recursive: true});
-      fs.copyFileSync(itemPath,file);
+      fs.writeFileSync(file, fs.readFileSync(itemPath));
     } else if (fs.statSync(itemPath).isDirectory()) {
       writeDirectory(templateDir, itemPath, api);
     }
