@@ -54,6 +54,22 @@ export default async (api: IApi) => {
     stage: Number.MAX_SAFE_INTEGER,
   });
 
+  api.addLayouts(() => {
+    // 需要检测是否有效吧，否则文件不存在不是白搭
+    const layoutFile = withTmpPath({api, path: "layout/index.tsx"});
+    if(fs.existsSync(layoutFile)){
+      return [{
+        id: 'hc-layout',
+        file: withTmpPath({api, path: "layout/index.tsx"}),
+        test: (route: { layout?: boolean }) => {
+          return route.layout !== false; // layout 可以配置，从而部分页面不加载布局。
+        }
+      }]
+    }
+    return [];
+  })
+
+
   function isUseNginxBuild() {
     const dockerFile = `${api.paths.cwd}/Dockerfile`;
     return !fs.existsSync(dockerFile);
@@ -225,20 +241,6 @@ export default async (api: IApi) => {
 
       }
     }
-    api.addLayouts(() => {
-      // 需要检测是否有效吧，否则文件不存在不是白搭
-      const layoutFile = withTmpPath({api, path: "layout/index.tsx"});
-      if(fs.existsSync(layoutFile)){
-        return [{
-          id: 'hc-layout',
-          file: withTmpPath({api, path: "layout/index.tsx"}),
-          test: (route: { layout?: boolean }) => {
-            return route.layout !== false; // layout 可以配置，从而部分页面不加载布局。
-          }
-        }]
-      }
-      return [];
-    })
 
     api.writeTmpFile({
       path: RUNTIME_TYPE_FILE_NAME,
