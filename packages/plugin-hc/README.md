@@ -25,3 +25,7 @@ TODO
 ## LICENSE
 
 MIT
+
+1. 提供wrapper 来包裹layout并传入props进去
+2. 提供静态方法修改badge数据等。 两种方式。 一个内部管理，一个外部管理。
+3. 提供menu数据二次处理的入口。
