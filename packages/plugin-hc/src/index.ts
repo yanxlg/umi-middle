@@ -21,7 +21,9 @@ function writeDirectory(templateDir: string, directoryPath: string, api: IApi) {
     const fileOrDirName = filesAndDirectories[i];
     const itemPath = path.join(directoryPath, fileOrDirName);
     if (fs.statSync(itemPath).isFile()) {
-      fs.copyFileSync(itemPath,itemPath.replace(templateDir, 'layout').replace(/\.tpl/, ''));
+      const file = itemPath.replace(templateDir, 'layout').replace(/\.tpl/, '');
+      fs.mkdirSync(path.dirname(file));
+      fs.copyFileSync(itemPath,file);
     } else if (fs.statSync(itemPath).isDirectory()) {
       writeDirectory(templateDir, itemPath, api);
     }
