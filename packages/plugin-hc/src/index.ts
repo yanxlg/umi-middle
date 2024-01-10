@@ -21,11 +21,7 @@ function writeDirectory(templateDir: string, directoryPath: string, api: IApi) {
     const fileOrDirName = filesAndDirectories[i];
     const itemPath = path.join(directoryPath, fileOrDirName);
     if (fs.statSync(itemPath).isFile()) {
-      api.writeTmpFile({
-        path: itemPath.replace(templateDir, 'layout').replace(/\.tpl/, ''), // 生成目录文件
-        tplPath: itemPath,
-        context: {},
-      })
+      fs.copyFileSync(itemPath,itemPath.replace(templateDir, 'layout').replace(/\.tpl/, ''));
     } else if (fs.statSync(itemPath).isDirectory()) {
       writeDirectory(templateDir, itemPath, api);
     }
