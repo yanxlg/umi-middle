@@ -14,22 +14,6 @@ import {winPath} from "umi/plugin-utils";
 import fs from 'fs';
 import path from 'path';
 
-function writeDirectory(templateDir: string, directoryPath: string, api: IApi) {
-  // 读取指定路径下的所有文件和子目录
-  const filesAndDirectories = fs.readdirSync(directoryPath);
-  for (let i = 0; i < filesAndDirectories.length; i++) {
-    const fileOrDirName = filesAndDirectories[i];
-    const itemPath = path.join(directoryPath, fileOrDirName);
-    if (fs.statSync(itemPath).isFile()) {
-      const file = itemPath.replace(templateDir, 'layout').replace(/\.tpl/, '');
-      fs.mkdirSync(path.dirname(file));
-      fs.copyFileSync(itemPath,file);
-    } else if (fs.statSync(itemPath).isDirectory()) {
-      writeDirectory(templateDir, itemPath, api);
-    }
-  }
-}
-
 function withTmpPath(opts: {
   api: IApi;
   path: string;
@@ -45,6 +29,27 @@ function withTmpPath(opts: {
     )
   );
 }
+
+function writeDirectory(templateDir: string, directoryPath: string, api: IApi) {
+  // 读取指定路径下的所有文件和子目录
+  const filesAndDirectories = fs.readdirSync(directoryPath);
+  for (let i = 0; i < filesAndDirectories.length; i++) {
+    const fileOrDirName = filesAndDirectories[i];
+    const itemPath = path.join(directoryPath, fileOrDirName);
+    if (fs.statSync(itemPath).isFile()) {
+      const file = withTmpPath({
+        path: itemPath.replace(templateDir, 'layout').replace(/\.tpl/, ''),
+        api,
+      });
+      fs.mkdirSync(file, {recursive: true});
+      fs.copyFileSync(itemPath,file);
+    } else if (fs.statSync(itemPath).isDirectory()) {
+      writeDirectory(templateDir, itemPath, api);
+    }
+  }
+}
+
+
 
 
 export default async (api: IApi) => {
