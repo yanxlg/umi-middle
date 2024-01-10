@@ -222,19 +222,23 @@ export default async (api: IApi) => {
         const templateDir = path.join(tmpDir, `layout/${generateLayout}`);
         writeDirectory(templateDir, templateDir, api);
         // 注册 addLayout操作。 检测和 layout 是否冲突，只能存在一个，如果layout也设置了则给出报错提示。
-        api.addLayouts(() => {
-          return {
-            id: 'hc-layout',
-            file: withTmpPath({api, path: "layout/index.tsx"}),
-            test: (route: { layout?: boolean }) => {
-              return route.layout !== false; // layout 可以配置，从而部分页面不加载布局。
-            }
-          }
-        })
+
       }
     }
-
-    // 从runtime 中获取layout参数，如菜单宽、高、内容宽高，需要注册
+    api.addLayouts(() => {
+      // 需要检测是否有效吧，否则文件不存在不是白搭
+      const layoutFile = withTmpPath({api, path: "layout/index.tsx"});
+      if(fs.existsSync(layoutFile)){
+        return [{
+          id: 'hc-layout',
+          file: withTmpPath({api, path: "layout/index.tsx"}),
+          test: (route: { layout?: boolean }) => {
+            return route.layout !== false; // layout 可以配置，从而部分页面不加载布局。
+          }
+        }]
+      }
+      return [];
+    })
 
     api.writeTmpFile({
       path: RUNTIME_TYPE_FILE_NAME,
