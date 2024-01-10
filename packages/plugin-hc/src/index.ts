@@ -14,6 +14,25 @@ import {winPath} from "umi/plugin-utils";
 import fs from 'fs';
 import path from 'path';
 
+const tmpDir = winPath(join(__dirname, "..", "template"));
+
+function writeDirectory(templateDir: string, directoryPath: string, api: IApi) {
+  // 读取指定路径下的所有文件和子目录
+  const filesAndDirectories = fs.readdirSync(directoryPath);
+  for (let i = 0; i < filesAndDirectories.length; i++) {
+    const fileOrDirName = filesAndDirectories[i];
+    const itemPath = path.join(directoryPath, fileOrDirName);
+    if (fs.statSync(itemPath).isFile()) {
+      api.writeTmpFile({
+        path: itemPath.replace(templateDir, 'layout'), // 生成目录文件
+        content:  fs.readFileSync(itemPath, "utf-8")
+      })
+    } else if (fs.statSync(itemPath).isDirectory()) {
+      writeDirectory(templateDir, itemPath, api);
+    }
+  }
+}
+
 function withTmpPath(opts: {
   api: IApi;
   path: string;
@@ -29,27 +48,6 @@ function withTmpPath(opts: {
     )
   );
 }
-
-function writeDirectory(templateDir: string, directoryPath: string, api: IApi) {
-  // 读取指定路径下的所有文件和子目录
-  const filesAndDirectories = fs.readdirSync(directoryPath);
-  for (let i = 0; i < filesAndDirectories.length; i++) {
-    const fileOrDirName = filesAndDirectories[i];
-    const itemPath = path.join(directoryPath, fileOrDirName);
-    if (fs.statSync(itemPath).isFile()) {
-      const file = withTmpPath({
-        path: itemPath.replace(templateDir, 'layout').replace(/\.tpl/, ''),
-        api,
-      });
-      fs.mkdirSync(file, {recursive: true});
-      fs.writeFileSync(file, fs.readFileSync(itemPath));
-    } else if (fs.statSync(itemPath).isDirectory()) {
-      writeDirectory(templateDir, itemPath, api);
-    }
-  }
-}
-
-
 
 
 export default async (api: IApi) => {
@@ -237,7 +235,7 @@ export default async (api: IApi) => {
       }
 
       if (generateLayout) {
-        const templateDir = path.join(__dirname, `template/layout/${generateLayout}`);
+        const templateDir = path.join(tmpDir, `layout/${generateLayout}`);
         writeDirectory(templateDir, templateDir, api);
 
         // 注册 addLayout操作。 检测和 layout 是否冲突，只能存在一个，如果layout也设置了则给出报错提示。
