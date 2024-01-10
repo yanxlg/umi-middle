@@ -8,3 +8,4 @@
 
 export * from './getConfigPropertiesFromSource';
 export * from './withTmpPath';
+export * from './checkDependence';

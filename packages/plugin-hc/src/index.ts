@@ -9,30 +9,13 @@
  * Copyright (c) 2023 by yanxlg, All Rights Reserved.
  */
 import {join} from "path";
-import {IApi, RUNTIME_TYPE_FILE_NAME} from "umi";
+import {IApi} from "umi";
 import {winPath} from "umi/plugin-utils";
 import fs from 'fs';
-import path from 'path';
-import {withTmpPath} from '@middle-cli/utils';
+import {withTmpPath, checkDependence} from '@middle-cli/utils';
+import {resolveLayout} from './layout';
 
 const tmpDir = winPath(join(__dirname, "..", "template"));
-
-function writeDirectory(templateDir: string, directoryPath: string, api: IApi) {
-  // 读取指定路径下的所有文件和子目录
-  const filesAndDirectories = fs.readdirSync(directoryPath);
-  for (let i = 0; i < filesAndDirectories.length; i++) {
-    const fileOrDirName = filesAndDirectories[i];
-    const itemPath = path.join(directoryPath, fileOrDirName);
-    if (fs.statSync(itemPath).isFile()) {
-      api.writeTmpFile({
-        path: itemPath.replace(templateDir, 'layout'), // 生成目录文件
-        content: fs.readFileSync(itemPath, "utf-8")
-      })
-    } else if (fs.statSync(itemPath).isDirectory()) {
-      writeDirectory(templateDir, itemPath, api);
-    }
-  }
-}
 
 export default async (api: IApi) => {
   api.describe({
@@ -48,40 +31,17 @@ export default async (api: IApi) => {
     enableBy: api.EnableBy.config, // 配置时生效
   });
 
-  api.addRuntimePluginKey(() => ["hcLayout", "onHcSiderCollapse"]);// runtime中函数注册支持
   api.addRuntimePlugin({
     fn: () => withTmpPath({api, path: "runtime.tsx"}),
     stage: Number.MAX_SAFE_INTEGER,
   });
 
-  api.addLayouts(() => {
-    // 需要检测是否有效吧，否则文件不存在不是白搭
-    const layoutFile = withTmpPath({api, path: "layout/index.tsx"});
-    if(fs.existsSync(layoutFile)){
-      return [{
-        id: 'hc-layout',
-        file: withTmpPath({api, path: "layout/index.tsx"}),
-        test: (route: { layout?: boolean }) => {
-          return route.layout !== false; // layout 可以配置，从而部分页面不加载布局。
-        }
-      }]
-    }
-    return [];
-  })
-
-
-  function isUseNginxBuild() {
-    const dockerFile = `${api.paths.cwd}/Dockerfile`;
-    return !fs.existsSync(dockerFile);
-  }
-
+  const {useAntd, antdVersion, useYhDesign, buildWithNginx} = checkDependence();
 
   // 修改项目配置
   api.modifyConfig((memo, {paths}) => {
-
-    // 检测是使用docker部署??
-    const useNginxBuild = isUseNginxBuild();
-    if (useNginxBuild) {
+    // 部署在辉创网关nginx下
+    if (buildWithNginx) {
       const appName = require(`${api.paths.cwd}/package.json`).name; // 组件中注册的name
       const publicPath = `/app/${appName}/static/`;
 
@@ -102,7 +62,7 @@ export default async (api: IApi) => {
       ...memo.qiankun,
       slave: {
         ...memo.qiankun?.slave,
-        ...useNginxBuild ? {shouldNotModifyRuntimePublicPath: true,} : {},
+        ...buildWithNginx ? {shouldNotModifyRuntimePublicPath: true,} : {},
       },
     }
     memo.hash = memo.hash === void 0 ? true : memo.hash;
@@ -125,64 +85,46 @@ export default async (api: IApi) => {
 
     api.writeTmpFile({
       path: "useMenu.ts",
-      tplPath: join(__dirname, "useMenu.ts.tpl"),
+      tplPath: join(tmpDir, "useMenu.ts.tpl"),
       context: {
         withGlobalResponseInterceptor: withGlobalResponseInterceptor
       },
     });
     api.writeTmpFile({
       path: "index.ts",
-      tplPath: join(__dirname, "index.ts.tpl"),
+      tplPath: join(tmpDir, "index.ts.tpl"),
       context: {},
     });
     api.writeTmpFile({
       path: "usePermissions.ts",
-      tplPath: join(__dirname, "usePermissions.ts.tpl"),
+      tplPath: join(tmpDir, "usePermissions.ts.tpl"),
       context: {},
     });
 
     api.writeTmpFile({
       path: "fetchPermissions.ts",
-      tplPath: join(__dirname, "fetchPermissions.ts.tpl"),
+      tplPath: join(tmpDir, "fetchPermissions.ts.tpl"),
       context: {
         withGlobalResponseInterceptor: withGlobalResponseInterceptor
       },
     });
     api.writeTmpFile({
       path: "permissionsRef.ts",
-      tplPath: join(__dirname, "permissionsRef.ts.tpl"),
+      tplPath: join(tmpDir, "permissionsRef.ts.tpl"),
       context: {},
     });
-    // 默认403页面生成
-    const useAntd = (() => {
-      try {
-        const pkg = require('antd/package.json');
-        return pkg.version;
-      } catch (e) {
-        return false
-      }
-    })();
-
-    const useYhDesign = (() => {
-      try {
-        require.resolve('@yh/yh-design');
-        return true
-      } catch (e) {
-        return false
-      }
-    })();
 
     if (useAntd) {
       api.writeTmpFile({
         path: "403.tsx",
-        tplPath: join(__dirname, "403.antd.tsx.tpl"),
+        tplPath: join(tmpDir, "403.antd.tsx.tpl"),
         context: {},
       });
     }
     if (useYhDesign) {
       api.writeTmpFile({
         path: "403.tsx",
-        tplPath: join(__dirname, "403.yh-design.tsx.tpl"),
+        tplPath: join(tmpDir, "403.yh-design.tsx.tpl"),
         context: {},
       });
     }
@@ -192,69 +134,17 @@ export default async (api: IApi) => {
       fs.existsSync(join(api.paths.absSrcPath, 'pages', '403.js')) ||
       fs.existsSync(join(api.paths.absSrcPath, 'pages', '403.jsx'));
 
-
     // 403 页面路径
     api.writeTmpFile({
       path: "runtime.tsx",
-      tplPath: join(__dirname, "runtime.tsx.tpl"),
+      tplPath: join(tmpDir, "runtime.tsx.tpl"),
       context: {
         page403: withCustom403 ? '@/pages/403' : withTmpPath({api, path: '403.tsx'}),
       },
     });
-
-    const config = api.config;
-    // layout 生成
-    let generateLayout = config.hc.layout;
-    let message = '';
-    if (!!generateLayout) {
-      if (generateLayout === true) {
-        // 从node_modules 中自动检测
-        if (useAntd) {
-          switch (parseInt(useAntd)) {
-            case 4:
-              generateLayout = 'antd@4';
-              break;
-            case 5:
-              generateLayout = 'antd@5';
-              break;
-            default:
-              message = '当前antd 版本未支持Layout，请联系脚手架人员支持';
-              break;
-          }
-        }
-        if (generateLayout === true && useYhDesign) {
-          generateLayout = 'yh-design'
-        }
-      }
-      if (generateLayout === true) {
-        // 未检测到
-        if (message) {
-          api.logger.error(message);
-        }
-        generateLayout = false;
-      }
-
-      if (generateLayout) {
-        const templateDir = path.join(tmpDir, `layout/${generateLayout}`);
-        writeDirectory(templateDir, templateDir, api);
-        // 注册 addLayout操作。 检测和 layout 是否冲突，只能存在一个，如果layout也设置了则给出报错提示。
-
-      }
-    }
-
-    api.writeTmpFile({
-      path: RUNTIME_TYPE_FILE_NAME,
-      content: `
-type LayoutType = {
-  sideMenuMin?: number;
-  sideMenuMax?: number;
-  contentBoxPadding?: number;
-};
-export interface IRuntimeConfig {
-  hcLayout?: ()=>LayoutType;
-  onSiderCollapse?: (collapsed: boolean)=>void;
-}
-      `,
-    });
+    // 调用html-css-property 插件，添加变量。 大小只能在umi 配置中设置，需要直接生成到html中，组件中创建会
   });
+
+  // 辉创布局生成
+  resolveLayout(api);
 };
