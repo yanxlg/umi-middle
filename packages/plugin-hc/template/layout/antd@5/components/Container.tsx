@@ -5,14 +5,11 @@
  *
  * Copyright (c) 2024 by yanxianliang, All Rights Reserved.
  */
-import getSlaveProps from '@@/plugin-qiankun-slave/qiankunModel';
 import { Layout } from 'antd';
 import { PropsWithChildren } from 'react';
 
 // 微前端支持基座传入header高度
-export const Container = ({ children }: PropsWithChildren) => {
-  const slaveProps = getSlaveProps();
-  const headerHeight = slaveProps?.headerHeight ?? 64;
+export const Container = ({ children, headerHeight }: PropsWithChildren<{headerHeight:number}>) => {
   return (
     <Layout
       style={{ width: '100vw', height: `calc(100vh - ${headerHeight}px)` }}

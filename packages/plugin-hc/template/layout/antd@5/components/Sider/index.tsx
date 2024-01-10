@@ -7,7 +7,6 @@
  */
 
 import CollapsedButton from '../CollapsedButton/index.tsx';
-import { useLocation } from '@@/exports';
 import {
   BankOutlined,
   BarChartOutlined,
@@ -19,7 +18,7 @@ import { getMatchMenu, MenuDataItem } from '@umijs/route-utils';
 import { Badge, Layout, Menu, Tooltip } from 'antd';
 import type { ItemType } from 'antd/lib/menu/hooks/useItems';
 import React, { useMemo, useState } from 'react';
-import { history, useMenu } from 'umi';
+import { history, useMenu, useLocation } from 'umi';
 import { MenuSpin } from './MenuSpin';
 import { Scroll } from './Scroll';
 import { SiderContent } from './SiderContent';

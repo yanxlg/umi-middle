@@ -23,7 +23,14 @@ export default async (api: IApi) => {
     config: {
       schema({zod}) {
         return zod.object({
-          layout: zod.union([zod.boolean(), zod.literal("antd@4"), zod.literal("antd@5"), zod.literal("yh-design")]) // 支持layout自动集成
+          layout: zod.object({
+            type: zod.union([zod.literal("antd@4"), zod.literal("antd@5"), zod.literal("yh-design")]).optional(),
+            config: zod.object({
+              siderMinWidth: zod.number().optional(),
+              siderMaxWidth: zod.number().optional(),
+              contentPadding: zod.number().optional(),
+            }).optional()
+          }).optional()
         });
       },
       onChange: api.ConfigChangeType.regenerateTmpFiles,
