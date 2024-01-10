@@ -31,6 +31,7 @@
     "@middle-cli/plugin-tabs": "^0.6.9",
     "@middle-cli/plugin-umd": "^0.6.1",
     "@middle-cli/plugin-watermark": "^0.6.0",
+    "@middle-cli/plugin-html-css-property": "^0.1.0",
     "@umijs/max": "^4.0.67",
     "commander": "^9.4.0",
     "father": "^4.1.8"

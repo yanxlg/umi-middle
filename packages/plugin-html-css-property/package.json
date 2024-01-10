@@ -1,0 +1,22 @@
+{
+  "name": "@middle-cli/plugin-html-css-property",
+  "version": "0.1.0",
+  "description": "html css property plugin for middle cli",
+  "keywords": [],
+  "license": "MIT",
+  "author": "yanxlg <yanxlg2@yonghui.cn>",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "build": "father build",
+    "dev": "father dev"
+  },
+  "authors": {
+    "name": "yanxlg <yanxlg2@yonghui.cn>",
+    "email": "yanxlg2@yonghui.cn"
+  },
+  "gitHead": "fb3ee8a1c3c08acfe37be3f5eea339adb7157738"
+}

@@ -27,6 +27,7 @@ export default () => {
       require.resolve("@middle-cli/plugin-umd"),
       require.resolve("@middle-cli/plugin-entries"),
       require.resolve("@middle-cli/plugin-material"),
+      require.resolve("@middle-cli/plugin-html-css-property"),
     ],
   };
 };
