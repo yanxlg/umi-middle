@@ -23,10 +23,9 @@ export default async (api: IApi) => {
     enableBy: api.EnableBy.config,
   });
 
-  const config = api.config;
-  const cssProperties = config.htmlCssProperties;
-
   api.modifyHTML(($, { path }) => {
+    const config = api.config;
+    const cssProperties = config.htmlCssProperties;
     const root = $('html');
     const style = root.attr('style');
     const properties = Object.keys(cssProperties).map(key=>`${key}: ${cssProperties[key]}`);
@@ -51,10 +50,11 @@ export default async (api: IApi) => {
     });
 
     api.writeTmpFile({
-      path: "index.ts",
+      path: "plugin-html-css-property/index.ts",
       tplPath: indexPath,
+      noPluginDir: true,
       context: {
-        type: `{${keys.map(key=>`'${key}': ${propertyType[key]}`).join('; ')}`,
+        type: `{ ${keys.map(key=>`'${key}': ${propertyType[key]}`).join('; ')} }`,
       },
     });
   });
