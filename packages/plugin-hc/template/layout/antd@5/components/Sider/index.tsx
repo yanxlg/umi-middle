@@ -24,6 +24,7 @@ import { Scroll } from './Scroll';
 import { SiderContent } from './SiderContent';
 import { Title } from './Title';
 import { conversionPath, fillClientMenus, isUrl } from './utils';
+import { MenuItem } from '@@/plugin-hc/useMenu';
 
 function getIcon(icon?: string | React.ReactNode): React.ReactNode {
   switch (icon) {
@@ -139,10 +140,12 @@ const Sider = ({
   countMap,
   sizes = { min: 48, max: 208 },
   onCollapse,
+  patchClientMenus,
 }: {
   countMap?: { [key: string]: number };
   sizes?: { min: number; max: number };
   onCollapse?: (collapsed: boolean, width: number) => void;
+  patchClientMenus?: (menus: MenuItem[])=> MenuItem[];
 }) => {
   const [collapsed, setCollapsed] = useState(false);
   const { loading, menus } = useMenu('work-order');
@@ -150,7 +153,7 @@ const Sider = ({
 
   const withStaticMenus = useMemo(() => {
     if (menus.length > 0) {
-      return fillClientMenus(menus); // 转换类型
+      return fillClientMenus(patchClientMenus?patchClientMenus(menus):menus); // 转换类型
     }
     return [];
   }, [menus]);

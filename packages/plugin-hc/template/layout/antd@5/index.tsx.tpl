@@ -13,6 +13,7 @@ import Header from './components/Header';
 import Sider from './components/Sider';
 import SignIn from './components/SignIn';
 import {useAppData} from 'umi';
+import { MenuItem } from '@@/plugin-hc/useMenu';
 
 const root = document.documentElement;
 const isInMicro = window.__POWERED_BY_QIANKUN__;
@@ -26,9 +27,10 @@ type LayoutProps = {
   siderMaxWidth: number;
   contentPadding: number;
   headerHeight: number;
+  patchClientMenus?: (menus: MenuItem[])=> MenuItem[];
 }
 
-function Layout({menuBadge, siderMinWidth, siderMaxWidth, contentPadding, headerHeight}: LayoutProps) {
+function Layout({menuBadge, siderMinWidth, siderMaxWidth, contentPadding, headerHeight, patchClientMenus}: LayoutProps) {
   const onCollapse = (collapse: boolean, width: number) => {
     root.style.setProperty('--sider-width', `${width}px`);
     root.style.setProperty('--content-fixed-left', `${width + contentPadding}px`);
@@ -43,6 +45,7 @@ function Layout({menuBadge, siderMinWidth, siderMaxWidth, contentPadding, header
             sizes={ {min: siderMinWidth, max: siderMaxWidth} }
             countMap={menuBadge}
             onCollapse={onCollapse}
+            patchClientMenus={patchClientMenus}
           />
         )}
         <Content padding={contentPadding}>
