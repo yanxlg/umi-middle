@@ -1,6 +1,6 @@
 {
   "name": "@middle-cli/plugin-hc",
-  "version": "0.6.21",
+  "version": "0.6.22",
   "description": "hc plugin for project",
   "keywords": [],
   "license": "MIT",
@@ -16,7 +16,7 @@
     "dev": "father dev"
   },
   "devDependencies": {
-    "@middle-cli/utils": "^0.0.5"
+    "@middle-cli/utils": "^0.0.6"
   },
   "authors": {
     "name": "yanxlg <yanxlg2@yonghui.cn>",
