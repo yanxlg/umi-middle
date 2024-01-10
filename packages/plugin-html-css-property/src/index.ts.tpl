@@ -8,7 +8,7 @@
  * Copyright (c) 2023 by yanxlg, All Rights Reserved.
  */
 
-function updateHtmlCssProperties(properties: {{{type}}}) {
+function updateHtmlCssProperties(properties: Partial<{{{type}}}>) {
   const root = document.documentElement;
   Object.keys(properties).forEach((key)=>{
     root.style.setProperty(key, properties[key]);
