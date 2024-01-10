@@ -6,7 +6,7 @@
  * Copyright (c) 2024 by yanxianliang, All Rights Reserved.
  */
 
-import CollapsedButton from '../CollapsedButton';
+import CollapsedButton from '../CollapsedButton/index.tsx';
 import { useLocation } from '@@/exports';
 import {
   BankOutlined,

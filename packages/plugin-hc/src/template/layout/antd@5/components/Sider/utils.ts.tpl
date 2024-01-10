@@ -5,7 +5,7 @@
  *
  * Copyright (c) 2024 by yanxianliang, All Rights Reserved.
  */
-import { clientMenus } from './clientMenus';
+import { clientMenus } from './clientMenus.ts';
 import { MenuItem } from '@@/plugin-hc/useMenu';
 import { MenuDataItem } from '@umijs/route-utils';
 

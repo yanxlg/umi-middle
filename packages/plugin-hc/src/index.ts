@@ -22,7 +22,7 @@ function writeDirectory(templateDir: string, directoryPath: string, api: IApi) {
     const itemPath = path.join(directoryPath, fileOrDirName);
     if (fs.statSync(itemPath).isFile()) {
       api.writeTmpFile({
-        path: itemPath.replace(templateDir, 'layout'), // 生成目录文件
+        path: itemPath.replace(templateDir, 'layout').replace(/\.tpl/, ''), // 生成目录文件
         tplPath: itemPath,
         context: {},
       })
@@ -236,6 +236,8 @@ export default async (api: IApi) => {
       if (generateLayout) {
         const templateDir = path.join(__dirname, `template/layout/${generateLayout}`);
         writeDirectory(templateDir, templateDir, api);
+
+        // 注册 addLayout操作。 检测和 layout 是否冲突，只能存在一个，如果layout也设置了则给出报错提示。
       }
     }
 

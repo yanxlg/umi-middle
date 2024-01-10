@@ -8,11 +8,6 @@
 import { isInMicro } from '@/configs/isInMicro';
 import { isInYhDos } from '@/configs/isInYhdos';
 import { isSignInPage } from '@/configs/isSignInPage';
-import {
-  ContentBoxPadding,
-  SideMenuMax,
-  SideMenuMin,
-} from '@/constants/Layout';
 import { default as menuBadgeState, MenuBadgeState } from '@/models/menu.badge';
 import { toJS } from 'mobx';
 import { observer } from 'mobx-react-lite';
@@ -54,7 +49,7 @@ const Layout = observer(
     const onCollapse = (collapse: boolean, width: number) => {
       updateHtmlCssProperties({
         '--sider-width': `${width}px`,
-        '--content-fixed-left': `${width + ContentBoxPadding}px`,
+        '--content-fixed-left': `${width + runtimeConfig.contentBoxPadding}px`,
       });
     };
 
