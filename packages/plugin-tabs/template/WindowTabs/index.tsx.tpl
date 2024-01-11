@@ -65,6 +65,7 @@ function checkInTab(element: HTMLElement): false | number {
   return false;
 }
 
+
 const ReplaceMenuWithAnt = (props: {
   propsFromTrigger?: { index: 0 };
   removeTabByIndex: (index: number) => void;
@@ -103,7 +104,7 @@ const defaultWidthConfig = {
 
 
 
-interface IWindowTabsProps {
+export interface IWindowTabsProps {
   closeable?: boolean;
   /** @deprecated 没有实际作用，请使用defaultTabs代替配置默认的Tab列表及关闭开关，已废弃⚠️ */
   firstTabCloseable?: boolean;
@@ -143,17 +144,21 @@ const TabPanel = Tabs.TabPane;
 
 export let setTabBadge = (tabKey: string, badge?: number)=>{};
 
+
+const defaultConfig = {{{defaultConfig}}};
+
 export default function WindowTabs(props: IWindowTabsProps) {
   const {pluginManager} = useAppData();
-  const defaultTabs = useMemo(()=>{
-    return pluginManager.applyPlugins({
+
+  const config = useMemo(()=>{
+    const runtimeConfig = pluginManager.applyPlugins({
       key: 'tabs',
       type: 'modify',
-      initialValue: {
-        defaultTabs: props.defaultTabs,
-      },
-    })
-  },[]);
+    });
+    return {...defaultConfig, ...runtimeConfig, props};
+  },[props]);
+
+  const { defaultTabs, closeable = true, widthType = defaultWidthConfig, showWhenEmptyTabs = true, style, className, theme, rightMenu = true, reloadIcon = false } = config;
 
   const {
     activeKey,
@@ -164,9 +169,7 @@ export default function WindowTabs(props: IWindowTabsProps) {
     removeAll,
     refreshPage,
     setTabBadge: _setTabBadge,
-  } = useTabs(defaultTabs); // defaultTabs 需要在runtime中也支持配置。
-
-  const { closeable = true, widthType = defaultWidthConfig, showWhenEmptyTabs = true, style, className, theme, rightMenu = true, reloadIcon = false } = props;
+  } = useTabs(defaultTabs);
 
   const { show } = useContextMenu({
     id: MENU_ID,

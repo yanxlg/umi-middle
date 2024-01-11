@@ -4,13 +4,14 @@
  * @LastEditors: yanxlg
  * @LastEditTime: 2023-05-19 10:41:11
  * @Description:
+ * 属性优先级：props > runtime > config
  *
  * Copyright (c) 2023 by yanxlg, All Rights Reserved.
  */
 import {join} from "path";
 import {IApi, RUNTIME_TYPE_FILE_NAME} from "umi";
 import {winPath} from "umi/plugin-utils";
-import {getConfigPropertiesFromSource} from '@middle-cli/utils';
+import {getConfigPropertiesFromSource, checkDependence} from '@middle-cli/utils';
 
 export function withTmpPath(opts: {
   api: IApi;
@@ -35,7 +36,22 @@ export default (api: IApi) => {
     key: "tabs",
     config: {
       schema({zod}) {
-        return zod.boolean().optional();
+        return zod.union([zod.literal(true), zod.object({
+          defaultTabs: zod.array(zod.union([zod.string(),zod.object({
+            key: zod.string(),
+            closeable: zod.boolean().optional()
+          })])).optional(),
+          closeable: zod.boolean().optional(),
+          showWhenEmptyTabs: zod.boolean().optional(),
+          className: zod.string().optional(),
+          theme: zod.string().optional(),
+          widthType: zod.union([zod.literal('fit-content'),zod.object({
+            type: zod.union([zod.literal('maxWidth'),zod.literal('width')]),
+            width: zod.number()
+          })]).optional(),
+          rightMenu: zod.boolean().optional(),
+          reloadIcon: zod.boolean().optional(),
+        })]);
       },
       onChange: api.ConfigChangeType.regenerateTmpFiles,
     },
@@ -73,13 +89,13 @@ export default (api: IApi) => {
     // 支持import { KeepAlive } from 'umi';
     api.writeTmpFile({
       path: "index.tsx",
-      tplPath: join(__dirname, "index.tsx.tpl"),
+      tplPath: join(tmpDir, "index.tsx.tpl"),
       context: {},
     });
 
     api.writeTmpFile({
       path: "babel-preset.js",
-      tplPath: join(__dirname, "babel-preset.tpl.js"),
+      tplPath: join(tmpDir, "babel-preset.tpl.js"),
       context: {},
     });
 
@@ -91,14 +107,14 @@ export default (api: IApi) => {
 
     api.writeTmpFile({
       path: "KeepAliveWrapper.tsx",
-      tplPath: join(__dirname, "KeepAliveWrapper.tsx.tpl"),
+      tplPath: join(tmpDir, "KeepAliveWrapper.tsx.tpl"),
       context: {},
     });
 
     const reactExternal = api.config.externals?.react; // umd 加载React
     api.writeTmpFile({
       path: "runtime.tsx",
-      tplPath: join(__dirname, "runtime.tsx.tpl"),
+      tplPath: join(tmpDir, "runtime.tsx.tpl"),
       context: {
         reactExternal: reactExternal,
       },
@@ -111,28 +127,25 @@ export default (api: IApi) => {
     const themePrefixCls = config.theme?.['@ant-prefix'];
     // 获取配置的antd样式前缀
     const antdPrefix = prefixCls || themePrefixCls || "ant";
+    const { useYhDesign} = checkDependence();
 
-    const useYhDesign = (()=>{
-      try {
-        require.resolve('@yh/yh-design');
-        return true
-      }catch (e){
-        return false
-      }
-    })();
+    const tabsConfig = config.tabs === true?{}:config.tabs;
+
+
     // 配置
     api.writeTmpFile({
       path: "WindowTabs/index.tsx",
-      tplPath: join(__dirname, "WindowTabs/index.tsx.tpl"),
+      tplPath: join(tmpDir, "WindowTabs/index.tsx.tpl"),
       context: {
         antdPrefix,
-        useYhDesign
+        useYhDesign,
+        defaultConfig: JSON.stringify(tabsConfig)
       },
     });
     const base = api.config.base || "/";
     api.writeTmpFile({
       path: "WindowTabs/useTabs.ts",
-      tplPath: join(__dirname, "WindowTabs/useTabs.ts.tpl"),
+      tplPath: join(tmpDir, "WindowTabs/useTabs.ts.tpl"),
       context: {
         base,
       },
@@ -140,7 +153,7 @@ export default (api: IApi) => {
 
     api.writeTmpFile({
       path: "WindowTabs/themes/otb/index.less",
-      tplPath: join(__dirname, "WindowTabs/themes/otb/index.less.tpl"),
+      tplPath: join(tmpDir, "WindowTabs/themes/otb/index.less.tpl"),
       context: {
         antdPrefix,
       },

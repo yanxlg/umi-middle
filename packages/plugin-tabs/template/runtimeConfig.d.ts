@@ -1,10 +1,5 @@
-import React from "react";
-import { MenuItem } from '@@/plugin-hc/useMenu';
-
-type TabType = {
-  defaultTabs?: Array<string | {key: string; closeable?: boolean}>;
-};
+import {IWindowTabsProps} from './WindowTabs';
 
 export interface IRuntimeConfig {
-  tabs?: () => TabType;
+  tabs?: () => IWindowTabsProps;
 }
