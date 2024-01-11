@@ -16,7 +16,8 @@
     "dev": "father dev"
   },
   "devDependencies": {
-    "@middle-cli/utils": "^0.0.7"
+    "@middle-cli/utils": "^0.0.7",
+    "@yh/yh-design": "*"
   },
   "authors": {
     "name": "yanxlg <yanxlg2@yonghui.cn>",
