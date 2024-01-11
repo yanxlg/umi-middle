@@ -14,6 +14,10 @@ import Sider from './components/Sider';
 import SignIn from './components/SignIn';
 import {useAppData} from 'umi';
 import { MenuItem } from '@@/plugin-hc/useMenu';
+{{#useTabs}}
+import { WindowTabs } from 'umi';
+{{/uesTabs}}
+
 
 const root = document.documentElement;
 const isInMicro = window.__POWERED_BY_QIANKUN__;
@@ -48,6 +52,9 @@ function Layout({menuBadge, siderMinWidth, siderMaxWidth, contentPadding, header
             patchClientMenus={patchClientMenus}
           />
         )}
+        {{#useTabs}}
+        <WindowTabs widthType={'fit-content'} rightMenu={true} reloadIcon={false} />
+        {{/useTabs}}
         <Content padding={contentPadding}>
           <Outlet/>
         </Content>
