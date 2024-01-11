@@ -309,16 +309,22 @@ const useTabs = (defaultTabs: Array<string | {key: string; closeable?: boolean;}
   const removeOthers = useCallback(
     (index: number) => {
       const { wins, activeKey } = tabState;
-      const nextWins = wins.splice(index, 1);
+      let nextWins: IWindow[] = [];
+      for(let i =0;i < wins.length; i++){
+        const win = wins[i];
+        if(win.closeable === false || i === index){
+          nextWins.push(win);
+        }else{
+          // 清除
+          const pages = win.pages;
+          pages.forEach((page) => {
+            dropScope(page.pathname); // 占用用不能清除
+          });
+        }
+      }
       setTabState({
-        activeKey,
+        activeKey, // 当前的保持不变
         wins: nextWins,
-      });
-      wins.forEach((win) => {
-        const pages = win.pages;
-        pages.forEach((page) => {
-          dropScope(page.pathname); // 占用用不能清除
-        });
       });
     },
     [tabState],
@@ -326,17 +332,25 @@ const useTabs = (defaultTabs: Array<string | {key: string; closeable?: boolean;}
 
   const removeAll = useCallback(() => {
     const { wins } = tabState;
+    let nextWins: IWindow[] = [];
+    for(let i =0;i < wins.length; i++){
+      const win = wins[i];
+      if(win.closeable === false){
+        nextWins.push(win);
+      }else{
+        // 清除
+        const pages = win.pages;
+        pages.forEach((page) => {
+          dropScope(page.pathname); // 占用用不能清除
+        });
+      }
+    }
+    const nextPathname = nextWins[0]?.pathname || '/';
     setTabState({
-      activeKey: '/',
-      wins: [],
+      activeKey: nextPathname,
+      wins: nextWins,
     });
-    history.push('/');
-    wins.forEach((win) => {
-      const pages = win.pages;
-      pages.forEach((page) => {
-        dropScope(page.pathname);
-      });
-    });
+    history.push(nextPathname);
   }, [tabState]);
 
   const refreshPage = useCallback(

@@ -8,7 +8,7 @@ import type { MenuInfo } from "rc-menu/lib/interface";
 import React, { useCallback, useEffect, useMemo } from "react";
 import { history, useAppData } from "umi";
 import "./themes/otb/index.less";
-import { useTabs } from "./useTabs";
+import { useTabs, IWindow } from "./useTabs";
 import ReloadOutlined from '@ant-design/icons/ReloadOutlined';
 import { Menu, useContextMenu } from "react-contexify";
 import "react-contexify/dist/ReactContexify.css";
@@ -30,7 +30,7 @@ const contextMenus = [
     type: "divider",
   },
   {
-    label: "关闭当前",
+    label: "关闭当前", // 如果当前的不能关闭
     key: "close",
   },
   {
@@ -73,10 +73,10 @@ const ReplaceMenuWithAnt = (props: {
   removeAll: () => void;
   refreshPage: (index: number) => void;
 }) => {
-  const { removeTabByIndex, removeOthers, removeAll, refreshPage } = props;
+  const { removeTabByIndex, removeOthers, removeAll, refreshPage, propsFromTrigger } = props;
   const handleMenuClick = (info: MenuInfo) => {
     const key = info.key;
-    const actionIndex = props.propsFromTrigger?.index!;
+    const actionIndex = propsFromTrigger?.index!;
     switch (key) {
       case "close":
         removeTabByIndex(actionIndex);
@@ -93,7 +93,15 @@ const ReplaceMenuWithAnt = (props: {
     }
   };
 
-  return <AntdMenu onClick={handleMenuClick} items={contextMenus} />;
+  // 如果当前是不可关闭的标签，则没有关闭操作和关闭所有操作
+  const config = propsFromTrigger?.config;
+  const items = contextMenus.filter(item=>{
+    if(config && config.closeable === false && (item.key === 'close' || item.key === 'close-all')){
+      return false;
+    }
+    return true;
+  });
+  return <AntdMenu onClick={handleMenuClick} items={items} />;
 };
 
 
@@ -176,28 +184,27 @@ export default function WindowTabs(props: IWindowTabsProps) {
   });
 
   const showContextMenu = useCallback(
-    (index: number, event: React.MouseEvent<Element, MouseEvent>) => {
+    (index: number, config: IWindow, event: React.MouseEvent<Element, MouseEvent>) => {
       show({
         event,
         props: {
           index: index,
+          config: config
         },
       });
     },
     []
   );
 
-  const handleContextMenu = useCallback(
-    (event: React.MouseEvent<Element, MouseEvent>) => {
-      const target = event.target as HTMLElement;
-      const tabIndex = checkInTab(target);
-      if (tabIndex !== false) {
-        event.preventDefault();
-        showContextMenu(tabIndex, event);
-      }
-    },
-    []
-  );
+  const handleContextMenu = (event: React.MouseEvent<Element, MouseEvent>) => {
+    const target = event.target as HTMLElement;
+    const tabIndex = checkInTab(target);
+    if (tabIndex !== false) {
+      event.preventDefault();
+      const config = wins[tabIndex];
+      showContextMenu(tabIndex, config, event);
+    }
+  };
 
   const onEdit = useCallback(
     (
