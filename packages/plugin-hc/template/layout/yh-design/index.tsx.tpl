@@ -16,7 +16,7 @@ import {useAppData} from 'umi';
 import { MenuItem } from '@@/plugin-hc/useMenu';
 {{#useTabs}}
 import { WindowTabs } from 'umi';
-{{/uesTabs}}
+{{/useTabs}}
 
 
 const root = document.documentElement;
