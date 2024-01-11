@@ -10,7 +10,6 @@ import { history, useAppData } from "umi";
 import "./themes/otb/index.less";
 import { useTabs } from "./useTabs";
 import ReloadOutlined from '@ant-design/icons/ReloadOutlined';
-import {useAppData} from 'umi';
 import { Menu, useContextMenu } from "react-contexify";
 import "react-contexify/dist/ReactContexify.css";
 
@@ -166,8 +165,6 @@ export default function WindowTabs(props: IWindowTabsProps) {
     refreshPage,
     setTabBadge: _setTabBadge,
   } = useTabs(defaultTabs); // defaultTabs 需要在runtime中也支持配置。
-
-  const { pluginManager } = useAppData();
 
   const { closeable = true, widthType = defaultWidthConfig, showWhenEmptyTabs = true, style, className, theme, rightMenu = true, reloadIcon = false } = props;
 
