@@ -14,7 +14,7 @@ import Sider from './components/Sider';
 import SignIn from './components/SignIn';
 import {useAppData} from 'umi';
 import { MenuItem } from '@@/plugin-hc/useMenu';
-import { Layout } from 'antd';
+import { Layout as BasicLayout } from 'antd';
 {{#useTabs}}
 import { WindowTabs } from 'umi';
 {{/useTabs}}
@@ -53,14 +53,14 @@ function Layout({menuBadge, siderMinWidth, siderMaxWidth, contentPadding, header
             patchClientMenus={patchClientMenus}
           />
         )}
-        <Layout>
+        <BasicLayout>
             {{#useTabs}}
             <WindowTabs widthType={'fit-content'} rightMenu={true} reloadIcon={false} />
             {{/useTabs}}
             <Content padding={contentPadding}>
               <Outlet/>
             </Content>
-        </Layout>
+        </BasicLayout>
       </Container>
     </>
   );
