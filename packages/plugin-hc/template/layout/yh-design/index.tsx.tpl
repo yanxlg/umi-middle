@@ -55,7 +55,7 @@ function Layout({menuBadge, siderMinWidth, siderMaxWidth, contentPadding, header
         )}
         <BasicLayout>
            {{#useTabs}}
-            <WindowTabs widthType={'fit-content'} rightMenu={true} reloadIcon={false} />
+            <WindowTabs />
             {{/useTabs}}
             <Content padding={contentPadding}>
               <Outlet/>
