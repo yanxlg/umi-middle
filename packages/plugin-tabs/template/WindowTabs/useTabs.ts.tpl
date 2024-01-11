@@ -327,7 +327,7 @@ const useTabs = (defaultTabs: Array<string | {key: string; closeable?: boolean;}
         activeKey: nextActiveKey, // 当前的保持不变
         wins: nextWins,
       });
-      if(nextActiveKey !== active){
+      if(nextActiveKey !== activeKey){
         history.push(nextActiveKey);
       }
     },
