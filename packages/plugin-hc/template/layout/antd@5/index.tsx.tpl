@@ -55,7 +55,7 @@ function Layout({menuBadge, siderMinWidth, siderMaxWidth, contentPadding, header
         )}
         <BasicLayout>
             {{#useTabs}}
-            <WindowTabs />
+            <WindowTabs badgeMap={menuBadge} />
             {{/useTabs}}
             <Content padding={contentPadding}>
               <Outlet/>

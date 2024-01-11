@@ -155,7 +155,9 @@ export let setTabBadge = (tabKey: string, badge?: number)=>{};
 
 const defaultConfig = {{{defaultConfig}}};
 
-export default function WindowTabs(props: IWindowTabsProps) {
+export default function WindowTabs(props: IWindowTabsProps & {
+  badgeMap?: {[key:string]: number}
+}) {
   const {pluginManager} = useAppData();
 
   const config = useMemo(()=>{
@@ -164,9 +166,9 @@ export default function WindowTabs(props: IWindowTabsProps) {
       type: 'modify',
     });
     return {...defaultConfig, ...runtimeConfig, props};
-  },[props]);
+  },[]);
 
-  const { defaultTabs, closeable = true, widthType = defaultWidthConfig, showWhenEmptyTabs = true, style, className, theme, rightMenu = true, reloadIcon = false } = config;
+  const { badgeMap, defaultTabs, closeable = true, widthType = defaultWidthConfig, showWhenEmptyTabs = true, style, className, theme, rightMenu = true, reloadIcon = false } = config;
 
   const {
     activeKey,
@@ -228,7 +230,7 @@ export default function WindowTabs(props: IWindowTabsProps) {
 
 
   useEffect(()=>{
-    setTabBadge = _setTabBadge;
+    setTabBadge = badgeMap? (tabKey: string, badge?: number)=>{console.warning('props传入了badgeMap，请通过props更新')}: _setTabBadge;// 如果props传递了对象，则使用props
   },[]);
 
 
@@ -248,7 +250,7 @@ export default function WindowTabs(props: IWindowTabsProps) {
         animated={false}
         items={!!TabPanel ? undefined : wins.map((node, index) => ({
           key: node.pathname,
-          label: <TabLabel index={index} widthType={widthType} name={node.name} badge={node.badge} onReload={reloadIcon ? refreshPage: null}/>,
+          label: <TabLabel index={index} widthType={widthType} name={node.name} badge={badgeMap?badgeMap[node.pathname]:node.badge} onReload={reloadIcon ? refreshPage: null}/>,
           closable: node.closeable??closeable,
         }))}
         onContextMenu={rightMenu ? handleContextMenu : null}
@@ -264,7 +266,7 @@ export default function WindowTabs(props: IWindowTabsProps) {
                     index={index}
                     widthType={widthType as any}
                     name={win.name!}
-                    badge={win.badge}
+                    badge={badgeMap?badgeMap[win.pathname]:win.badge}
                     onReload={reloadIcon ? refreshPage : undefined}
                   />
                 }
