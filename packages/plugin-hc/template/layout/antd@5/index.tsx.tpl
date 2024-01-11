@@ -84,7 +84,7 @@ function GlobalLayout() {
 
   const layoutNode = <Layout {...config}/>;
   if(layoutWrapper){
-    return React.createElement(layoutWrapper, layoutNode);
+    return React.createElement(layoutWrapper, {}, layoutNode);
   }
   return layoutNode;
 }
