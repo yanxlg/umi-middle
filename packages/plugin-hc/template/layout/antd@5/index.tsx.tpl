@@ -14,6 +14,7 @@ import Sider from './components/Sider';
 import SignIn from './components/SignIn';
 import {useAppData} from 'umi';
 import { MenuItem } from '@@/plugin-hc/useMenu';
+import {ContentWrapper} from './components/ContentWrapper';
 {{#useTabs}}
 import { WindowTabs } from 'umi';
 {{/useTabs}}
@@ -52,12 +53,14 @@ function Layout({menuBadge, siderMinWidth, siderMaxWidth, contentPadding, header
             patchClientMenus={patchClientMenus}
           />
         )}
-        {{#useTabs}}
-        <WindowTabs widthType={'fit-content'} rightMenu={true} reloadIcon={false} />
-        {{/useTabs}}
-        <Content padding={contentPadding}>
-          <Outlet/>
-        </Content>
+        <ContentWrapper>
+            {{#useTabs}}
+            <WindowTabs widthType={'fit-content'} rightMenu={true} reloadIcon={false} />
+            {{/useTabs}}
+            <Content padding={contentPadding}>
+              <Outlet/>
+            </Content>
+        </ContentWrapper>
       </Container>
     </>
   );

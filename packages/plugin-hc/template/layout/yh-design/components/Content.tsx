@@ -14,6 +14,7 @@ type ContentType = (props:{padding: number}&Parameters<typeof Layout.Content>[0]
 
 export const Content = styled<ContentType>(Layout.Content)`
   padding: ${(props)=>props.padding}px;
-  height: 100%;
+  flex: 1;
+  flex-direction: column;
   overflow: auto;
 `;
