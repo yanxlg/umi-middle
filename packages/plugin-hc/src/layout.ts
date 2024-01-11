@@ -86,16 +86,22 @@ function getLayoutUiType(type: LayoutPluginConfig['type']) {
   }
 }
 
+function getLayoutType(config?: LayoutPluginConfig){
+  return config?getLayoutUiType(config.type):undefined;
+}
+
 export function resolveLayout(api: IApi) {
   api.addRuntimePluginKey(() => ["hcLayout"]);
   api.addLayouts(() => {
     // 需要检测是否有效吧，否则文件不存在不是白搭
     const layoutFile = withTmpPath({api, path: "layout/index.tsx"});
-    console.log('layout-file：', layoutFile, fs.existsSync(layoutFile));
-    if (fs.existsSync(layoutFile)) {
+    const layoutPluginConfig = api.config.hc.layout as LayoutPluginConfig;
+    const type = getLayoutType(layoutPluginConfig);
+    // add 的时候还没有生成好？？？
+    if (layoutPluginConfig && type) {
       return [{
         id: 'hc-layout',
-        file: withTmpPath({api, path: "layout/index.tsx"}),
+        file: layoutFile,
         test: (route: { layout?: boolean }) => {
           return route.layout !== false; // layout 可以配置，从而部分页面不加载布局。
         }
@@ -105,9 +111,8 @@ export function resolveLayout(api: IApi) {
   });
   api.onGenerateFiles(() => {
     const layoutPluginConfig = api.config.hc.layout as LayoutPluginConfig;
+    const type = getLayoutType(layoutPluginConfig);
     if (layoutPluginConfig) {
-      // 配置了值
-      let type = getLayoutUiType(layoutPluginConfig.type);
       if (!type) {
         api.logger.error('未检测到相关的ui组件库依赖，无法生成对应的布局组件，当前支持 antd@4、@antd@5、yh-design');
         return;
