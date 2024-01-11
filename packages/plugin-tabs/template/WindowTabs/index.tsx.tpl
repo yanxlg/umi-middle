@@ -85,7 +85,7 @@ const ReplaceMenuWithAnt = (props: {
         removeOthers(actionIndex);
         break;
       case "close-all":
-        removeAll();
+        removeAll(actionIndex);
         break;
       case "refresh":
         refreshPage(actionIndex);

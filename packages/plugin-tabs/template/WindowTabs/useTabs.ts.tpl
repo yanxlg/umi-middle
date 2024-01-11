@@ -308,67 +308,74 @@ const useTabs = (defaultTabs: Array<string | {key: string; closeable?: boolean;}
   // 不需要重制页面地址
   const removeOthers = useCallback(
     (index: number) => {
+      setTabState((tabState)=>{
+        const { wins, activeKey } = tabState;
+        let nextWins: IWindow[] = [];
+        let cleanWins: IWindow[] = [];
+        const nextActiveKey = wins[index].pathname;
+        for(let i =0;i < wins.length; i++){
+          const win = wins[i];
+          if(win.closeable === false || i === index){
+            nextWins.push(win);
+          }else{
+            cleanWins.push(win);
+          }
+        }
+
+        if(nextActiveKey !== activeKey){
+          history.push(nextActiveKey);
+        }
+
+        setTimeout(()=>{
+          cleanWins.forEach(win=>{
+            // 清除
+            const pages = win.pages;
+            pages.forEach((page) => {
+              dropScope(page.pathname); // 清除关闭的缓存
+            });
+          })
+        },100);// 切换完成后释放
+        return {
+          activeKey: nextActiveKey, // 当前的保持不变
+          wins: nextWins,
+        }
+      });
+    },
+    [],
+  );
+
+  const removeAll = useCallback((actionIndex: number) => {
+    setTabState((tabState)=>{
       const { wins, activeKey } = tabState;
+      const currentWin = wins[actionIndex];
       let nextWins: IWindow[] = [];
       let cleanWins: IWindow[] = [];
-      const nextActiveKey = wins[index].pathname;
       for(let i =0;i < wins.length; i++){
         const win = wins[i];
-        if(win.closeable === false || i === index){
+        if(win.closeable === false){
           nextWins.push(win);
         }else{
           cleanWins.push(win);
         }
       }
-      setTabState({
-        activeKey: nextActiveKey, // 当前的保持不变
-        wins: nextWins,
-      });
-      if(nextActiveKey !== activeKey){
-        history.push(nextActiveKey);
+      const nextPathname = currentWin.closeable === false? activeKey:(nextWins[0]?.pathname || '/');
+      if(nextPathname !== activeKey){
+        history.push(nextPathname);
       }
-
       setTimeout(()=>{
         cleanWins.forEach(win=>{
-          // 清除
           const pages = win.pages;
           pages.forEach((page) => {
-            dropScope(page.pathname); // 占用用不能清除
+            dropScope(page.pathname); // 清除关闭的缓存
           });
         })
-      },100);// 切换完成后释放
-    },
-    [tabState],
-  );
-
-  const removeAll = useCallback(() => {
-    const { wins } = tabState;
-    let nextWins: IWindow[] = [];
-    let cleanWins: IWindow[] = [];
-    for(let i =0;i < wins.length; i++){
-      const win = wins[i];
-      if(win.closeable === false){
-        nextWins.push(win);
-      }else{
-        cleanWins.push(win);
+      },100); // 切换完成后释放
+      return {
+        activeKey: nextPathname,
+        wins: nextWins,
       }
-    }
-    const nextPathname = nextWins[0]?.pathname || '/';
-    setTabState({
-      activeKey: nextPathname,
-      wins: nextWins,
     });
-    history.push(nextPathname);
-    setTimeout(()=>{
-      cleanWins.forEach(win=>{
-        // 清除
-        const pages = win.pages;
-        pages.forEach((page) => {
-          dropScope(page.pathname); // 占用用不能清除
-        });
-      })
-    },100); // 切换完成后释放
-  }, [tabState]);
+  }, []);
 
   const refreshPage = useCallback(
     (index: number) => {
