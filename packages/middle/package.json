@@ -1,6 +1,6 @@
 {
   "name": "@middle-cli/middle",
-  "version": "0.7.30",
+  "version": "0.7.31",
   "description": "工程化启动包",
   "main": "lib/index.js",
   "bin": {
@@ -29,7 +29,7 @@
     "@middle-cli/plugin-route-props": "^0.6.6",
     "@middle-cli/plugin-sauron": "^0.6.0",
     "@middle-cli/plugin-sentry": "^0.6.0",
-    "@middle-cli/plugin-tabs": "^0.6.20",
+    "@middle-cli/plugin-tabs": "^0.6.21",
     "@middle-cli/plugin-umd": "^0.6.1",
     "@middle-cli/plugin-watermark": "^0.6.0",
     "@umijs/max": "^4.0.67",
