@@ -52,7 +52,7 @@ export default (api: IApi) => {
       const route = memo[id];
       const content = route.__content;// 内容
       if (content) { // 解析内容
-        const properties = getConfigPropertiesFromSource(content, route.file,['tabTemplate', 'tabMode', 'saveScrollPosition', 'tabKey']);
+        const properties = getConfigPropertiesFromSource(content, route.file,['title', 'tabTemplate', 'tabMode', 'saveScrollPosition', 'tabKey']);
         Object.assign(route,properties);
       }
     });

@@ -9,8 +9,9 @@ import useMemoizedFn from 'ahooks/es/useMemoizedFn';
 // 扩展路由中自定义配置
 declare module 'react-router' {
   interface RouteObject {
+    title?: string;
     tabTemplate?: string; // 自定义标签显示文案
-    name?: string;
+    title?: string;
     /**
      *标签模式，single 仅显示一个，当路由是动态路由时，多个地址会合并成一个Tab,当设置为inner时，会聚合在父标签中。
      */
@@ -64,8 +65,8 @@ function getTargetTab(routes: RouteObject[], pathname: string) {
     const extractRoute = matchedRoutes.pop()!;
     const { route, params } = extractRoute;
 
-    const { tabMode, name, tabTemplate, tabKey, redirect, element } = route;// 如果重定向, 则忽略
-    if( !!redirect || element?.type?.name === 'NavigateWithParams' || (!name && !tabTemplate)){
+    const { tabMode, title, tabTemplate, tabKey, redirect, element } = route;// 如果重定向, 则忽略
+    if( !!redirect || element?.type?.name === 'NavigateWithParams' || (!title && !tabTemplate)){
       return undefined;
     }
     if (tabMode === 'inner') {
@@ -80,12 +81,12 @@ function getTargetTab(routes: RouteObject[], pathname: string) {
           tabMode: 'inner', // 需要替换父级菜单
           name: parent.route.tabTemplate
             ? getDynamicTabName(parent.route.tabTemplate, params)
-            : parent.route.name,
+            : parent.route.title,
           pathname,
           pages: [
             {
               ...omit(route,['element']),
-              name: tabTemplate ? getDynamicTabName(tabTemplate, params) : name,
+              name: tabTemplate ? getDynamicTabName(tabTemplate, params) : title,
               pathname,
             },
           ],
@@ -94,7 +95,7 @@ function getTargetTab(routes: RouteObject[], pathname: string) {
     }
     const page = {
       ...omit(route,['element']),
-      name: tabTemplate ? getDynamicTabName(tabTemplate, params) : name,
+      name: tabTemplate ? getDynamicTabName(tabTemplate, params) : title,
       pathname,
     };
     return {
