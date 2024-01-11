@@ -310,6 +310,7 @@ const useTabs = (defaultTabs: Array<string | {key: string; closeable?: boolean;}
     (index: number) => {
       const { wins, activeKey } = tabState;
       let nextWins: IWindow[] = [];
+      const nextActiveKey = wins[index].pathname;
       for(let i =0;i < wins.length; i++){
         const win = wins[i];
         if(win.closeable === false || i === index){
@@ -323,9 +324,12 @@ const useTabs = (defaultTabs: Array<string | {key: string; closeable?: boolean;}
         }
       }
       setTabState({
-        activeKey, // 当前的保持不变
+        activeKey: nextActiveKey, // 当前的保持不变
         wins: nextWins,
       });
+      if(nextActiveKey !== active){
+        history.push(nextActiveKey);
+      }
     },
     [tabState],
   );
