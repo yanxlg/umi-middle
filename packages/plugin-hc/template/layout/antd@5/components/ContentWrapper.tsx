@@ -6,10 +6,6 @@
  * Copyright (c) 2024 by yanxianliang, All Rights Reserved.
  */
 import styled from 'styled-components';
+import { Layout } from 'antd';
 
-export const ContentWrapper = styled.div`
-  height: 100%;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-`;
+export const ContentWrapper = Layout;
