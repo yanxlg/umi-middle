@@ -310,17 +310,14 @@ const useTabs = (defaultTabs: Array<string | {key: string; closeable?: boolean;}
     (index: number) => {
       const { wins, activeKey } = tabState;
       let nextWins: IWindow[] = [];
+      let cleanWins: IWindow[] = [];
       const nextActiveKey = wins[index].pathname;
       for(let i =0;i < wins.length; i++){
         const win = wins[i];
         if(win.closeable === false || i === index){
           nextWins.push(win);
         }else{
-          // 清除
-          const pages = win.pages;
-          pages.forEach((page) => {
-            dropScope(page.pathname); // 占用用不能清除
-          });
+          cleanWins.push(win);
         }
       }
       setTabState({
@@ -330,6 +327,16 @@ const useTabs = (defaultTabs: Array<string | {key: string; closeable?: boolean;}
       if(nextActiveKey !== activeKey){
         history.push(nextActiveKey);
       }
+
+      setTimeout(()=>{
+        cleanWins.forEach(win=>{
+          // 清除
+          const pages = win.pages;
+          pages.forEach((page) => {
+            dropScope(page.pathname); // 占用用不能清除
+          });
+        })
+      },100);// 切换完成后释放
     },
     [tabState],
   );
@@ -337,16 +344,13 @@ const useTabs = (defaultTabs: Array<string | {key: string; closeable?: boolean;}
   const removeAll = useCallback(() => {
     const { wins } = tabState;
     let nextWins: IWindow[] = [];
+    let cleanWins: IWindow[] = [];
     for(let i =0;i < wins.length; i++){
       const win = wins[i];
       if(win.closeable === false){
         nextWins.push(win);
       }else{
-        // 清除
-        const pages = win.pages;
-        pages.forEach((page) => {
-          dropScope(page.pathname); // 占用用不能清除
-        });
+        cleanWins.push(win);
       }
     }
     const nextPathname = nextWins[0]?.pathname || '/';
@@ -355,6 +359,15 @@ const useTabs = (defaultTabs: Array<string | {key: string; closeable?: boolean;}
       wins: nextWins,
     });
     history.push(nextPathname);
+    setTimeout(()=>{
+      cleanWins.forEach(win=>{
+        // 清除
+        const pages = win.pages;
+        pages.forEach((page) => {
+          dropScope(page.pathname); // 占用用不能清除
+        });
+      })
+    },100); // 切换完成后释放
   }, [tabState]);
 
   const refreshPage = useCallback(
