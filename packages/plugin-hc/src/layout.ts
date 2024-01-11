@@ -91,6 +91,7 @@ export function resolveLayout(api: IApi) {
   api.addLayouts(() => {
     // 需要检测是否有效吧，否则文件不存在不是白搭
     const layoutFile = withTmpPath({api, path: "layout/index.tsx"});
+    console.log('layout-file：', layoutFile, fs.existsSync(layoutFile));
     if (fs.existsSync(layoutFile)) {
       return [{
         id: 'hc-layout',

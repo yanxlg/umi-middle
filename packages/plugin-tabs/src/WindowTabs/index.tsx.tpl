@@ -5,14 +5,15 @@ import { YHMenu as AntdMenu, MenuProps, YHTabs as Tabs, YHTooltip as Tooltip, YH
 import { Menu as AntdMenu, MenuProps, Tabs, Tooltip, Badge } from "antd";
 {{/useYhDesign}}
 import type { MenuInfo } from "rc-menu/lib/interface";
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import { history, useAppData } from "umi";
 import "./themes/otb/index.less";
 import { useTabs } from "./useTabs";
 import ReloadOutlined from '@ant-design/icons/ReloadOutlined';
-
+import {useAppData} from 'umi';
 import { Menu, useContextMenu } from "react-contexify";
 import "react-contexify/dist/ReactContexify.css";
+
 const MENU_ID = "tab_context_menu";
 
 
@@ -105,7 +106,7 @@ const defaultWidthConfig = {
 
 interface IWindowTabsProps {
   closeable?: boolean;
-  /** 当只有一个Tab时是否可以删除 */
+  /** @deprecated 没有实际作用，请使用defaultTabs代替配置默认的Tab列表及关闭开关，已废弃⚠️ */
   firstTabCloseable?: boolean;
   /** 当没有Tabs时是否显示 */
   showWhenEmptyTabs?: boolean;
@@ -114,7 +115,8 @@ interface IWindowTabsProps {
   theme?: 'otb';// 内置主题
   /** 宽度模式 */
   widthType?: 'fit-content' | { type: 'maxWidth'; width: number } | { type: 'width'; width: number };
-  defaultTabs?: string[];// 默认显示的tabs，通过path自动显示默认标签
+  /** 默认显示的标签列表，通过closeable配置是否可以关闭 */
+  defaultTabs?: Array<string | {key: string; closeable?: boolean;}>;
   rightMenu?: boolean;// 是否显示右键操作按钮。
   reloadIcon?: boolean; // 是否显示刷新图标
 }
@@ -143,6 +145,17 @@ const TabPanel = Tabs.TabPane;
 export let setTabBadge = (tabKey: string, badge?: number)=>{};
 
 export default function WindowTabs(props: IWindowTabsProps) {
+  const {pluginManager} = useAppData();
+  const defaultTabs = useMemo(()=>{
+    return pluginManager.applyPlugins({
+      key: 'tabs',
+      type: 'modify',
+      initialValue: {
+        defaultTabs: props.defaultTabs,
+      },
+    })
+  },[]);
+
   const {
     activeKey,
     wins,
@@ -152,11 +165,11 @@ export default function WindowTabs(props: IWindowTabsProps) {
     removeAll,
     refreshPage,
     setTabBadge: _setTabBadge,
-  } = useTabs(props.defaultTabs);
+  } = useTabs(defaultTabs); // defaultTabs 需要在runtime中也支持配置。
 
   const { pluginManager } = useAppData();
 
-  const { firstTabCloseable = true, closeable = true, widthType = defaultWidthConfig, showWhenEmptyTabs = true, style, className, theme, rightMenu = true, reloadIcon = false } = props;
+  const { closeable = true, widthType = defaultWidthConfig, showWhenEmptyTabs = true, style, className, theme, rightMenu = true, reloadIcon = false } = props;
 
   const { show } = useContextMenu({
     id: MENU_ID,
@@ -229,15 +242,27 @@ export default function WindowTabs(props: IWindowTabsProps) {
         items={!!TabPanel ? undefined : wins.map((node, index) => ({
           key: node.pathname,
           label: <TabLabel index={index} widthType={widthType} name={node.name} badge={node.badge} onReload={reloadIcon ? refreshPage: null}/>,
-          closable: wins.length === 1 ? firstTabCloseable : closeable,
+          closable: node.closeable??closeable,
         }))}
         onContextMenu={rightMenu ? handleContextMenu : null}
       >
         {
           !!TabPanel ? wins.map((win, index) => {
-            return <Tabs.TabPane closable={wins.length === 1 ? firstTabCloseable : closeable} key={win.pathname}
-                                 tab={<TabLabel index={index} widthType={widthType as any} name={win.name!}
-                                                badge={win.badge} onReload={reloadIcon ? refreshPage : undefined}/>}/>
+            return (
+              <Tabs.TabPane
+                closable={win.closeable??closeable}
+                key={win.pathname}
+                tab={
+                  <TabLabel
+                    index={index}
+                    widthType={widthType as any}
+                    name={win.name!}
+                    badge={win.badge}
+                    onReload={reloadIcon ? refreshPage : undefined}
+                  />
+                }
+              />
+            )
           }) : null
         }
       </Tabs>

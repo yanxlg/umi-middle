@@ -8,7 +8,8 @@
   "types": "lib/index.d.ts",
   "files": [
     "lib",
-    "esm"
+    "esm",
+    "template"
   ],
   "scripts": {
     "build": "father build",

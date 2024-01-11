@@ -5,6 +5,7 @@ import { history, matchRoutes, useAppData, useLocation } from 'umi';
 import omit from 'lodash/omit';
 import useSessionStorageState from 'ahooks/es/useSessionStorageState';
 import useMemoizedFn from 'ahooks/es/useMemoizedFn';
+import uniqBy from 'lodash/uniqBy';
 
 // 扩展路由中自定义配置
 declare module 'react-router' {
@@ -30,6 +31,7 @@ export type IWindow = RouteObject & {
   name?: string;
   pages: PageType[]; // 多个页面共用一个Tab.
   badge?: number; // badge显示
+  closeable?: boolean; // 是否可以关闭
 };
 
 function getMatchRoutes(routes: RouteObject[], pathname: string) {
@@ -121,26 +123,26 @@ function addPage(pages: PageType[], page: PageType) {
 
 
 
-function getWindowTabList(paths: string[], routes: RouteObject[]){
-  const tabPathList = Array.from(new Set(paths));// 可能会存在重复，
+function getWindowTabList(configList: Array<{key: string; closeable?: boolean;}>, routes: RouteObject[]){
   let windowTabList: IWindow[] = [];
-  for(let i=0;i<tabPathList.length;i++){
-    const path = tabPathList[i];
+  for(let i=0;i<configList.length;i++){
+    const config = configList[i];
+    const path = config.key;
     const target = getTargetTab(routes, path);
     if(target){
       const sameIndex = windowTabList.findIndex(_=>_.initPathName===target.initPathName)
       if(sameIndex > -1){
         windowTabList.splice(sameIndex,1,target);
-      }else{
-        windowTabList.push(target);
       }
+      windowTabList.push({...target, closeable: config.closeable});
     }
   }
   return windowTabList;
 }
 
+
 // 跟sessionStorage 联动
-const useTabs = (defaultTabs: string[] = []) => {
+const useTabs = (defaultTabs: Array<string | {key: string; closeable?: boolean;}> = []) => {
   const location = useLocation();
   const { clientRoutes } = useAppData();
   const { dropScope, refresh, getCachingNodes } = useAliveController();
@@ -160,7 +162,10 @@ const useTabs = (defaultTabs: string[] = []) => {
     },
     defaultValue: () => {
       const pathname = location.pathname;
-      const targetTabList = getWindowTabList([...defaultTabs, pathname],clientRoutes);
+      const initTabConfigList = uniqBy([...defaultTabs, pathname].map(item => {
+        return typeof item === 'string'? { key: item }: item;
+      }), 'key');
+      const targetTabList = getWindowTabList(initTabConfigList,clientRoutes);
       return {
         activeKey: pathname,
         wins: targetTabList || [],

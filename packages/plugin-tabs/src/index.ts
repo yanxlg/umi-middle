@@ -8,7 +8,7 @@
  * Copyright (c) 2023 by yanxlg, All Rights Reserved.
  */
 import {join} from "path";
-import {IApi} from "umi";
+import {IApi, RUNTIME_TYPE_FILE_NAME} from "umi";
 import {winPath} from "umi/plugin-utils";
 import {getConfigPropertiesFromSource} from '@middle-cli/utils';
 
@@ -28,6 +28,8 @@ export function withTmpPath(opts: {
   );
 }
 
+const tmpDir = winPath(join(__dirname, "..", "template")); // 模版目录
+
 export default (api: IApi) => {
   api.describe({
     key: "tabs",
@@ -39,6 +41,8 @@ export default (api: IApi) => {
     },
     enableBy: api.EnableBy.config,
   });
+
+  api.addRuntimePluginKey(() => ["tabs"]);
 
   api.addRuntimePlugin({
     fn: () => "@@/plugin-tabs/runtime",
@@ -60,6 +64,12 @@ export default (api: IApi) => {
   })
 
   api.onGenerateFiles(() => {
+    api.writeTmpFile({
+      path: RUNTIME_TYPE_FILE_NAME,
+      tplPath: join(tmpDir, "runtimeConfig.d.ts"),
+      context: {}
+    });
+
     // 支持import { KeepAlive } from 'umi';
     api.writeTmpFile({
       path: "index.tsx",
