@@ -128,6 +128,8 @@ export interface IWindowTabsProps {
   defaultTabs?: Array<string | {key: string; closeable?: boolean;}>;
   rightMenu?: boolean;// 是否显示右键操作按钮。
   reloadIcon?: boolean; // 是否显示刷新图标
+  /** badge 上限值 */
+  overflowCount?: number;
 }
 
 
@@ -136,11 +138,11 @@ const BlockBadge = styled(Badge)`
 `;
 
 
-function TabLabel({index, widthType, name, badge, onReload}:{index:number; widthType: IWindowTabsProps['widthType']; name: string; badge?: number; onReload?: Function}) {
+function TabLabel({index, widthType, name, badge, onReload, overflowCount}:{index:number; widthType: IWindowTabsProps['widthType']; name: string; badge?: number; onReload?: Function; overflowCount?: number}) {
   const content = widthType === 'fit-content' ? name : <Tooltip title={name}><div style={ {[widthType.type]: widthType.width, textOverflow: 'ellipsis', overflow: 'hidden'} }>{name}</div></Tooltip>;
   return (
     <>
-      { badge === void 0 ? content:<BlockBadge count={badge} style={ {position: 'absolute', left:0, right:'unset', transform: 'translate(-50%,-50%)', marginLeft: -5, pointerEvents: 'none', background: 'rgba(255,77,79,0.9)'} }>{content}</BlockBadge>}
+      { badge === void 0 ? content:<BlockBadge count={badge} overflowCount={overflowCount} style={ {position: 'absolute', left:0, right:'unset', transform: 'translate(-50%,-50%)', marginLeft: -5, pointerEvents: 'none', background: 'rgba(255,77,79,0.9)'} }>{content}</BlockBadge>}
       {
         onReload?(
           <ReloadOutlined
@@ -173,7 +175,7 @@ export default function WindowTabs(props: IWindowTabsProps & {
     return {...defaultConfig, ...runtimeConfig, props};
   },[]);
 
-  const { defaultTabs, closeable = true, widthType = defaultWidthConfig, showWhenEmptyTabs = true, style, className, theme, rightMenu = true, reloadIcon = false } = config;
+  const { defaultTabs, overflowCount, closeable = true, widthType = defaultWidthConfig, showWhenEmptyTabs = true, style, className, theme, rightMenu = true, reloadIcon = false } = config;
   const badgeMap = props.badgeMap;
 
   const {
@@ -256,7 +258,7 @@ export default function WindowTabs(props: IWindowTabsProps & {
         animated={false}
         items={!!TabPanel ? undefined : wins.map((node, index) => ({
           key: node.pathname,
-          label: <TabLabel index={index} widthType={widthType} name={node.name} badge={badgeMap?badgeMap[node.pathname]:node.badge} onReload={reloadIcon ? refreshPage: null}/>,
+          label: <TabLabel overflowCount={overflowCount} index={index} widthType={widthType} name={node.name} badge={badgeMap?badgeMap[node.pathname]:node.badge} onReload={reloadIcon ? refreshPage: null}/>,
           closable: node.closeable??closeable,
         }))}
         onContextMenu={rightMenu ? handleContextMenu : null}
@@ -269,6 +271,7 @@ export default function WindowTabs(props: IWindowTabsProps & {
                 key={win.pathname}
                 tab={
                   <TabLabel
+                    overflowCount={overflowCount}
                     index={index}
                     widthType={widthType as any}
                     name={win.name!}

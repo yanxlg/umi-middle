@@ -51,6 +51,7 @@ export default (api: IApi) => {
           })]).optional(),
           rightMenu: zod.boolean().optional(),
           reloadIcon: zod.boolean().optional(),
+          overflowCount: zod.number().optional(),
         })]);
       },
       onChange: api.ConfigChangeType.regenerateTmpFiles,
