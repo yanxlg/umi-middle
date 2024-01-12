@@ -168,7 +168,8 @@ export default function WindowTabs(props: IWindowTabsProps & {
     return {...defaultConfig, ...runtimeConfig, props};
   },[]);
 
-  const { badgeMap, defaultTabs, closeable = true, widthType = defaultWidthConfig, showWhenEmptyTabs = true, style, className, theme, rightMenu = true, reloadIcon = false } = config;
+  const { defaultTabs, closeable = true, widthType = defaultWidthConfig, showWhenEmptyTabs = true, style, className, theme, rightMenu = true, reloadIcon = false } = config;
+  const badgeMap = props.badgeMap;
 
   const {
     activeKey,
