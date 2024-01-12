@@ -154,11 +154,21 @@ const useTabs = (defaultTabs: Array<string | {key: string; closeable?: boolean;}
     wins: IWindow[];
   }>('__window_tabs_cache__',{
     deserializer:(value)=>{
-      const state = JSON.parse(value);
-      return {
-        ...state,
-        activeKey: location.pathname,
-      };
+      const state = JSON.parse(value); // wins
+      const wins = state.wins ||[];
+      // 当前的
+      const pathname = location.pathname;
+      if(wins.find(win=>win.pathname === pathname)){
+        return {
+          wins,
+          activeKey: pathname,
+        };
+      }else{
+        return {
+          wins: [...wins, ...getWindowTabList([{key: pathname}], clientRoutes)],
+          activeKey: pathname,
+        };
+      }
     },
     defaultValue: () => {
       const pathname = location.pathname;
