@@ -11,6 +11,7 @@ import "./themes/otb/index.less";
 import { useTabs, IWindow } from "./useTabs";
 import ReloadOutlined from '@ant-design/icons/ReloadOutlined';
 import { Menu, useContextMenu } from "react-contexify";
+import styled from 'styled-components';
 import "react-contexify/dist/ReactContexify.css";
 
 const MENU_ID = "tab_context_menu";
@@ -130,12 +131,16 @@ export interface IWindowTabsProps {
 }
 
 
+const BlockBadge = styled(Badge)`
+  display: block;
+`;
+
+
 function TabLabel({index, widthType, name, badge, onReload}:{index:number; widthType: IWindowTabsProps['widthType']; name: string; badge?: number; onReload?: Function}) {
   const content = widthType === 'fit-content' ? name : <Tooltip title={name}><div style={ {[widthType.type]: widthType.width, textOverflow: 'ellipsis', overflow: 'hidden'} }>{name}</div></Tooltip>;
   return (
     <>
-      {content}
-      { badge === void 0 ? null:<Badge count={badge} offset={[15,-20]} style={ {position:'absolute'} }/>}
+      { badge === void 0 ? content:<BlockBadge count={badge} style={ {position: 'absolute', left:0, right:'unset', transform: 'translate(-50%,-50%)', marginLeft: -5, pointerEvents: 'none', background: 'rgba(255,77,79,0.9)'} }>{content}</BlockBadge>}
       {
         onReload?(
           <ReloadOutlined
