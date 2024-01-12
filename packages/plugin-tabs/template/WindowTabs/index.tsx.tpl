@@ -134,7 +134,9 @@ export interface IWindowTabsProps {
 
 
 const BlockBadge = styled(Badge)`
-  display: block;
+  span&{
+    display: block;
+  }
 `;
 
 
