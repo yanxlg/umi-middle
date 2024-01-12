@@ -5,7 +5,7 @@ import { YHMenu as AntdMenu, MenuProps, YHTabs as Tabs, YHTooltip as Tooltip, YH
 import { Menu as AntdMenu, MenuProps, Tabs, Tooltip, Badge } from "antd";
 {{/useYhDesign}}
 import type { MenuInfo } from "rc-menu/lib/interface";
-import React, { useCallback, useEffect, useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import { history, useAppData } from "umi";
 import "./themes/otb/index.less";
 import { useTabs, IWindow } from "./useTabs";
@@ -18,6 +18,8 @@ const MENU_ID = "tab_context_menu";
 
 
 const antPrefixCls = "{{{antdPrefix}}}"; // TODO 需要插件生成
+const defaultConfig = {{{defaultConfig}}};
+
 
 const id = "__window-tabs";
 const tabClassSelector = `${antPrefixCls}-tabs-tab`;
@@ -42,7 +44,7 @@ const contextMenus = [
     label: "关闭所有",
     key: "close-all",
   },
-] as MenuProps["items"];
+] as Exclude<MenuProps['items'], undefined>;
 
 function checkInTab(element: HTMLElement): false | number {
   if (element === document.body || element.id === id) {
@@ -68,10 +70,10 @@ function checkInTab(element: HTMLElement): false | number {
 
 
 const ReplaceMenuWithAnt = (props: {
-  propsFromTrigger?: { index: 0 };
+  propsFromTrigger?: { index: 0; window: IWindow };
   removeTabByIndex: (index: number) => void;
   removeOthers: (index: number) => void;
-  removeAll: () => void;
+  removeAll: (index: number) => void;
   refreshPage: (index: number) => void;
 }) => {
   const { removeTabByIndex, removeOthers, removeAll, refreshPage, propsFromTrigger } = props;
@@ -95,12 +97,9 @@ const ReplaceMenuWithAnt = (props: {
   };
 
   // 如果当前是不可关闭的标签，则没有关闭操作和关闭所有操作
-  const config = propsFromTrigger?.config;
+  const config = propsFromTrigger?.window;
   const items = contextMenus.filter(item=>{
-    if(config && config.closeable === false && (item.key === 'close' || item.key === 'close-all')){
-      return false;
-    }
-    return true;
+    return !(config && config.closeable === false && item && (item.key === 'close' || item.key === 'close-all'));
   });
   return <AntdMenu onClick={handleMenuClick} items={items} />;
 };
@@ -141,7 +140,7 @@ const BlockBadge = styled(Badge)`
 
 
 function TabLabel({index, widthType, name, badge, onReload, overflowCount}:{index:number; widthType: IWindowTabsProps['widthType']; name: string; badge?: number; onReload?: Function; overflowCount?: number}) {
-  const content = widthType === 'fit-content' ? name : <Tooltip title={name}><div style={ {[widthType.type]: widthType.width, textOverflow: 'ellipsis', overflow: 'hidden'} }>{name}</div></Tooltip>;
+  const content = widthType === 'fit-content' ? name : <Tooltip title={name}><div style={ {[widthType!.type]: widthType!.width, textOverflow: 'ellipsis', overflow: 'hidden'} }>{name}</div></Tooltip>;
   return (
     <>
       { badge === void 0 ? content:<BlockBadge count={badge} overflowCount={overflowCount} style={ {position: 'absolute', left:0, right:'unset', transform: 'translate(-50%,-50%)', marginLeft: -5, pointerEvents: 'none', background: 'rgba(255,77,79,0.9)'} }>{content}</BlockBadge>}
@@ -159,10 +158,7 @@ function TabLabel({index, widthType, name, badge, onReload, overflowCount}:{inde
 
 const TabPanel = Tabs.TabPane;
 
-export let setTabBadge = (tabKey: string, badge?: number)=>{};
 
-
-const defaultConfig = {{{defaultConfig}}};
 
 export default function WindowTabs(props: IWindowTabsProps & {
   badgeMap?: {[key:string]: number}
@@ -182,13 +178,12 @@ export default function WindowTabs(props: IWindowTabsProps & {
 
   const {
     activeKey,
-    wins,
+    wins = [],
     removeTab,
     removeTabByIndex,
     removeOthers,
     removeAll,
     refreshPage,
-    setTabBadge: _setTabBadge,
   } = useTabs(defaultTabs);
 
   const { show } = useContextMenu({
@@ -196,12 +191,12 @@ export default function WindowTabs(props: IWindowTabsProps & {
   });
 
   const showContextMenu = useCallback(
-    (index: number, config: IWindow, event: React.MouseEvent<Element, MouseEvent>) => {
+    (index: number, window: IWindow, event: React.MouseEvent<Element, MouseEvent>) => {
       show({
         event,
         props: {
           index: index,
-          config: config
+          window: window
         },
       });
     },
@@ -220,28 +215,22 @@ export default function WindowTabs(props: IWindowTabsProps & {
 
   const onEdit = useCallback(
     (
-      pathname:
+      key:
         | string
         | React.MouseEvent<Element, MouseEvent>
         | React.KeyboardEvent<Element>,
       action: "remove" | "add"
     ) => {
-      if (action === "remove" && typeof pathname === "string") {
-        removeTab(pathname);
+      if (action === "remove" && typeof key === "string") {
+        removeTab(key);
       }
     },
     [wins]
   );
 
   const onTabChange = useCallback((pathname: string) => {
-    // 切换到新的页面
     history.push(pathname);
   }, []);
-
-
-  useEffect(()=>{
-    setTabBadge = badgeMap? (tabKey: string, badge?: number)=>{console.warning('props传入了badgeMap，请通过props更新')}: _setTabBadge;// 如果props传递了对象，则使用props
-  },[]);
 
 
   return (
@@ -252,17 +241,19 @@ export default function WindowTabs(props: IWindowTabsProps & {
         activeKey={activeKey}
         type="editable-card"
         hideAdd
-        style={ {...style, ...showWhenEmptyTabs === false && wins.length ===0? {display:'none'}:{} } }
+        style={ {...style, ...!showWhenEmptyTabs && wins.length ===0? {display:'none'}:{} } }
         tabBarStyle={ { marginBottom: 0 } }
         tabBarGutter={8}
         onChange={onTabChange}
         onEdit={onEdit}
         animated={false}
-        items={!!TabPanel ? undefined : wins.map((node, index) => ({
-          key: node.pathname,
-          label: <TabLabel overflowCount={overflowCount} index={index} widthType={widthType} name={node.name} badge={badgeMap?badgeMap[node.pathname]:node.badge} onReload={reloadIcon ? refreshPage: null}/>,
-          closable: node.closeable??closeable,
-        }))}
+        items={!!TabPanel ? undefined : wins.map((win, index) => {
+          return {
+            key: win.key,
+            label: <TabLabel overflowCount={overflowCount} index={index} widthType={widthType} name={win.title} badge={badgeMap?badgeMap[win.key]:win.badge} onReload={reloadIcon ? refreshPage: undefined}/>,
+            closable: win.closeable??closeable,
+          }
+        })}
         onContextMenu={rightMenu ? handleContextMenu : null}
       >
         {
@@ -270,14 +261,14 @@ export default function WindowTabs(props: IWindowTabsProps & {
             return (
               <Tabs.TabPane
                 closable={win.closeable??closeable}
-                key={win.pathname}
+                key={win.key}
                 tab={
                   <TabLabel
                     overflowCount={overflowCount}
                     index={index}
                     widthType={widthType as any}
-                    name={win.name!}
-                    badge={badgeMap?badgeMap[win.pathname]:win.badge}
+                    name={win.title!}
+                    badge={badgeMap?badgeMap[win.key]:win.badge}
                     onReload={reloadIcon ? refreshPage : undefined}
                   />
                 }

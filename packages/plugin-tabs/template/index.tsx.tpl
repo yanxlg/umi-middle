@@ -1,2 +1,2 @@
 export * from 'react-activation';
-export { default as WindowTabs, setTabBadge } from './WindowTabs';
+export { default as WindowTabs } from './WindowTabs';

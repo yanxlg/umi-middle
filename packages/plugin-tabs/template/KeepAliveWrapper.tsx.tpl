@@ -16,15 +16,16 @@ export const KeepAliveWrapper: React.FC<PropsWithChildren<unknown>> = ({
 }) => {
   const location = useLocation();
   const { clientRoutes } = useAppData();
-  const pathname = location.pathname;
+  const {pathname, search} = location;
   const route = useMemo(()=>matchRoutes(clientRoutes, pathname)?.pop()?.route,[]);
   // 支持特殊页面不缓存
   if(route?.noCache) {
     return children;
   }
+  const key = `${pathname}${search||''}`;
   const saveScrollPosition = route?.saveScrollPosition ?? 'screen';
   return (
-    <KeepAlive name={location.pathname} key={location.pathname} id={location.pathname} cacheKey={location.pathname} saveScrollPosition={saveScrollPosition}>
+    <KeepAlive name={key} key={key} id={key} cacheKey={key} saveScrollPosition={saveScrollPosition}>
       {children}
     </KeepAlive>
   );

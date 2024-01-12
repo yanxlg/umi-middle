@@ -1,316 +1,291 @@
-import { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useAliveController } from 'react-activation';
-import { RouteObject } from 'react-router';
+import type { RouteObject } from 'react-router-dom';
 import { history, matchRoutes, useAppData, useLocation } from 'umi';
-import omit from 'lodash/omit';
 import useSessionStorageState from 'ahooks/es/useSessionStorageState';
 import useMemoizedFn from 'ahooks/es/useMemoizedFn';
-import uniqBy from 'lodash/uniqBy';
+import { createSearchParams } from 'react-router-dom';
 
-// 扩展路由中自定义配置
-declare module 'react-router' {
+declare module 'react-router-dom' {
   interface RouteObject {
-    title?: string;
+    /** 标签label 模版，通过解析路由的params + search生成最终的label文案 */
     tabTemplate?: string; // 自定义标签显示文案
-    title?: string;
     /**
-     *标签模式，single 仅显示一个，当路由是动态路由时，多个地址会合并成一个Tab,当设置为inner时，会聚合在父标签中。
+     *标签模式，single 仅显示一个，当路由是动态路由或带search时，多个地址会合并成一个Tab,当设置为inner时，会聚合在父标签中。
      */
     tabMode?: 'single' | 'inner';
-    noCache?: boolean; // 不缓存，不缓存的页面每次都会重新生成。 ==> CacheWrapper 中不使用KeepAlive包裹
+    /** 页面不需要进行状态缓存，每次进入重新初始化 */
+    noCache?: boolean;
+    /** Tab 对应的Key */
+    tabKey?: string;
+    /** 重定向路由 */
+    redirect?: boolean;
+
+    /** 全局布局组件 umi 会自动加上该属性用于区分 */
+    isLayout?: string;
+  }
+
+  interface RouteMatch {
+    title: string;
   }
 }
 
-type PageType = RouteObject & {
-  pathname: string;
+type DefaultWindowConfigType = {
+  key?: string;
+  closeable?: boolean;
+  pathname?: string;
+  search?: string
 };
 
-export type IWindow = RouteObject & {
-  initPathName?: string;
-  pathname: string;
-  name?: string;
-  pages: PageType[]; // 多个页面共用一个Tab.
-  badge?: number; // badge显示
-  closeable?: boolean; // 是否可以关闭
+export type IWindow = {
+  /** 窗口对应唯一key，对应于url */
+  key: string;
+  /** 窗口标题 */
+  title: string;
+  /** 窗口是否冻结，冻结窗口不允许修改、替换，对应于tabMode===‘single’ */
+  freeze: boolean;
+  /** 显示的badge 值 */
+  badge?: number;
+  /** Tab是否允许关闭 */
+  closeable?: boolean;
+  /** 窗口对应的路由 */
+  route?: RouteObject;
 };
 
-function getMatchRoutes(routes: RouteObject[], pathname: string) {
-  const segs = pathname.split('/');
-  const _routes:RouteObject[] = [];
-  for(let i = 0;i< segs.length;i++){
-    const path = segs.slice(0,i+1).join('/');
-    const _matchRoutes = matchRoutes(routes, path);
-    if(_matchRoutes && _matchRoutes.length >0){
-      _routes.push(_matchRoutes[_matchRoutes.length-1]);
-    }
-  }
-  return _routes;
+/**
+ * 获取命中的路由配置
+ * @param routes
+ * @param pathname
+ */
+function getMatchRoute(routes: RouteObject[], pathname: string) {
+  const matchList = matchRoutes(routes, pathname);
+  return matchList?.pop();
 }
 
+/**
+ * 动态字符串生成
+ * @param template
+ * @param data
+ */
 function parseTemplateString(template: string, data: object) {
-  if (/\$\{/.test(template)) {
-    const names = Object.keys(data);
-    const values = Object.values(data);
-    return new Function(...names, `return \`${template}\`;`)(...values);
+  const names = Object.keys(data);
+  const values = Object.values(data);
+  return new Function(...names, `return \`${template}\`;`)(...values);
+}
+
+/**
+ * 将search 转成 object类型
+ * @param search
+ */
+function searchToObject(search?: string) {
+  if (search) {
+    const searchParams = createSearchParams(search);
+    let params: { [key: string]: string } = {};
+    searchParams.forEach((value, key) => {
+      params[key] = value;
+    });
+    return params;
   }
-  return template;
+  return {};
 }
 
-function getDynamicTabName(pattern: string, params: object) {
-  // 对于详情页面生成不同的标签名
-  return parseTemplateString(pattern, params);
+/**
+ * 生成动态Tab Label，通过模版字符串和params、search参数来生成
+ * @param pattern
+ * @param params
+ * @param search
+ */
+function getDynamicTabName(pattern: string, params: object, search?: string) {
+  const searchParams = searchToObject(search);
+  return parseTemplateString(pattern, { ...params, ...searchParams });
 }
 
-function getTargetTab(routes: RouteObject[], pathname: string) {
-  const matchedRoutes = getMatchRoutes(routes, pathname);
-  if (matchedRoutes && matchedRoutes.length > 0) {
-    const extractRoute = matchedRoutes.pop()!;
-    const { route, params } = extractRoute;
-
-    const { tabMode, title, tabTemplate, tabKey, redirect, element } = route;// 如果重定向, 则忽略
-    if( !!redirect || element?.type?.name === 'NavigateWithParams' || (!title && !tabTemplate)){
-      return undefined;
-    }
-    if (tabMode === 'inner') {
-      // 父级, 获取到的父级可能有问题，有可能是layout
-      const parent = matchedRoutes.pop();
-      if (parent && !parent.route.isLayout) {
-        // 根据父级生成对应的Tab
-        return {
-          tabKey,
-          ...omit(parent.route,['element']),
-          initPathName: parent.pathname,
-          tabMode: 'inner', // 需要替换父级菜单
-          name: parent.route.tabTemplate
-            ? getDynamicTabName(parent.route.tabTemplate, params)
-            : parent.route.title,
-          pathname,
-          pages: [
-            {
-              ...omit(route,['element']),
-              name: tabTemplate ? getDynamicTabName(tabTemplate, params) : title,
-              pathname,
-            },
-          ],
-        } as IWindow;
+function getReactNodeName(element: React.ReactNode) {
+  if (element) {
+    if (typeof element === 'object') {
+      if ('type' in element) {
+        if (typeof element.type === 'string') {
+          return element.type;
+        }
+        if (typeof element.type === 'object' && element.type && 'name' in element.type) {
+          return element.type['name'];
+        }
       }
     }
-    const page = {
-      ...omit(route,['element']),
-      name: tabTemplate ? getDynamicTabName(tabTemplate, params) : title,
-      pathname,
-    };
-    return {
-      tabKey,
-      ...page,
-      initPathName: pathname,
-      pages: [page],
-    } as IWindow;
   }
   return undefined;
 }
 
-function addPage(pages: PageType[], page: PageType) {
-  if (
-    pages.find(
-      (_page) => _page.pathname === page.pathname && _page.path === page.path,
-    )
-  ) {
-    return;
-  }
-  pages.push(page);
+function getPathKey(pathname: string, search?: string) {
+  return `${pathname}${search || ''}`;
 }
 
+/**
+ * 通过 pathname + search 等路由信息创建Window
+ * @param routes
+ * @param pathname
+ * @param search
+ * @param closeable
+ */
+function createWindow(routes: RouteObject[], pathname: string, search?: string, closeable?: boolean): IWindow | undefined { // 支持search
+  const matchRoute = getMatchRoute(routes, pathname);
+  if (matchRoute) {
+    const { route, params } = matchRoute;
+    const { tabMode, title, tabTemplate, tabKey, redirect, element } = route;
+    if (!!redirect || getReactNodeName(element) === 'NavigateWithParams') {
+      return undefined; // 不创建Window,仅作为临时中间页面触发跳转
+    }
+    return {
+      title: tabTemplate ? getDynamicTabName(tabTemplate, params, search) : (title || 'unknown'),
+      key: getPathKey(pathname, search),
+      closeable: closeable,
+      freeze: tabMode !== 'inner',
+      route: route,
+    };
+  } else {
+    return {
+      title: '404',
+      key: getPathKey(pathname, search),
+      closeable: true,
+      freeze: true,
+    };
+  }
+}
 
+/**
+ * 添加Window 到Window队列中，检查是否可以替换
+ * @param windows
+ * @param win
+ */
+function addWindowToList(windows: IWindow[], win?: IWindow) {
+  if (!win) {
+    return { windows };
+  }
+  const { route, key } = win;
+  const existIndex = windows.findIndex(old => {
+    return !old.freeze && (!old.route && !route && old.key === key || old.route && route && old.route.path === route.path);
+  });
+  const exist = windows[existIndex];
+  if (existIndex > -1) {
+    win.closeable = win.closeable || windows[existIndex].closeable; // 保持原来的值
+    windows.splice(existIndex, 1, win);
+  } else {
+    windows.push(win);
+  }
+  return { windows, exist };
+}
 
-function getWindowTabList(configList: Array<{key: string; closeable?: boolean;}>, routes: RouteObject[]){
+/**
+ * 通过 location 数组生成对应的窗口列表
+ * @param configList
+ * @param routes
+ */
+function getWindowTabList(configList: Array<DefaultWindowConfigType>, routes: RouteObject[]) {
   let windowTabList: IWindow[] = [];
-  for(let i=0;i<configList.length;i++){
+  for (let i = 0; i < configList.length; i++) {
     const config = configList[i];
-    const path = config.key;
-    const target = getTargetTab(routes, path);
-    if(target){
-      const sameIndex = windowTabList.findIndex(_=>_.initPathName===target.initPathName)
-      if(sameIndex > -1){
-        windowTabList.splice(sameIndex,1,target);
-      }
-      windowTabList.push({...target, closeable: config.closeable});
+    const pathname = config.key || config.pathname;
+    const search = config.search;
+    const closeable = config.closeable;
+    const newWindow = createWindow(routes, pathname!, search, closeable);
+    if (newWindow) {
+      addWindowToList(windowTabList, newWindow);
     }
   }
   return windowTabList;
 }
 
-
-// 跟sessionStorage 联动
-const useTabs = (defaultTabs: Array<string | {key: string; closeable?: boolean;}> = []) => {
+const useTabs = (defaultTabs: Array<string | DefaultWindowConfigType> = []) => {
   const location = useLocation();
   const { clientRoutes } = useAppData();
   const { dropScope, refresh, getCachingNodes } = useAliveController();
 
   const cachingNodes = getCachingNodes();
 
+  console.log('缓存的实例', cachingNodes);
+
   const [tabState, setTabState] = useSessionStorageState<{
     activeKey: string;
     wins: IWindow[];
-  }>('__window_tabs_cache__',{
-    deserializer:(value)=>{
-      const state = JSON.parse(value); // wins
-      const wins = state.wins ||[];
-      // 当前的
-      const pathname = location.pathname;
-      if(wins.find(win=>win.pathname === pathname)){
-        return {
-          wins,
-          activeKey: pathname,
-        };
-      }else{
-        return {
-          wins: [...wins, ...getWindowTabList([{key: pathname}], clientRoutes)],
-          activeKey: pathname,
-        };
-      }
+  }>('__window_tabs_cache__', {
+    deserializer: (value) => {
+      const state: { wins: IWindow[]; activeKey: string; } = JSON.parse(value); // wins
+      const wins = state.wins || [];
+      const { pathname, search } = location;
+      const newWindow = createWindow(clientRoutes as unknown as RouteObject[], pathname!, search);
+      return {
+        wins: addWindowToList(wins, newWindow).windows,
+        activeKey: getPathKey(pathname, search), // Tab 不选中
+      };
     },
     defaultValue: () => {
-      const pathname = location.pathname;
-      const initTabConfigList = uniqBy([...defaultTabs, pathname].map(item => {
-        return typeof item === 'string'? { key: item }: item;
-      }), 'key');
-      const targetTabList = getWindowTabList(initTabConfigList,clientRoutes);
+      const { pathname, search } = location;
+      const initTabConfigList = defaultTabs.map(item => {
+        return typeof item === 'string' ? { key: item } : item;
+      });
+      const defaultWindowList = getWindowTabList(initTabConfigList, clientRoutes as unknown as RouteObject[]);
+      const newWindow = createWindow(clientRoutes as unknown as RouteObject[], pathname!, search);
       return {
-        activeKey: pathname,
-        wins: targetTabList || [],
+        wins: addWindowToList(defaultWindowList, newWindow).windows,
+        activeKey: getPathKey(pathname, search),
       };
-    }
+    },
   });
 
-  const onPathChange = useCallback((pathname: string) => {
-    const targetTab = getTargetTab(clientRoutes, pathname);
-    if (targetTab) {
-      const { tabMode } = targetTab;
-
-      setTabState((tabState) => {
-        const { wins } = tabState;
-        if (tabMode === 'inner') {
-          // 聚合在父级Tab下，如果没有则创建
-          const findParentTab = wins.find(
-            (parent) =>
-              String(parent.path).toLowerCase() === String(targetTab.path).toLowerCase() &&
-              String(parent.initPathName).toLowerCase() === String(targetTab.initPathName).toLowerCase(),
-          );
-          if (!findParentTab) {
-            return {
-              ...tabState,
-              activeKey: targetTab.pathname,
-              wins: [...wins, targetTab],
-            };
-          }
-          findParentTab.pathname = targetTab.pathname;
-          const page = targetTab.pages[0];
-          addPage(findParentTab.pages, page!);
-          return {
-            ...tabState,
-            activeKey: findParentTab.pathname,
-            wins: [...wins],
-          };
-        }
-        if (tabMode === 'single') {
-          // 不同params只存在一个Tab
-          const findExistTab = wins.find((tab) => tab.path === targetTab.path);
-          if (!findExistTab) {
-            return {
-              ...tabState,
-              activeKey: targetTab.pathname,
-              wins: [...wins, targetTab],
-            };
-          }
-          if (findExistTab.pathname !== targetTab.pathname) {
-            dropScope(findExistTab.pathname);
-            findExistTab.pathname = targetTab.pathname;
-          }
-          const page = targetTab.pages[0];
-          addPage(findExistTab.pages, page!);
-          findExistTab.name = targetTab.name;
-          // 需要清楚缓存
-          return {
-            ...tabState,
-            activeKey: findExistTab.pathname,
-            wins: [...wins],
-          };
-        }
-        // pathname 被修改了，
-        const findExist = wins.find(
-          (tab) => tab.initPathName === targetTab.initPathName,
-        );
-        if (!findExist) {
-          return {
-            ...tabState,
-            activeKey: targetTab.pathname,
-            wins: [...wins, targetTab],
-          };
-        }
-        const page = targetTab.pages[0];
-        addPage(findExist.pages, page!);
-
-        if (findExist.pathname !== targetTab.pathname) {
-          dropScope(findExist.pathname);
-          findExist.pathname = targetTab.pathname;
-        }
-
-        return {
-          ...tabState,
-          activeKey: findExist.pathname,
-        };
-      });
-    }
+  const onPathChange = useCallback((pathname: string, search?: string) => {
+    const nextWindow = createWindow(clientRoutes as unknown as RouteObject[], pathname, search);
+    setTabState((tabState) => {
+      const { wins, activeKey } = tabState!;
+      const { windows, exist } = addWindowToList(wins, nextWindow);
+      if (exist) {
+        dropScope(exist.key);
+      }
+      return {
+        activeKey: getPathKey(pathname, search),
+        wins: windows,
+      };
+    });
   }, []);
 
   useEffect(() => {
     history.listen((updater) => {
       const location = updater.location;
-      const pathname = location.pathname; // 这个会包括base部分需要截掉
-      onPathChange(pathname.replace(new RegExp("^{{{base}}}"),'/'));
+      const { pathname, search } = location;
+      onPathChange(pathname, search);
     });
   }, []);
 
   const removeTab = useCallback(
-    (pathname: string) => {
-      const { wins } = tabState;
-      const winIndex = wins.findIndex((win) => win.pathname === pathname);
-      if (winIndex > -1) {
-        const win = wins[winIndex];
-        const pages = win.pages;
-        // 查找
-        wins.splice(winIndex, 1);
+    (key: string) => {
+      const { wins } = tabState!;
+      const index = wins.findIndex((win) => win.key === key);
+      if (index > -1) {
+        wins.splice(index, 1);
+        const win = wins[index];
+        dropScope(win.key);
+        console.log('清除页面缓存', win.key);
         const lastWin = wins[wins.length - 1]; // 最后一个
-        history.push(lastWin ? lastWin.pathname : '/');
-        pages.forEach((page) => {
-          console.log('清除页面缓存', page.pathname);
-          dropScope(page.pathname); // 占用用不能清除
-        });
+        history.push(lastWin ? lastWin.key : '/');
       }
     },
     [tabState],
   );
 
-  // 菜单功能
   const removeTabByIndex = useCallback(
     (index: number) => {
-      // TODO 可能不是当前激活的，不一定需要重制页面地址。
-      const removeWin = tabState.wins[index];
-      const pathname = removeWin.pathname;
-      const { activeKey, wins } = tabState;
+      const { activeKey, wins } = tabState!;
+      const removeWin = wins[index];
+      const key = removeWin.key;
       wins.splice(index, 1);
-      if (activeKey === pathname) {
+      if (activeKey === key) {
         // 激活的关闭了需要跳转新的
         const lastWin = wins[wins.length - 1]; // 最后一个
-        history.push(lastWin ? lastWin.pathname : '/');
+        history.push(lastWin ? lastWin.key : '/');
       } else {
         setTabState({ activeKey, wins: [...wins] });
       }
-      const pages = removeWin.pages;
-      pages.forEach((page) => {
-        dropScope(page.pathname); // 占用用不能清除
-      });
+      // 清除缓存
+      dropScope(key);
     },
     [tabState],
   );
@@ -318,95 +293,74 @@ const useTabs = (defaultTabs: Array<string | {key: string; closeable?: boolean;}
   // 不需要重制页面地址
   const removeOthers = useCallback(
     (index: number) => {
-      setTabState((tabState)=>{
-        const { wins, activeKey } = tabState;
+      setTabState((tabState) => {
+        const { wins, activeKey } = tabState!;
         let nextWins: IWindow[] = [];
         let cleanWins: IWindow[] = [];
-        const nextActiveKey = wins[index].pathname;
-        for(let i =0;i < wins.length; i++){
+        const nextActiveKey = wins[index].key;
+        for (let i = 0; i < wins.length; i++) {
           const win = wins[i];
-          if(win.closeable === false || i === index){
+          if (win.closeable === false || i === index) {
             nextWins.push(win);
-          }else{
+          } else {
             cleanWins.push(win);
           }
         }
-
-        if(nextActiveKey !== activeKey){
+        if (nextActiveKey !== activeKey) {
           history.push(nextActiveKey);
         }
-
-        setTimeout(()=>{
-          cleanWins.forEach(win=>{
+        setTimeout(() => {
+          cleanWins.forEach(win => {
             // 清除
-            const pages = win.pages;
-            pages.forEach((page) => {
-              dropScope(page.pathname); // 清除关闭的缓存
-            });
-          })
-        },100);// 切换完成后释放
+            dropScope(win.key);
+          });
+        }, 100);// 切换完成后释放
         return {
           activeKey: nextActiveKey, // 当前的保持不变
           wins: nextWins,
-        }
+        };
       });
     },
     [],
   );
 
   const removeAll = useCallback((actionIndex: number) => {
-    setTabState((tabState)=>{
-      const { wins, activeKey } = tabState;
+    setTabState((tabState) => {
+      const { wins, activeKey } = tabState!;
       const currentWin = wins[actionIndex];
       let nextWins: IWindow[] = [];
       let cleanWins: IWindow[] = [];
-      for(let i =0;i < wins.length; i++){
+      for (let i = 0; i < wins.length; i++) {
         const win = wins[i];
-        if(win.closeable === false){
+        if (win.closeable === false) {
           nextWins.push(win);
-        }else{
+        } else {
           cleanWins.push(win);
         }
       }
-      const nextPathname = currentWin.closeable === false? activeKey:(nextWins[0]?.pathname || '/');
-      if(nextPathname !== activeKey){
+      const nextPathname = currentWin.closeable === false ? activeKey : (nextWins[0]?.key || '/');
+      if (nextPathname !== activeKey) {
         history.push(nextPathname);
       }
-      setTimeout(()=>{
-        cleanWins.forEach(win=>{
-          const pages = win.pages;
-          pages.forEach((page) => {
-            dropScope(page.pathname); // 清除关闭的缓存
-          });
-        })
-      },100); // 切换完成后释放
+      setTimeout(() => {
+        cleanWins.forEach(win => {
+          dropScope(win.key); // 清除关闭的缓存
+        });
+      }, 100); // 切换完成后释放
       return {
         activeKey: nextPathname,
         wins: nextWins,
-      }
+      };
     });
   }, []);
 
   const refreshPage = useCallback(
     (index: number) => {
-      const activeWin = tabState.wins[index];
-      const pathname = activeWin.pathname;
-      refresh(pathname);
+      const activeWin = tabState!.wins[index];
+      refresh(activeWin.key);
     },
     [tabState],
   );
-
-  const setTabBadge = useMemoizedFn((tabKey: string, badge?: number)=>{
-    setTabState(tabState=>{
-      tabState.wins = tabState.wins.map(win=>{
-        if(win.tabKey === tabKey){
-          return {...win,badge};
-        }
-        return win;
-      });
-      return {...tabState}
-    });
-  });
 
   return {
     ...tabState,
@@ -415,7 +369,6 @@ const useTabs = (defaultTabs: Array<string | {key: string; closeable?: boolean;}
     removeOthers,
     removeAll,
     refreshPage,
-    setTabBadge,
   };
 };
 
