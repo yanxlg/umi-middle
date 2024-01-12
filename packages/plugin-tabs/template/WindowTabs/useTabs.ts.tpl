@@ -5,6 +5,7 @@ import { history, matchRoutes, useAppData, useLocation } from 'umi';
 import useSessionStorageState from 'ahooks/es/useSessionStorageState';
 import useMemoizedFn from 'ahooks/es/useMemoizedFn';
 import { createSearchParams } from 'react-router-dom';
+import omit from 'lodash/omit';
 
 declare module 'react-router-dom' {
   interface RouteObject {
@@ -140,7 +141,7 @@ function createWindow(routes: RouteObject[], pathname: string, search?: string, 
       key: getPathKey(pathname, search),
       closeable: closeable,
       freeze: tabMode !== 'inner',
-      route: route,
+      route: omit(route, 'element'),
     };
   } else {
     return {
@@ -163,6 +164,9 @@ function addWindowToList(windows: IWindow[], win?: IWindow) {
   }
   const { route, key } = win;
   const existIndex = windows.findIndex(old => {
+    if(old.key === key){
+      return true;
+    }
     return !old.freeze && (!old.route && !route && old.key === key || old.route && route && old.route.path === route.path);
   });
   const exist = windows[existIndex];
@@ -260,8 +264,8 @@ const useTabs = (defaultTabs: Array<string | DefaultWindowConfigType> = []) => {
       const { wins } = tabState!;
       const index = wins.findIndex((win) => win.key === key);
       if (index > -1) {
-        wins.splice(index, 1);
         const win = wins[index];
+        wins.splice(index, 1);
         dropScope(win.key);
         console.log('清除页面缓存', win.key);
         const lastWin = wins[wins.length - 1]; // 最后一个
