@@ -16,8 +16,7 @@ import {
 } from '@ant-design/icons';
 import { getMatchMenu, MenuDataItem } from '@umijs/route-utils';
 import { YHBadge as Badge, YHLayout as Layout, YHMenu as Menu, YHTooltip as Tooltip } from '@yh/yh-design';
-import type { ItemType } from 'antd/lib/menu/hooks/useItems';
-import React, { useMemo, useState } from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import { history, useMenu, useLocation } from 'umi';
 import { MenuSpin } from './MenuSpin';
 import { Scroll } from './Scroll';
@@ -25,6 +24,7 @@ import { SiderContent } from './SiderContent';
 import { Title } from './Title';
 import { conversionPath, fillClientMenus, isUrl } from './utils';
 import { MenuItem } from '@@/plugin-hc/useMenu';
+import {matchPath} from 'react-router-dom';
 
 function getIcon(icon?: string | React.ReactNode): React.ReactNode {
   switch (icon) {
@@ -131,6 +131,53 @@ function getNavMenuItems(
   });
 }
 
+
+function matchMenuWithKey(menu: MenuDataItem, key: string) {
+  const path = menu.key || menu.path || menu.url;
+  if (path) {
+    const result = matchPath({
+      path: path
+    }, key);
+    return result;
+  }
+  return null;
+}
+
+// 菜单可能没有完全按照层级配置
+function matchActiveMenu(menus: MenuDataItem[], activeKey?: string, parentKeys?: string[]): {activeMenu: MenuDataItem;parentMenuKeys:string[]}|undefined {
+  if (!activeKey) {
+    return undefined;
+  }
+  // 层级递归
+  for (let i = 0; i < menus.length; i++) {
+    const menu = menus[i];
+    if (matchMenuWithKey(menu, activeKey)) { // 命中了菜单
+      return {
+        activeMenu: menu,
+        parentMenuKeys: parentKeys||[],
+      }
+    }
+    const children = menu.children;
+    if (children && children.length > 0) {
+      const matchResult = matchActiveMenu(children, activeKey, [...parentKeys||[],menu.key!]);
+      if(matchResult){
+        return matchResult;
+      }
+    }
+  }
+}
+
+function isKeyListEqual(prev?: string[], next?: string[]){
+  if(!prev && !next){
+    return true
+  }
+  if((!prev && !!next) || (!!prev && !next)){
+    return false;
+  }
+
+  return prev.sort().join(',') === next.sort().join(',');
+}
+
 const Sider = ({
   countMap,
   sizes = { min: 48, max: 208 },
@@ -153,13 +200,31 @@ const Sider = ({
     return [];
   }, [menus]);
 
-  const matchMenus = useMemo(() => {
-    return getMatchMenu(location.pathname || '/', withStaticMenus, true);
+  const mountMatch = useMemo(() => {
+    return  matchActiveMenu(withStaticMenus, location.pathname || '/');
   }, [location.pathname, withStaticMenus]);
 
+  const activeMenu = mountMatch?.activeMenu;
+  const parentOpenKeys = mountMatch?.parentMenuKeys;
+
   const [selectedKeys, setSelectedKeys] = useState<string[] | undefined>(
-    matchMenus[0] ? [matchMenus[0].key!] : [],
+    activeMenu ? [activeMenu.key!] : [],
   );
+
+
+  const [openKeys, setOpenKeys] = useState<string[]>(parentOpenKeys||[]);
+
+  useEffect(() => {
+    const activeMenuKey = activeMenu?.key;
+    if (activeMenuKey) {
+      // 找到匹配的了
+      setSelectedKeys([activeMenuKey]);
+    }
+
+    if(!isKeyListEqual(openKeys,parentOpenKeys) && parentOpenKeys){
+      setOpenKeys(parentOpenKeys);
+    }
+  }, [activeMenu?.key]);
 
   const onCollapseHandle = (collapse: boolean) => {
     setCollapsed(collapse);
@@ -184,6 +249,8 @@ const Sider = ({
             mode={'inline'}
             theme={'light'}
             selectedKeys={selectedKeys}
+            openKeys={openKeys}
+            onOpenChange={setOpenKeys}
             onSelect={(info) => {
               setSelectedKeys(info.selectedKeys);
             }}

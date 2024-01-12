@@ -14,30 +14,31 @@ import {
   SettingOutlined,
   ToolOutlined,
 } from '@ant-design/icons';
-import { getMatchMenu, MenuDataItem } from '@umijs/route-utils';
-import { Badge, Layout, Menu, Tooltip } from 'antd';
-import type { ItemType } from 'antd/lib/menu/hooks/useItems';
-import React, { useMemo, useState } from 'react';
-import { history, useMenu, useLocation } from 'umi';
-import { MenuSpin } from './MenuSpin';
-import { Scroll } from './Scroll';
-import { SiderContent } from './SiderContent';
-import { Title } from './Title';
-import { conversionPath, fillClientMenus, isUrl } from './utils';
-import { MenuItem } from '@@/plugin-hc/useMenu';
+import {MenuDataItem} from '@umijs/route-utils';
+import {Badge, Layout, Menu, Tooltip} from 'antd';
+import type {ItemType} from 'antd/lib/menu/hooks/useItems';
+import React, {useEffect, useMemo, useState} from 'react';
+import {history, useMenu, useLocation} from 'umi';
+import {MenuSpin} from './MenuSpin';
+import {Scroll} from './Scroll';
+import {SiderContent} from './SiderContent';
+import {Title} from './Title';
+import {conversionPath, fillClientMenus, isUrl} from './utils';
+import {MenuItem} from '@@/plugin-hc/useMenu';
+import {matchPath} from 'react-router-dom';
 
 function getIcon(icon?: string | React.ReactNode): React.ReactNode {
   switch (icon) {
     case 'bank':
-      return <BankOutlined />;
+      return <BankOutlined/>;
     case 'setting':
-      return <SettingOutlined />;
+      return <SettingOutlined/>;
     case 'bar-chart':
-      return <BarChartOutlined />;
+      return <BarChartOutlined/>;
     case 'tool':
-      return <ToolOutlined />;
+      return <ToolOutlined/>;
     case 'download':
-      return <DownloadOutlined />;
+      return <DownloadOutlined/>;
   }
 
   return icon;
@@ -50,7 +51,7 @@ function getNavMenuItems(
   countMap?: { [key: string]: number },
 ): ItemType[] {
   return menusData.map((item) => {
-    const { icon, title, url, key, children } = item;
+    const {icon, title, url, key, children} = item;
     const iconNode = isChildren ? null : getIcon(icon);
     const menuKey = key || url;
     const count = countMap?.[menuKey];
@@ -62,7 +63,7 @@ function getNavMenuItems(
             overflowCount={9999}
             offset={[15, 0]}
             count={count}
-            styles={{ root: { color: 'inherit' } }}
+            styles={{root: {color: 'inherit'}}}
           >
             {title}
           </Badge>
@@ -78,9 +79,9 @@ function getNavMenuItems(
                 overflowCount={9999}
                 count={count}
                 offset={[8, -15]}
-                styles={{ root: { color: 'inherit' } }}
+                styles={{root: {color: 'inherit'}}}
               >
-                <span />
+                <span/>
               </Badge>
             ) : undefined}
             {iconNode}
@@ -110,7 +111,7 @@ function getNavMenuItems(
         title={title}
         open={collapsed ? false : undefined}
       >
-        <div style={{ textOverflow: 'ellipsis', overflow: 'hidden' }}>
+        <div style={{textOverflow: 'ellipsis', overflow: 'hidden'}}>
           {title}
         </div>
       </Tooltip>
@@ -122,7 +123,7 @@ function getNavMenuItems(
           <Badge
             overflowCount={9999}
             count={count}
-            styles={{ root: { color: 'inherit' } }}
+            styles={{root: {color: 'inherit'}}}
           >
             {menuContent}
           </Badge>
@@ -136,35 +137,103 @@ function getNavMenuItems(
   });
 }
 
-const Sider = ({
-  countMap,
-  sizes = { min: 48, max: 208 },
-  onCollapse,
-  patchClientMenus,
-}: {
-  countMap?: { [key: string]: number };
-  sizes?: { min: number; max: number };
-  onCollapse?: (collapsed: boolean, width: number) => void;
-  patchClientMenus?: (menus: MenuItem[])=> MenuItem[];
-}) => {
+
+function matchMenuWithKey(menu: MenuDataItem, key: string) {
+  const path = menu.key || menu.path || menu.url;
+  if (path) {
+    const result = matchPath({
+      path: path
+    }, key);
+    return result;
+  }
+  return null;
+}
+
+// 菜单可能没有完全按照层级配置
+function matchActiveMenu(menus: MenuDataItem[], activeKey?: string, parentKeys?: string[]): {activeMenu: MenuDataItem;parentMenuKeys:string[]}|undefined {
+  if (!activeKey) {
+    return undefined;
+  }
+  // 层级递归
+  for (let i = 0; i < menus.length; i++) {
+    const menu = menus[i];
+    if (matchMenuWithKey(menu, activeKey)) { // 命中了菜单
+      return {
+        activeMenu: menu,
+        parentMenuKeys: parentKeys||[],
+      }
+    }
+    const children = menu.children;
+    if (children && children.length > 0) {
+      const matchResult = matchActiveMenu(children, activeKey, [...parentKeys||[],menu.key!]);
+      if(matchResult){
+        return matchResult;
+      }
+    }
+  }
+}
+
+function isKeyListEqual(prev?: string[], next?: string[]){
+  if(!prev && !next){
+    return true
+  }
+  if((!prev && !!next) || (!!prev && !next)){
+    return false;
+  }
+
+  return prev.sort().join(',') === next.sort().join(',');
+}
+
+
+const Sider = (
+  {
+    countMap,
+    sizes = {min: 48, max: 208},
+    onCollapse,
+    patchClientMenus,
+  }: {
+    countMap?: { [key: string]: number };
+    sizes?: { min: number; max: number };
+    onCollapse?: (collapsed: boolean, width: number) => void;
+    patchClientMenus?: (menus: MenuItem[]) => MenuItem[];
+  }) => {
   const [collapsed, setCollapsed] = useState(false);
-  const { loading, menus } = useMenu('work-order');
+  const {loading, menus} = useMenu('work-order');
   const location = useLocation();
 
   const withStaticMenus = useMemo(() => {
     if (menus.length > 0) {
-      return fillClientMenus(patchClientMenus?patchClientMenus(menus):menus); // 转换类型
+      return fillClientMenus(patchClientMenus ? patchClientMenus(menus) : menus); // 转换类型
     }
     return [];
   }, [menus]);
 
-  const matchMenus = useMemo(() => {
-    return getMatchMenu(location.pathname || '/', withStaticMenus, true);
+
+  const mountMatch = useMemo(() => {
+    return  matchActiveMenu(withStaticMenus, location.pathname || '/');
   }, [location.pathname, withStaticMenus]);
 
+  const activeMenu = mountMatch?.activeMenu;
+  const parentOpenKeys = mountMatch?.parentMenuKeys;
+
   const [selectedKeys, setSelectedKeys] = useState<string[] | undefined>(
-    matchMenus[0] ? [matchMenus[0].key!] : [],
+    activeMenu ? [activeMenu.key!] : [],
   );
+
+
+  const [openKeys, setOpenKeys] = useState<string[]>(parentOpenKeys||[]);
+
+  useEffect(() => {
+    const activeMenuKey = activeMenu?.key;
+    if (activeMenuKey) {
+      // 找到匹配的了
+      setSelectedKeys([activeMenuKey]);
+    }
+
+    if(!isKeyListEqual(openKeys,parentOpenKeys) && parentOpenKeys){
+      setOpenKeys(parentOpenKeys);
+    }
+  }, [activeMenu?.key]);
 
   const onCollapseHandle = (collapse: boolean) => {
     setCollapsed(collapse);
@@ -184,10 +253,12 @@ const Sider = ({
       <SiderContent>
         <Title collapsed={collapsed}>工单系统</Title>
         <Scroll>
-          {loading && <MenuSpin />}
+          {loading && <MenuSpin/>}
           <Menu
             mode={'inline'}
             theme={'light'}
+            openKeys={openKeys}
+            onOpenChange={setOpenKeys}
             selectedKeys={selectedKeys}
             onSelect={(info) => {
               setSelectedKeys(info.selectedKeys);
@@ -196,7 +267,7 @@ const Sider = ({
           />
         </Scroll>
       </SiderContent>
-      <CollapsedButton collapsed={collapsed} setCollapsed={onCollapseHandle} />
+      <CollapsedButton collapsed={collapsed} setCollapsed={onCollapseHandle}/>
     </Layout.Sider>
   );
 };
