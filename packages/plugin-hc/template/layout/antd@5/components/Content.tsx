@@ -17,4 +17,5 @@ export const Content = styled<ContentType>(Layout.Content)`
   flex: 1;
   flex-direction: column;
   overflow: auto;
+  position: relative;
 `;

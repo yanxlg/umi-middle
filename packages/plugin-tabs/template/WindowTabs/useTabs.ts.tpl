@@ -202,12 +202,7 @@ function getWindowTabList(configList: Array<DefaultWindowConfigType>, routes: Ro
 const useTabs = (defaultTabs: Array<string | DefaultWindowConfigType> = []) => {
   const location = useLocation();
   const { clientRoutes } = useAppData();
-  const { dropScope, refresh, getCachingNodes } = useAliveController();
-
-  const cachingNodes = getCachingNodes();
-
-  console.log('缓存的实例', cachingNodes);
-
+  const { dropScope, refresh } = useAliveController();
   const [tabState, setTabState] = useSessionStorageState<{
     activeKey: string;
     wins: IWindow[];
