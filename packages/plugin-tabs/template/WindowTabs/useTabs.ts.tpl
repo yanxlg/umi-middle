@@ -137,7 +137,7 @@ function createWindow(routes: RouteObject[], pathname: string, search?: string, 
       return undefined; // 不创建Window,仅作为临时中间页面触发跳转
     }
     return {
-      title: tabTemplate ? getDynamicTabName(tabTemplate, params, search) : (title || 'unknown'),
+      title: tabTemplate ? getDynamicTabName(tabTemplate, params, search) : (title || (route.id === '404'? '404' : 'unknown')),
       key: getPathKey(pathname, search),
       closeable: closeable,
       freeze: tabMode !== 'inner',
