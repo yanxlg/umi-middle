@@ -69,9 +69,11 @@ function getMatchRoute(routes: RouteObject[], pathname: string) {
  * @param data
  */
 function parseTemplateString(template: string, data: object) {
-  const names = Object.keys(data);
-  const values = Object.values(data);
-  return new Function(...names, 'tplParams', `return \`${template}\`;`)(...values, data);
+  const copyData = {...data};
+  delete copyData['*'];// 特殊的需要删除，防止报错
+  const names = Object.keys(copyData);
+  const values = Object.values(copyData);
+  return new Function(...names, 'tplParams', `return \`${template}\`;`)(...values, copyData);
 }
 
 /**

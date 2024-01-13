@@ -2,9 +2,11 @@ import { matchRoutes, title } from 'umi';
 import { createSearchParams } from 'react-router-dom';
 
 function parseTemplateString(template: string, data: object) {
-  const names = Object.keys(data);
-  const values = Object.values(data);
-  return new Function(...names, 'tplParams', `return \`${template}\`;`)(...values, data);
+  const copyData = {...data};
+  delete copyData['*'];// 特殊的需要删除，防止报错
+  const names = Object.keys(copyData);
+  const values = Object.values(copyData);
+  return new Function(...names, 'tplParams', `return \`${template}\`;`)(...values, copyData);
 }
 
 function searchToObject(search?: string) {
@@ -29,7 +31,7 @@ export function onRouteChange({ clientRoutes, location }: any) {
   if(matchRoute){
     const { route, params } = matchRoute;
     const {title: pageTitle} = route;
-    const dynamicTitle = getDynamicTitle(pageTitle, params, location.search);
+    const dynamicTitle = pageTitle? getDynamicTitle(pageTitle, params, location.search) : '';
     document.title = pageTitle ? `${title} - ${dynamicTitle}` : title;
   }
 }
