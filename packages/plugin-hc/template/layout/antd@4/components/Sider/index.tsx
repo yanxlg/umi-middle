@@ -15,7 +15,7 @@ import {
   ToolOutlined,
 } from '@ant-design/icons';
 import { MenuDataItem } from '@umijs/route-utils';
-import { Badge, Layout, Menu, Tooltip } from 'antd';
+import { Layout } from 'antd';
 import type { ItemType } from 'antd/lib/menu/hooks/useItems';
 import React, {useEffect, useMemo, useRef, useState} from 'react';
 import { history, useMenu, useLocation } from 'umi';
@@ -26,6 +26,8 @@ import { Title } from './Title';
 import { conversionPath, fillClientMenus, isUrl } from './utils';
 import { MenuItem } from '@@/plugin-hc/useMenu';
 import {matchPath} from 'react-router-dom';
+import {MenuLabel} from './MenuLabel';
+import {StyledMenu} from './StyledMenu';
 
 function getIcon(icon?: string | React.ReactNode): React.ReactNode {
   switch (icon) {
@@ -57,38 +59,11 @@ function getNavMenuItems(
     const count = countMap?.[menuKey];
 
     if (Array.isArray(children) && children.length > 0) {
-      const badgeTitle =
-        void 0 !== count && !collapsed ? (
-          <Badge
-            overflowCount={9999}
-            offset={[15, 0]}
-            count={count}
-            styles={{ root: { color: 'inherit' } }}
-          >
-            {title}
-          </Badge>
-        ) : (
-          title
-        );
       return {
         key: menuKey,
-        icon: (
-          <>
-            {void 0 !== count && iconNode && collapsed ? (
-              <Badge
-                overflowCount={9999}
-                count={count}
-                offset={[8, -15]}
-                styles={{ root: { color: 'inherit' } }}
-              >
-                <span />
-              </Badge>
-            ) : undefined}
-            {iconNode}
-          </>
-        ),
+        icon: iconNode,
         children: getNavMenuItems(item.children, true, collapsed, countMap),
-        label: badgeTitle,
+        label: <MenuLabel label={title} collapsed={collapsed} badge={count}/>,
       };
     }
 
@@ -105,31 +80,8 @@ function getNavMenuItems(
       }
     };
 
-    const menuContent = (
-      <Tooltip
-        placement="right"
-        title={title}
-        visible={collapsed ? false : undefined}
-      >
-        <div style={{ textOverflow: 'ellipsis', overflow: 'hidden' }}>
-          {title}
-        </div>
-      </Tooltip>
-    );
-
     return {
-      label:
-        void 0 !== count ? (
-          <Badge
-            overflowCount={9999}
-            count={count}
-            styles={{ root: { color: 'inherit' } }}
-          >
-            {menuContent}
-          </Badge>
-        ) : (
-          menuContent
-        ),
+      label: <MenuLabel label={title} badge={count} collapsed={collapsed} tooltip={true}/>,
       key: menuKey,
       icon: iconNode,
       onClick: onClick,
@@ -262,7 +214,7 @@ const Sider = ({
         <Title collapsed={collapsed}>工单系统</Title>
         <Scroll>
           {loading && <MenuSpin />}
-          <Menu
+          <StyledMenu
             mode={'inline'}
             theme={'light'}
             selectedKeys={selectedKeys}

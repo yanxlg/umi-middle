@@ -14,8 +14,8 @@ import {
   SettingOutlined,
   ToolOutlined,
 } from '@ant-design/icons';
-import { getMatchMenu, MenuDataItem } from '@umijs/route-utils';
-import { YHBadge as Badge, YHLayout as Layout, YHMenu as Menu, YHTooltip as Tooltip } from '@yh/yh-design';
+import { MenuDataItem } from '@umijs/route-utils';
+import { YHLayout as Layout, YHMenu as Menu } from '@yh/yh-design';
 import React, {useEffect, useMemo, useRef, useState} from 'react';
 import { history, useMenu, useLocation } from 'umi';
 import { MenuSpin } from './MenuSpin';
@@ -25,6 +25,8 @@ import { Title } from './Title';
 import { conversionPath, fillClientMenus, isUrl } from './utils';
 import { MenuItem } from '@@/plugin-hc/useMenu';
 import {matchPath} from 'react-router-dom';
+import {MenuLabel} from './MenuLabel';
+import {StyledMenu} from './StyledMenu';
 
 function getIcon(icon?: string | React.ReactNode): React.ReactNode {
   switch (icon) {
@@ -56,35 +58,8 @@ function getNavMenuItems(
     const count = countMap?.[menuKey];
 
     if (Array.isArray(children) && children.length > 0) {
-      const badgeTitle =
-        void 0 !== count && !collapsed ? (
-          <Badge
-            overflowCount={9999}
-            offset={[15, 0]}
-            count={count}
-            styles={{ root: { color: 'inherit' } }}
-          >
-            {title}
-          </Badge>
-        ) : (
-          title
-        );
       return (
-        <Menu.SubMenu key={menuKey} icon={
-          <>
-            {void 0 !== count && iconNode && collapsed ? (
-              <Badge
-                overflowCount={9999}
-                count={count}
-                offset={[8, -15]}
-                styles={{ root: { color: 'inherit' } }}
-              >
-                <span />
-              </Badge>
-            ) : undefined}
-            {iconNode}
-          </>
-        } title={badgeTitle}>
+        <Menu.SubMenu key={menuKey} icon={iconNode} title={<MenuLabel label={title} collapsed={collapsed} badge={count}/>}>
           {getNavMenuItems(item.children, true, collapsed, countMap)}
         </Menu.SubMenu>
       )
@@ -103,30 +78,8 @@ function getNavMenuItems(
       }
     };
 
-    const menuContent = (
-      <Tooltip
-        placement="right"
-        title={title}
-        visible={collapsed ? false : undefined}
-      >
-        <div style={{ textOverflow: 'ellipsis', overflow: 'hidden' }}>
-          {title}
-        </div>
-      </Tooltip>
-    );
-
     return (
-      <Menu.Item title={void 0 !== count ? (
-        <Badge
-          overflowCount={9999}
-          count={count}
-          styles={{ root: { color: 'inherit' } }}
-        >
-          {menuContent}
-        </Badge>
-      ) : (
-        menuContent
-      )} key={menuKey} icon={iconNode} onClick={onClick}></Menu.Item>
+      <Menu.Item title={<MenuLabel label={title} badge={count} collapsed={collapsed} tooltip={true}/>} key={menuKey} icon={iconNode} onClick={onClick}></Menu.Item>
     )
   });
 }
@@ -255,7 +208,7 @@ const Sider = ({
         <Title collapsed={collapsed}>工单系统</Title>
         <Scroll>
           {loading && <MenuSpin />}
-          <Menu
+          <StyledMenu
             mode={'inline'}
             theme={'light'}
             selectedKeys={selectedKeys}
@@ -268,7 +221,7 @@ const Sider = ({
           {
             getNavMenuItems(withStaticMenus, false, collapsed, countMap)
           }
-          </Menu>
+          </StyledMenu>
         </Scroll>
       </SiderContent>
       <CollapsedButton collapsed={collapsed} onCollapse={onCollapseButtonClick} />

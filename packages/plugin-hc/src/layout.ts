@@ -23,7 +23,7 @@ const tmpDir = winPath(join(__dirname, "..", "template")); // 模版目录
 
 const isDevelopment = process.env.NODE_ENV !== "production";
 
-function writeDirectory(templateDir: string, directoryPath: string, api: IApi) {
+function writeDirectory(templateDir: string, directoryPath: string, api: IApi, antPrefix: string) {
   // 读取指定路径下的所有文件和子目录
   const filesAndDirectories = fs.readdirSync(directoryPath);
   for (let i = 0; i < filesAndDirectories.length; i++) {
@@ -37,7 +37,8 @@ function writeDirectory(templateDir: string, directoryPath: string, api: IApi) {
           tplPath: itemPath,
           context: {
             isDevelopment,
-            useTabs
+            useTabs,
+            antPrefix
           }
         })
       }else{
@@ -47,7 +48,7 @@ function writeDirectory(templateDir: string, directoryPath: string, api: IApi) {
         });
       }
     } else if (fs.statSync(itemPath).isDirectory()) {
-      writeDirectory(templateDir, itemPath, api);
+      writeDirectory(templateDir, itemPath, api, antPrefix);
     }
   }
 }
@@ -112,13 +113,19 @@ export function resolveLayout(api: IApi) {
   api.onGenerateFiles(() => {
     const layoutPluginConfig = api.config.hc.layout as LayoutPluginConfig;
     const type = getLayoutType(layoutPluginConfig);
+
+
+    const prefixCls = api.config.antd?.configProvider?.prefixCls;
+    const themePrefixCls = api.config.theme?.['@ant-prefix'];
+    const antPrefix = prefixCls || themePrefixCls || 'ant';
+
     if (layoutPluginConfig) {
       if (!type) {
         api.logger.error('未检测到相关的ui组件库依赖，无法生成对应的布局组件，当前支持 antd@4、@antd@5、yh-design');
         return;
       }
       const templateDir = path.join(tmpDir, `layout/${type}`);
-      writeDirectory(templateDir, templateDir, api);
+      writeDirectory(templateDir, templateDir, api, antPrefix);
 
       api.writeTmpFile({
         path: RUNTIME_TYPE_FILE_NAME,
