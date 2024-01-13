@@ -29,15 +29,15 @@ const Container = styled.div`
 
 const CollapsedButton = ({
   collapsed,
-  setCollapsed,
+  onCollapse,
 }: {
   collapsed: boolean;
-  setCollapsed: (collapsed: boolean) => void;
+  onCollapse: (collapsed: boolean) => void;
 }) => {
   return (
     <Container
       onClick={() => {
-        setCollapsed(!collapsed);
+        onCollapse(!collapsed);
       }}
     >
       {collapsed ? (

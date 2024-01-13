@@ -17,7 +17,7 @@ import {
 import { MenuDataItem } from '@umijs/route-utils';
 import { Badge, Layout, Menu, Tooltip } from 'antd';
 import type { ItemType } from 'antd/lib/menu/hooks/useItems';
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 import { history, useMenu, useLocation } from 'umi';
 import { MenuSpin } from './MenuSpin';
 import { Scroll } from './Scroll';
@@ -217,7 +217,7 @@ const Sider = ({
     activeMenu ? [activeMenu.key!] : [],
   );
 
-
+  const openKeysRef = useRef<string[]>([]);
   const [openKeys, setOpenKeys] = useState<string[]>(parentOpenKeys||[]);
 
   useEffect(() => {
@@ -236,6 +236,17 @@ const Sider = ({
     setCollapsed(collapse);
     onCollapse?.(collapse, collapse ? sizes.min : sizes.max);
   };
+
+
+  const onCollapseButtonClick = (collapse: boolean)=>{
+    // 需要缓存
+    onCollapseHandle(collapse);
+    if(collapse){
+      openKeysRef.current = openKeys;
+    } else {
+      setOpenKeys(openKeysRef.current);
+    }
+  }
 
   return (
     <Layout.Sider
@@ -264,7 +275,7 @@ const Sider = ({
           />
         </Scroll>
       </SiderContent>
-      <CollapsedButton collapsed={collapsed} setCollapsed={onCollapseHandle} />
+      <CollapsedButton collapsed={collapsed} onCollapse={onCollapseButtonClick} />
     </Layout.Sider>
   );
 };

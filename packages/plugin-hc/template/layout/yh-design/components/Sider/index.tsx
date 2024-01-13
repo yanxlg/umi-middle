@@ -16,7 +16,7 @@ import {
 } from '@ant-design/icons';
 import { getMatchMenu, MenuDataItem } from '@umijs/route-utils';
 import { YHBadge as Badge, YHLayout as Layout, YHMenu as Menu, YHTooltip as Tooltip } from '@yh/yh-design';
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 import { history, useMenu, useLocation } from 'umi';
 import { MenuSpin } from './MenuSpin';
 import { Scroll } from './Scroll';
@@ -211,7 +211,7 @@ const Sider = ({
     activeMenu ? [activeMenu.key!] : [],
   );
 
-
+  const openKeysRef = useRef<string[]>([]);
   const [openKeys, setOpenKeys] = useState<string[]>(parentOpenKeys||[]);
 
   useEffect(() => {
@@ -230,6 +230,16 @@ const Sider = ({
     setCollapsed(collapse);
     onCollapse?.(collapse, collapse ? sizes.min : sizes.max);
   };
+
+  const onCollapseButtonClick = (collapse: boolean)=>{
+    // 需要缓存
+    onCollapseHandle(collapse);
+    if(collapse){
+      openKeysRef.current = openKeys;
+    } else {
+      setOpenKeys(openKeysRef.current);
+    }
+  }
 
   return (
     <Layout.Sider
@@ -261,7 +271,7 @@ const Sider = ({
           </Menu>
         </Scroll>
       </SiderContent>
-      <CollapsedButton collapsed={collapsed} setCollapsed={onCollapseHandle} />
+      <CollapsedButton collapsed={collapsed} onCollapse={onCollapseButtonClick} />
     </Layout.Sider>
   );
 };
