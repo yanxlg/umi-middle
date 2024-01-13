@@ -139,8 +139,17 @@ const BlockBadge = styled(Badge)`
 `;
 
 
-function TabLabel({index, widthType, name, badge, onReload, overflowCount}:{index:number; widthType: IWindowTabsProps['widthType']; name: string; badge?: number; onReload?: Function; overflowCount?: number}) {
-  const content = widthType === 'fit-content' ? name : <Tooltip title={name}><div style={ {[widthType!.type]: widthType!.width, textOverflow: 'ellipsis', overflow: 'hidden'} }>{name}</div></Tooltip>;
+function TabLabel({index, widthType, title, badge, onReload, overflowCount}:{index:number; widthType: IWindowTabsProps['widthType']; title: string; badge?: number; onReload?: Function; overflowCount?: number}) {
+  // 对于()中内容进行截断溢出处理
+  const showLabel = title.replace(/\((\S+)\)/,function(value,$1){
+    if($1.length > 5){
+      return '(' +$1.substr(0,2) + '...' + $1.substr(-2) + ')';
+    }
+    return value;
+  });
+  const content = widthType === 'fit-content' ?
+    <Tooltip title={title}>{showLabel}</Tooltip> :
+    <Tooltip title={title}><div style={ {[widthType!.type]: widthType!.width, textOverflow: 'ellipsis', overflow: 'hidden'} }>{showLabel}</div></Tooltip>;
   return (
     <>
       { badge === void 0 ? content:<BlockBadge count={badge} overflowCount={overflowCount} style={ {position: 'absolute', left:0, right:'unset', transform: 'translate(-50%,-50%)', marginLeft: -5, pointerEvents: 'none', background: 'rgba(255,77,79,0.9)'} }>{content}</BlockBadge>}
@@ -250,7 +259,7 @@ export default function WindowTabs(props: IWindowTabsProps & {
         items={!!TabPanel ? undefined : wins.map((win, index) => {
           return {
             key: win.key,
-            label: <TabLabel overflowCount={overflowCount} index={index} widthType={widthType} name={win.title} badge={badgeMap?badgeMap[win.key]:win.badge} onReload={reloadIcon ? refreshPage: undefined}/>,
+            label: <TabLabel overflowCount={overflowCount} index={index} widthType={widthType} title={win.title} badge={badgeMap?badgeMap[win.key]:win.badge} onReload={reloadIcon ? refreshPage: undefined}/>,
             closable: win.closeable??closeable,
           }
         })}
@@ -267,7 +276,7 @@ export default function WindowTabs(props: IWindowTabsProps & {
                     overflowCount={overflowCount}
                     index={index}
                     widthType={widthType as any}
-                    name={win.title!}
+                    title={win.title!}
                     badge={badgeMap?badgeMap[win.key]:win.badge}
                     onReload={reloadIcon ? refreshPage : undefined}
                   />
