@@ -39,6 +39,11 @@ export const MenuLabel = (
           <Badge
             overflowCount={9999}
             count={badge}
+            offset={[0,10]}
+            style={{
+              pointerEvents: 'none',
+              background: 'rgba(255,77,79,0.9)'
+            }}
           >
             <i/>
           </Badge>)

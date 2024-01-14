@@ -15,7 +15,7 @@ import {
   ToolOutlined,
 } from '@ant-design/icons';
 import {MenuDataItem} from '@umijs/route-utils';
-import {Layout} from 'antd';
+import {Badge, Layout} from 'antd';
 import type {ItemType} from 'antd/lib/menu/hooks/useItems';
 import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {history, useMenu, useLocation} from 'umi';
@@ -28,6 +28,7 @@ import {MenuItem} from '@@/plugin-hc/useMenu';
 import {matchPath} from 'react-router-dom';
 import {MenuLabel} from './MenuLabel';
 import {StyledMenu} from './StyledMenu';
+import {IconWithBadge} from './IconWithBadge';
 
 function getIcon(icon?: string | React.ReactNode): React.ReactNode {
   switch (icon) {
@@ -62,10 +63,13 @@ function getNavMenuItems(
     const menuKey = key || url;
     const count = countMap?.[menuKey];
 
+
+    // 第一级放在icon, 子菜单放在Label上？？？
+
     if (Array.isArray(children) && children.length > 0) {
       return {
         key: menuKey,
-        icon: iconNode,
+        icon: iconNode && collapsed?<IconWithBadge iconNode={iconNode} count={count}/>:iconNode,
         children: getNavMenuItems(item.children, true, collapsed, countMap),
         label: <MenuLabel label={title} collapsed={collapsed} badge={count}/>,
       };
@@ -87,7 +91,7 @@ function getNavMenuItems(
     return {
       label: <MenuLabel label={title} badge={count} collapsed={collapsed} tooltip={true}/>,
       key: menuKey,
-      icon: iconNode,
+      icon: iconNode && collapsed?<IconWithBadge iconNode={iconNode} count={count}/>:iconNode,
       onClick: onClick,
     };
   });

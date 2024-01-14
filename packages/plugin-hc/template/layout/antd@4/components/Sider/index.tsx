@@ -28,6 +28,7 @@ import { MenuItem } from '@@/plugin-hc/useMenu';
 import {matchPath} from 'react-router-dom';
 import {MenuLabel} from './MenuLabel';
 import {StyledMenu} from './StyledMenu';
+import {IconWithBadge} from './IconWithBadge';
 
 function getIcon(icon?: string | React.ReactNode): React.ReactNode {
   switch (icon) {
@@ -61,7 +62,7 @@ function getNavMenuItems(
     if (Array.isArray(children) && children.length > 0) {
       return {
         key: menuKey,
-        icon: iconNode,
+        icon: iconNode && collapsed?<IconWithBadge iconNode={iconNode} count={count}/>:iconNode,
         children: getNavMenuItems(item.children, true, collapsed, countMap),
         label: <MenuLabel label={title} collapsed={collapsed} badge={count}/>,
       };
@@ -83,7 +84,7 @@ function getNavMenuItems(
     return {
       label: <MenuLabel label={title} badge={count} collapsed={collapsed} tooltip={true}/>,
       key: menuKey,
-      icon: iconNode,
+      icon: iconNode && collapsed?<IconWithBadge iconNode={iconNode} count={count}/>:iconNode,
       onClick: onClick,
     };
   });

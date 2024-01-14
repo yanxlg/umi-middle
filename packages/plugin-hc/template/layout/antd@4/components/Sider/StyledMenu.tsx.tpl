@@ -10,8 +10,15 @@ import {Menu} from 'antd';
 import styled from "styled-components";
 
 export const StyledMenu = styled(Menu)`
-  & .{{{antPrefix}}}-menu-title-content {
-    overflow: auto;
+  &.{{{antPrefix}}}-menu-root .{{{antPrefix}}}-menu-submenu .{{{antPrefix}}}-menu-submenu-title > .{{{antPrefix}}}-menu-title-content,
+  &.{{{antPrefix}}}-menu-root .{{{antPrefix}}}-menu.{{{antPrefix}}}-menu-sub > .{{{antPrefix}}}-menu-item .{{{antPrefix}}}-menu-submenu-title > .{{{antPrefix}}}-menu-title-content,
+  &.{{{antPrefix}}}-menu-inline.{{{antPrefix}}}-menu-root .{{{antPrefix}}}-menu-item >.{{{antPrefix}}}-menu-title-content{
+    overflow: visible;
     text-overflow: unset;
+  }
+
+  &.wos-menu-inline-collapsed.wos-menu-root .wos-menu-submenu-title {
+    display: flex;
+    align-items: center;
   }
 `;

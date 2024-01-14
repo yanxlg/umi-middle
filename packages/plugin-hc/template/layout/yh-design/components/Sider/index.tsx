@@ -27,6 +27,7 @@ import { MenuItem } from '@@/plugin-hc/useMenu';
 import {matchPath} from 'react-router-dom';
 import {MenuLabel} from './MenuLabel';
 import {StyledMenu} from './StyledMenu';
+import {IconWithBadge} from './IconWithBadge';
 
 function getIcon(icon?: string | React.ReactNode): React.ReactNode {
   switch (icon) {
@@ -59,7 +60,7 @@ function getNavMenuItems(
 
     if (Array.isArray(children) && children.length > 0) {
       return (
-        <Menu.SubMenu key={menuKey} icon={iconNode} title={<MenuLabel label={title} collapsed={collapsed} badge={count}/>}>
+        <Menu.SubMenu key={menuKey} icon={iconNode && collapsed?<IconWithBadge iconNode={iconNode} count={count}/>:iconNode} title={<MenuLabel label={title} collapsed={collapsed} badge={count}/>}>
           {getNavMenuItems(item.children, true, collapsed, countMap)}
         </Menu.SubMenu>
       )
@@ -79,7 +80,7 @@ function getNavMenuItems(
     };
 
     return (
-      <Menu.Item title={<MenuLabel label={title} badge={count} collapsed={collapsed} tooltip={true}/>} key={menuKey} icon={iconNode} onClick={onClick}></Menu.Item>
+      <Menu.Item title={<MenuLabel label={title} badge={count} collapsed={collapsed} tooltip={true}/>} key={menuKey} icon={iconNode && collapsed?<IconWithBadge iconNode={iconNode} count={count}/>:iconNode} onClick={onClick}></Menu.Item>
     )
   });
 }

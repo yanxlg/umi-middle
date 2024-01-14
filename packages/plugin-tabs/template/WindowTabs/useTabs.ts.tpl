@@ -256,22 +256,6 @@ const useTabs = (defaultTabs: Array<string | DefaultWindowConfigType> = []) => {
     });
   }, []);
 
-  const removeTab = useCallback(
-    (key: string) => {
-      const { wins } = tabState!;
-      const index = wins.findIndex((win) => win.key === key);
-      if (index > -1) {
-        const win = wins[index];
-        wins.splice(index, 1);
-        dropScope(win.key);
-        console.log('清除页面缓存', win.key);
-        const lastWin = wins[wins.length - 1]; // 最后一个
-        history.push(lastWin ? lastWin.key : '/');
-      }
-    },
-    [tabState],
-  );
-
   const removeTabByIndex = useCallback(
     (index: number) => {
       const { activeKey, wins } = tabState!;
@@ -290,6 +274,19 @@ const useTabs = (defaultTabs: Array<string | DefaultWindowConfigType> = []) => {
     },
     [tabState],
   );
+
+  const removeTab = useCallback(
+    (key: string) => {
+      const { wins } = tabState!;
+      const index = wins.findIndex((win) => win.key === key);
+      if (index > -1) {
+        removeTabByIndex(index);
+      }
+    },
+    [tabState],
+  );
+
+
 
   // 不需要重制页面地址
   const removeOthers = useCallback(
