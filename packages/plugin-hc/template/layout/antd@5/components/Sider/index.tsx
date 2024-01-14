@@ -191,7 +191,19 @@ const Sider = (
     }
 
     if(!isKeyListEqual(openKeys,parentOpenKeys) && parentOpenKeys){
-      setOpenKeys(parentOpenKeys);
+      if(window.requestIdleCallback) {
+        window.requestIdleCallback(()=>{
+          setOpenKeys(parentOpenKeys);
+        })
+      }else if(window.requestAnimationFrame){
+        window.requestAnimationFrame(()=>{
+          setOpenKeys(parentOpenKeys);
+        })
+      }else{
+        setTimeout(()=>{
+          setOpenKeys(parentOpenKeys);
+        },0);
+      }
     }
   }, [activeMenu?.key]);
 
