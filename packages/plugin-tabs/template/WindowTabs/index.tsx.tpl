@@ -234,7 +234,7 @@ export default function WindowTabs(props: IWindowTabsProps & {
         removeTab(key);
       }
     },
-    [wins]
+    [wins, activeKey]
   );
 
   const onTabChange = useCallback((pathname: string) => {

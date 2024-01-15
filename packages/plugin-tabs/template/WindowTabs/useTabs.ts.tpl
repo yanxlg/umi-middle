@@ -162,7 +162,7 @@ function createWindow(routes: RouteObject[], pathname: string, search?: string, 
  */
 function addWindowToList(windows: IWindow[], win?: IWindow) {
   if (!win) {
-    return { windows };
+    return windows;
   }
   const { route, key } = win;
   const existIndex = windows.findIndex(old => {
@@ -171,14 +171,13 @@ function addWindowToList(windows: IWindow[], win?: IWindow) {
     }
     return !old.freeze && (!old.route && !route && old.key === key || old.route && route && old.route.path === route.path);
   });
-  const exist = windows[existIndex];
   if (existIndex > -1) {
     win.closeable = win.closeable || windows[existIndex].closeable; // 保持原来的值
     windows.splice(existIndex, 1, win);
   } else {
     windows.push(win);
   }
-  return { windows, exist };
+  return windows;
 }
 
 /**
@@ -205,6 +204,7 @@ const useTabs = (defaultTabs: Array<string | DefaultWindowConfigType> = []) => {
   const location = useLocation();
   const { clientRoutes } = useAppData();
   const { dropScope, refresh } = useAliveController();
+
   const [tabState, setTabState] = useSessionStorageState<{
     activeKey: string;
     wins: IWindow[];
@@ -215,7 +215,7 @@ const useTabs = (defaultTabs: Array<string | DefaultWindowConfigType> = []) => {
       const { pathname, search } = location;
       const newWindow = createWindow(clientRoutes as unknown as RouteObject[], pathname!, search);
       return {
-        wins: addWindowToList(wins, newWindow).windows,
+        wins: addWindowToList(wins, newWindow),
         activeKey: getPathKey(pathname, search), // Tab 不选中
       };
     },
@@ -227,7 +227,7 @@ const useTabs = (defaultTabs: Array<string | DefaultWindowConfigType> = []) => {
       const defaultWindowList = getWindowTabList(initTabConfigList, clientRoutes as unknown as RouteObject[]);
       const newWindow = createWindow(clientRoutes as unknown as RouteObject[], pathname!, search);
       return {
-        wins: addWindowToList(defaultWindowList, newWindow).windows,
+        wins: addWindowToList(defaultWindowList, newWindow),
         activeKey: getPathKey(pathname, search),
       };
     },
@@ -237,22 +237,20 @@ const useTabs = (defaultTabs: Array<string | DefaultWindowConfigType> = []) => {
     const nextWindow = createWindow(clientRoutes as unknown as RouteObject[], pathname, search);
     setTabState((tabState) => {
       const { wins, activeKey } = tabState!;
-      const { windows, exist } = addWindowToList(wins, nextWindow);
-      if (exist) {
-        dropScope(exist.key);
-      }
       return {
         activeKey: getPathKey(pathname, search),
-        wins: windows,
+        wins: addWindowToList(wins, nextWindow),
       };
     });
   }, []);
 
   useEffect(() => {
-    history.listen((updater) => {
-      const location = updater.location;
-      const { pathname, search } = location;
-      onPathChange(pathname, search);
+    history.listen(function(updater){ // 比 location Effect 提前一些，会快一点
+      const {action, location} = updater;
+      if(action !== 'POP'){
+         const {pathname, search} = location;
+         onPathChange(pathname, search);
+      }
     });
   }, []);
 
@@ -262,9 +260,11 @@ const useTabs = (defaultTabs: Array<string | DefaultWindowConfigType> = []) => {
       const removeWin = wins[index];
       const key = removeWin.key;
       wins.splice(index, 1);
+
       if (activeKey === key) {
-        // 激活的关闭了需要跳转新的
-        const lastWin = wins[wins.length - 1]; // 最后一个
+        // next 优先激活前一个标签，如果没有则激活后一个标签
+        const nextIndex = index === 0 ? 0: index-1;
+        const lastWin = wins[nextIndex]; // 最后一个
         history.push(lastWin ? lastWin.key : '/');
       } else {
         setTabState({ activeKey, wins: [...wins] });
