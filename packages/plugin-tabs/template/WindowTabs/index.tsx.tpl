@@ -135,6 +135,7 @@ export interface IWindowTabsProps {
 const BlockBadge = styled(Badge)`
   span&{
     display: block;
+    color: inherit;
   }
 `;
 
