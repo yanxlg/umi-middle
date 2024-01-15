@@ -213,7 +213,7 @@ const Sider = ({
             mode={'inline'}
             theme={'light'}
             selectedKeys={selectedKeys}
-            openKeys={openKeys}
+            openKeys={collapsed?[]:openKeys}
             onOpenChange={setOpenKeys}
             onSelect={(info) => {
               setSelectedKeys(info.selectedKeys);

@@ -239,7 +239,7 @@ const Sider = (
           <StyledMenu
             mode={'inline'}
             theme={'light'}
-            openKeys={openKeys}
+            openKeys={collapsed?[]:openKeys}
             onOpenChange={setOpenKeys}
             selectedKeys={selectedKeys}
             onSelect={(info) => {
