@@ -70,7 +70,7 @@ function checkInTab(element: HTMLElement): false | number {
 
 
 const ReplaceMenuWithAnt = (props: {
-  propsFromTrigger?: { index: 0; window: IWindow };
+  propsFromTrigger?: { index: 0; window: IWindow; isActive?: boolean };
   removeTabByIndex: (index: number) => void;
   removeOthers: (index: number) => void;
   removeAll: (index: number) => void;
@@ -98,7 +98,11 @@ const ReplaceMenuWithAnt = (props: {
 
   // 如果当前是不可关闭的标签，则没有关闭操作和关闭所有操作
   const config = propsFromTrigger?.window;
+  const isActive = propsFromTrigger?.isActive;// 刷新操作只有激活的标签有
   const items = contextMenus.filter(item=>{
+    if(item.key === 'refresh'){
+      return !!isActive;
+    }
     return !(config && config.closeable === false && item && (item.key === 'close' || item.key === 'close-all'));
   });
   return <AntdMenu onClick={handleMenuClick} items={items} />;
@@ -201,12 +205,13 @@ export default function WindowTabs(props: IWindowTabsProps & {
   });
 
   const showContextMenu = useCallback(
-    (index: number, window: IWindow, event: React.MouseEvent<Element, MouseEvent>) => {
+    (index: number, win: IWindow, isActive: boolean, event: React.MouseEvent<Element, MouseEvent>) => {
       show({
         event,
         props: {
           index: index,
-          window: window
+          window: win,
+          isActive: isActive
         },
       });
     },
@@ -218,8 +223,8 @@ export default function WindowTabs(props: IWindowTabsProps & {
     const tabIndex = checkInTab(target);
     if (tabIndex !== false) {
       event.preventDefault();
-      const config = wins[tabIndex];
-      showContextMenu(tabIndex, config, event);
+      const win = wins[tabIndex];
+      showContextMenu(tabIndex, win, win.key === activeKey, event);
     }
   };
 
