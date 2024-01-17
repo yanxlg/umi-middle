@@ -100,7 +100,7 @@ const ReplaceMenuWithAnt = (props: {
   const config = propsFromTrigger?.window;
   const isActive = propsFromTrigger?.isActive;// 刷新操作只有激活的标签有
   const items = contextMenus.filter(item=>{
-    if(item.key === 'refresh'){
+    if(item.key === 'refresh' || item.type === 'divider'){
       return !!isActive;
     }
     return !(config && config.closeable === false && item && (item.key === 'close' || item.key === 'close-all'));
