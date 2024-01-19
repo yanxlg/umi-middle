@@ -228,7 +228,7 @@ export default function WindowTabs(props: IWindowTabsProps & {
     }
   }
 
-  const showExtraClose = wins.find(win=>!win.closeable);
+  const showExtraClose = wins.find(win=>!!win.closeable);
   return (
     <Dropdown open={!!menuConfig} onOpenChange={onOpenChange} menu={ {...menuConfig, style:{minWidth: 140} } } trigger={['contextMenu']}>
       <StyledTabs
