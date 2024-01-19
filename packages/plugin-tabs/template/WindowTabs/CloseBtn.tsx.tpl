@@ -26,6 +26,9 @@ const CloseIconButton = styled(CloseOutlined)`
   line-height: 20px;
   justify-content: center;
   cursor: pointer;
+  &.anticon {
+    display: inline-flex;
+  }
   &:hover {
     color: #3C7AF7;
   }

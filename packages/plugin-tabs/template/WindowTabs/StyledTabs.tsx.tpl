@@ -30,10 +30,10 @@ export const StyledTabs = styled(Tabs)`
 
     &.{{{antdPrefix}}}-tabs-tab-active {
       background-color: #FFF
+    }
 
-      &:after{
-        display: none;
-      }
+    &.{{{antdPrefix}}}-tabs-tab-active:after{
+      display: none;
     }
 
     &:after{
