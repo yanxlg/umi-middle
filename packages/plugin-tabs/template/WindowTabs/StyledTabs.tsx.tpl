@@ -61,4 +61,11 @@ export const StyledTabs = styled(Tabs)`
     background: #AAAFB9;
     color: rgba(0, 0, 0, 0.45);
   }
+
+  &.{{{antdPrefix}}}-tabs >.{{{antdPrefix}}}-tabs-nav .{{{antdPrefix}}}-tabs-tab-btn:focus:not(:focus-visible),
+  &.{{{antdPrefix}}}-tabs >.{{{antdPrefix}}}-tabs-nav .{{{antdPrefix}}}-tabs-tab-remove:focus:not(:focus-visible),
+  &.{{{antdPrefix}}}-tabs >.{{{antdPrefix}}}-tabs-nav .{{{antdPrefix}}}-tabs-tab-btn:active,
+  &.{{{antdPrefix}}}-tabs >.{{{antdPrefix}}}-tabs-nav .{{{antdPrefix}}}-tabs-tab-remove:active {
+    color: #000000;
+  }
 `;

@@ -1,22 +1,18 @@
 {{#useYhDesign}}
-import { YHMenu as AntdMenu, MenuProps, YHTabs as Tabs, YHTooltip as Tooltip, YHBadge as Badge, YHDropdown as Dropdown } from "@yh/yh-design";
+import { MenuProps, YHTabs as Tabs, YHTooltip as Tooltip, YHBadge as Badge, YHDropdown as Dropdown } from "@yh/yh-design";
 {{/useYhDesign}}
 {{^useYhDesign}}
-import { Menu as AntdMenu, MenuProps, Tabs, Tooltip, Badge, Dropdown } from "antd";
+import { MenuProps, Tabs, Tooltip, Badge, Dropdown } from "antd";
 {{/useYhDesign}}
 import type { MenuInfo } from "rc-menu/lib/interface";
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { history, useAppData } from "umi";
 import "./themes/otb/index.less";
 import { useTabs, IWindow } from "./useTabs";
 import ReloadOutlined from '@ant-design/icons/ReloadOutlined';
-import { Menu, useContextMenu } from "react-contexify";
 import styled from 'styled-components';
 import { StyledTabs } from './StyledTabs';
-import "react-contexify/dist/ReactContexify.css";
 import { CloseBtn } from './CloseBtn';
-
-const MENU_ID = "tab_context_menu";
 
 
 const antPrefixCls = "{{{antdPrefix}}}"; // TODO 需要插件生成
@@ -72,49 +68,6 @@ function checkInTab(element: HTMLElement): false | number {
   }
   return false;
 }
-
-
-const ReplaceMenuWithAnt = (props: {
-  propsFromTrigger?: { index: 0; window: IWindow; isActive?: boolean };
-  removeTabByIndex: (index: number) => void;
-  removeOthers: (index: number) => void;
-  removeAll: (index: number) => void;
-  refreshPage: (index: number) => void;
-}) => {
-  const { removeTabByIndex, removeOthers, removeAll, refreshPage, propsFromTrigger } = props;
-  const handleMenuClick = (info: MenuInfo) => {
-    const key = info.key;
-    const actionIndex = propsFromTrigger?.index!;
-    switch (key) {
-      case "close":
-        removeTabByIndex(actionIndex);
-        break;
-      case "close-others":
-        removeOthers(actionIndex);
-        break;
-      case "close-all":
-        removeAll(actionIndex);
-        break;
-      case "refresh":
-        refreshPage(actionIndex);
-        break;
-      case 'refresh-all':
-        location.reload();
-        break;
-    }
-  };
-
-  // 如果当前是不可关闭的标签，则没有关闭操作和关闭所有操作
-  const config = propsFromTrigger?.window;
-  const isActive = propsFromTrigger?.isActive;// 刷新操作只有激活的标签有
-  const items = contextMenus.filter(item=>{
-    if(item.key === 'refresh'){
-      return !!isActive;
-    }
-    return !(config && config.closeable === false && item && (item.key === 'close' || item.key === 'close-all'));
-  });
-  return <AntdMenu onClick={handleMenuClick} items={items} />;
-};
 
 
 const defaultWidthConfig = {
@@ -208,31 +161,44 @@ export default function WindowTabs(props: IWindowTabsProps & {
     refreshPage,
   } = useTabs(defaultTabs);
 
-  const { show } = useContextMenu({
-    id: MENU_ID,
-  });
-
-  const showContextMenu = useCallback(
-    (index: number, win: IWindow, isActive: boolean, event: React.MouseEvent<Element, MouseEvent>) => {
-      show({
-        event,
-        props: {
-          index: index,
-          window: win,
-          isActive: isActive
-        },
-      });
-    },
-    []
-  );
+  const [menuConfig, setMenuConfig] = useState(undefined); // 右键菜单显示的items
 
   const handleContextMenu = (event: React.MouseEvent<Element, MouseEvent>) => {
     const target = event.target as HTMLElement;
     const tabIndex = checkInTab(target);
+    event.preventDefault();
     if (tabIndex !== false) {
-      event.preventDefault();
+      const handleMenuClick = (info: MenuInfo) => {
+        const key = info.key;
+        switch (key) {
+          case "close":
+            removeTabByIndex(tabIndex);
+            break;
+          case "close-others":
+            removeOthers(tabIndex);
+            break;
+          case "close-all":
+            removeAll(tabIndex);
+            break;
+          case "refresh":
+            refreshPage(tabIndex);
+            break;
+          case 'refresh-all':
+            location.reload();
+            break;
+        }
+      };
       const win = wins[tabIndex];
-      showContextMenu(tabIndex, win, win.key === activeKey, event);
+      const isActive = win.key === activeKey;
+      const items = contextMenus.filter(item=>{
+        if(item.key === 'refresh'){
+          return !!isActive;
+        }
+        return !(win && win.closeable === false && item && (item.key === 'close' || item.key === 'close-all'));
+      });
+      setMenuConfig({items, handleMenuClick});
+    }else{
+      setMenuConfig(undefined);
     }
   };
 
@@ -255,9 +221,15 @@ export default function WindowTabs(props: IWindowTabsProps & {
     history.push(pathname);
   }, []);
 
+  const onOpenChange = (nextOpen: boolean)=>{
+    if(!nextOpen){
+      setMenuConfig(undefined);
+    }
+  }
+
 
   return (
-    <Dropdown items={ {items: contextMenus} } trigger={['contextMenu']}>
+    <Dropdown open={!!menuConfig} onOpenChange={onOpenChange} menu={ {...menuConfig, style:{minWidth: 140} } } trigger={['contextMenu']}>
       <StyledTabs
         id={id}
         className={`${theme === 'otb'? 'window-tabs-theme-otb':''} --window-tab-container ${className||''}`}
