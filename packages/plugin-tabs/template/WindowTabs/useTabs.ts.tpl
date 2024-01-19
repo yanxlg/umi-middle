@@ -290,9 +290,10 @@ const useTabs = (defaultTabs: Array<string | DefaultWindowConfigType> = []) => {
 
   // 不需要重制页面地址
   const removeOthers = useCallback(
-    (index: number) => {
+    (currentIndex?: number) => {
       setTabState((tabState) => {
         const { wins, activeKey } = tabState!;
+        const index = currentIndex !== void 0 ? currentIndex : wins.findIndex((win) => win.key === activeKey);
         let nextWins: IWindow[] = [];
         let cleanWins: IWindow[] = [];
         const nextActiveKey = wins[index].key;
@@ -322,9 +323,10 @@ const useTabs = (defaultTabs: Array<string | DefaultWindowConfigType> = []) => {
     [],
   );
 
-  const removeAll = useCallback((actionIndex: number) => {
+  const removeAll = useCallback((currentIndex?: number) => {
     setTabState((tabState) => {
       const { wins, activeKey } = tabState!;
+      const actionIndex = currentIndex !== void 0 ? currentIndex : wins.findIndex((win) => win.key === activeKey);
       const currentWin = wins[actionIndex];
       let nextWins: IWindow[] = [];
       let cleanWins: IWindow[] = [];
