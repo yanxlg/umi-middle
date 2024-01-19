@@ -162,7 +162,7 @@ export default (api: IApi) => {
 
     const base = api.config.base || "/";
     // copy 所有文件
-    copyDirectory(join(tmpDir, 'WindowTabs'), api, {
+    copyDirectory(tmpDir, api, {
       antdPrefix,
       useYhDesign,
       defaultConfig: JSON.stringify(tabsConfig),
