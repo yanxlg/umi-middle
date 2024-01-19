@@ -170,6 +170,7 @@ export default function WindowTabs(props: IWindowTabsProps & {
     if (tabIndex !== false) {
       const handleMenuClick = (info: MenuInfo) => {
         const key = info.key;
+        setMenuConfig(undefined);
         switch (key) {
           case "close":
             removeTabByIndex(tabIndex);
@@ -196,7 +197,7 @@ export default function WindowTabs(props: IWindowTabsProps & {
         }
         return !(win && win.closeable === false && item && (item.key === 'close' || item.key === 'close-all'));
       });
-      setMenuConfig({items, handleMenuClick});
+      setMenuConfig({items, onClick: handleMenuClick});
     }else{
       setMenuConfig(undefined);
     }
