@@ -12,6 +12,7 @@ import {join} from "path";
 import {IApi, RUNTIME_TYPE_FILE_NAME} from "umi";
 import {winPath} from "umi/plugin-utils";
 import {getConfigPropertiesFromSource, checkDependence} from '@middle-cli/utils';
+import fs from "fs";
 
 export function withTmpPath(opts: {
   api: IApi;
@@ -30,6 +31,32 @@ export function withTmpPath(opts: {
 }
 
 const tmpDir = winPath(join(__dirname, "..", "template")); // 模版目录
+
+function copyDirectory(baseTemplateDir: string, api: IApi, context: object, directoryPath?: string) {
+  // 读取指定路径下的所有文件和子目录
+  const directory = join(baseTemplateDir, directoryPath||'');
+  const filesAndDirectories = fs.readdirSync(directory);
+  for (let i = 0; i < filesAndDirectories.length; i++) {
+    const fileOrDirName = filesAndDirectories[i];
+    const itemPath = join(directory, fileOrDirName);
+    if (fs.statSync(itemPath).isFile()) {
+      if(/\.tpl$/.test(fileOrDirName)){
+        api.writeTmpFile({
+          path: join(directoryPath||'', fileOrDirName).replace(/\.tpl$/,''),
+          tplPath: itemPath,
+          context: context
+        })
+      }else{
+        api.writeTmpFile({
+          path: join(directoryPath||'', fileOrDirName), // 生成目录文件
+          content: fs.readFileSync(itemPath, "utf-8")
+        });
+      }
+    } else if (fs.statSync(itemPath).isDirectory()) {
+      copyDirectory(baseTemplateDir, api, context, join(directoryPath||'', fileOrDirName));
+    }
+  }
+}
 
 export default (api: IApi) => {
   api.describe({
@@ -133,31 +160,13 @@ export default (api: IApi) => {
     const tabsConfig = config.tabs === true?{}:config.tabs;
 
 
-    // 配置
-    api.writeTmpFile({
-      path: "WindowTabs/index.tsx",
-      tplPath: join(tmpDir, "WindowTabs/index.tsx.tpl"),
-      context: {
-        antdPrefix,
-        useYhDesign,
-        defaultConfig: JSON.stringify(tabsConfig)
-      },
-    });
     const base = api.config.base || "/";
-    api.writeTmpFile({
-      path: "WindowTabs/useTabs.ts",
-      tplPath: join(tmpDir, "WindowTabs/useTabs.ts.tpl"),
-      context: {
-        base,
-      },
-    });
-
-    api.writeTmpFile({
-      path: "WindowTabs/themes/otb/index.less",
-      tplPath: join(tmpDir, "WindowTabs/themes/otb/index.less.tpl"),
-      context: {
-        antdPrefix,
-      },
-    });
+    // copy 所有文件
+    copyDirectory(join(tmpDir, 'WindowTabs'), api, {
+      antdPrefix,
+      useYhDesign,
+      defaultConfig: JSON.stringify(tabsConfig),
+      base,
+    },'WindowTabs');
   });
 };
