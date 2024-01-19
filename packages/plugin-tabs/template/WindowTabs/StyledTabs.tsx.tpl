@@ -15,9 +15,12 @@ import styled from 'styled-components';
 
 
 export const StyledTabs = styled(Tabs)`
-  background: #E7E8EB;
-  box-shadow: 0 10px 38px -6px #e7e9f23d;
-  padding-top: 4px;
+  &.{{{antdPrefix}}}-tabs {
+    background: #E7E8EB;
+    box-shadow: 0 10px 38px -6px #e7e9f23d;
+    padding-top: 4px;
+  }
+
 
   &.{{{antdPrefix}}}-tabs >.{{{antdPrefix}}}-tabs-nav .{{{antdPrefix}}}-tabs-nav-list .{{{antdPrefix}}}-tabs-tab{
     border-radius: 2px 2px 0 0; // 怎么强制呢
