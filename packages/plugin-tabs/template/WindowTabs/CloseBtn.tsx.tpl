@@ -44,7 +44,7 @@ const CloseBtn = ({closeOthers, closeAll}: { closeOthers: () => void; closeAll: 
     },
   ];
   return (
-    <Dropdown menu={{items}} placement="bottomRight">
+    <Dropdown menu={ {items} } placement="bottomRight">
       <CloseIconButton><CloseOutlined/></CloseIconButton>
     </Dropdown>
   )
