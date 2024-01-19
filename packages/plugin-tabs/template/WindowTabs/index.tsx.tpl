@@ -12,6 +12,7 @@ import { useTabs, IWindow } from "./useTabs";
 import ReloadOutlined from '@ant-design/icons/ReloadOutlined';
 import { Menu, useContextMenu } from "react-contexify";
 import styled from 'styled-components';
+import { StyledTabs } from './StyledTabs';
 import "react-contexify/dist/ReactContexify.css";
 
 const MENU_ID = "tab_context_menu";
@@ -20,6 +21,12 @@ const MENU_ID = "tab_context_menu";
 const antPrefixCls = "{{{antdPrefix}}}"; // TODO 需要插件生成
 const defaultConfig = {{{defaultConfig}}};
 
+
+const TabClassEmbed = styled(null)`
+  border-radius: 0
+`;
+
+console.log(TabClassEmbed);
 
 const id = "__window-tabs";
 const tabClassSelector = `${antPrefixCls}-tabs-tab`;
@@ -250,7 +257,8 @@ export default function WindowTabs(props: IWindowTabsProps & {
 
   return (
     <>
-      <Tabs
+      <TabClassEmbed/>
+      <StyledTabs
         id={id}
         className={`${theme === 'otb'? 'window-tabs-theme-otb':''} --window-tab-container ${className||''}`}
         activeKey={activeKey}
@@ -262,6 +270,7 @@ export default function WindowTabs(props: IWindowTabsProps & {
         onChange={onTabChange}
         onEdit={onEdit}
         animated={false}
+        tabBarGutter={0}
         items={!!TabPanel ? undefined : wins.map((win, index) => {
           return {
             key: win.key,
@@ -291,7 +300,7 @@ export default function WindowTabs(props: IWindowTabsProps & {
             )
           }) : null
         }
-      </Tabs>
+      </StyledTabs>
       {
         rightMenu? (
           <Menu id={MENU_ID} style={ { padding: 0 } }>
