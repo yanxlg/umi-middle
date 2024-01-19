@@ -266,7 +266,6 @@ export default function WindowTabs(props: IWindowTabsProps & {
         hideAdd
         style={ {...style, ...!showWhenEmptyTabs && wins.length ===0? {display:'none'}:{} } }
         tabBarStyle={ { marginBottom: 0 } }
-        tabBarGutter={8}
         onChange={onTabChange}
         onEdit={onEdit}
         animated={false}
