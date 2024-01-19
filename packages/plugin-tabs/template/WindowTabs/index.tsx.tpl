@@ -21,20 +21,17 @@ const MENU_ID = "tab_context_menu";
 const antPrefixCls = "{{{antdPrefix}}}"; // TODO 需要插件生成
 const defaultConfig = {{{defaultConfig}}};
 
-
-const TabClassEmbed = styled(null)`
-  border-radius: 0
-`;
-
-console.log(TabClassEmbed);
-
 const id = "__window-tabs";
 const tabClassSelector = `${antPrefixCls}-tabs-tab`;
 
 const contextMenus = [
   {
-    label: "刷新",
+    label: "刷新当前页",
     key: "refresh",
+  },
+  {
+      label: "刷新浏览器",
+      key: "refresh-all",
   },
   {
     type: "divider",
@@ -100,6 +97,9 @@ const ReplaceMenuWithAnt = (props: {
       case "refresh":
         refreshPage(actionIndex);
         break;
+      case 'refresh-all':
+        location.reload();
+        break;
     }
   };
 
@@ -107,7 +107,7 @@ const ReplaceMenuWithAnt = (props: {
   const config = propsFromTrigger?.window;
   const isActive = propsFromTrigger?.isActive;// 刷新操作只有激活的标签有
   const items = contextMenus.filter(item=>{
-    if(item.key === 'refresh' || item.type === 'divider'){
+    if(item.key === 'refresh'){
       return !!isActive;
     }
     return !(config && config.closeable === false && item && (item.key === 'close' || item.key === 'close-all'));
@@ -257,7 +257,6 @@ export default function WindowTabs(props: IWindowTabsProps & {
 
   return (
     <>
-      <TabClassEmbed/>
       <StyledTabs
         id={id}
         className={`${theme === 'otb'? 'window-tabs-theme-otb':''} --window-tab-container ${className||''}`}
