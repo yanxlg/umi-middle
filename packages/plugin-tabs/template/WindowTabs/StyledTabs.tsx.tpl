@@ -34,7 +34,7 @@ export const StyledTabs = styled(Tabs)`
       width: 1px;
       height: 20px;
       right: -1px;
-      z-index: 10;
+      z-index: 2;
       background: #CED2D8;
       top: 50%;
       margin-top: -10px;

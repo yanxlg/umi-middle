@@ -1,8 +1,8 @@
 {{#useYhDesign}}
-import { YHMenu as AntdMenu, MenuProps, YHTabs as Tabs, YHTooltip as Tooltip, YHBadge as Badge } from "@yh/yh-design";
+import { YHMenu as AntdMenu, MenuProps, YHTabs as Tabs, YHTooltip as Tooltip, YHBadge as Badge, YHDropdown as Dropdown } from "@yh/yh-design";
 {{/useYhDesign}}
 {{^useYhDesign}}
-import { Menu as AntdMenu, MenuProps, Tabs, Tooltip, Badge } from "antd";
+import { Menu as AntdMenu, MenuProps, Tabs, Tooltip, Badge, Dropdown } from "antd";
 {{/useYhDesign}}
 import type { MenuInfo } from "rc-menu/lib/interface";
 import React, { useCallback, useMemo } from "react";
@@ -165,7 +165,7 @@ function TabLabel({index, widthType, title, badge, onReload, overflowCount}:{ind
     <Tooltip title={title}><div style={ {[widthType!.type]: widthType!.width, textOverflow: 'ellipsis', overflow: 'hidden', fontFeatureSettings: 'normal',fontVariant: 'none'} }>{showLabel}</div></Tooltip>;
   return (
     <>
-      { badge === void 0 ? content:<BlockBadge count={badge} overflowCount={overflowCount} style={ {position: 'absolute', left:0, right:'unset', transform: 'translate(-50%,-50%)', marginLeft: -5, pointerEvents: 'none', background: 'rgba(255,77,79,0.9)'} }>{content}</BlockBadge>}
+      { badge === void 0 ? content:<BlockBadge count={badge} overflowCount={overflowCount} style={ {position: 'absolute', left:0, right:'unset', transform: 'translate(-50%,-50%)', marginLeft: -5, pointerEvents: 'none', background: 'rgba(255,77,79,0.9)', zIndex: 5} }>{content}</BlockBadge>}
       {
         onReload?(
           <ReloadOutlined
@@ -257,7 +257,7 @@ export default function WindowTabs(props: IWindowTabsProps & {
 
 
   return (
-    <>
+    <Dropdown items={ {items: contextMenus} } trigger={['contextMenu']}>
       <StyledTabs
         id={id}
         className={`${theme === 'otb'? 'window-tabs-theme-otb':''} --window-tab-container ${className||''}`}
@@ -301,18 +301,6 @@ export default function WindowTabs(props: IWindowTabsProps & {
           }) : null
         }
       </StyledTabs>
-      {
-        rightMenu? (
-          <Menu id={MENU_ID} style={ { padding: 0 } }>
-            <ReplaceMenuWithAnt
-              removeTabByIndex={removeTabByIndex}
-              removeOthers={removeOthers}
-              removeAll={removeAll}
-              refreshPage={refreshPage}
-            />
-          </Menu>
-        ):null
-      }
-    </>
+    </Dropdown>
   );
 }

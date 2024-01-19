@@ -16,7 +16,7 @@ import CloseOutlined from '@ant-design/icons/CloseOutlined';
 import styled from 'styled-components';
 
 
-const CloseIconButton = styled(Button)`
+const CloseIconButton = styled(CloseOutlined)`
   width: 20px;
   height: 20px;
   background: #ced2d880;
@@ -24,11 +24,27 @@ const CloseIconButton = styled(Button)`
   padding: 0;
   text-align: center;
   line-height: 20px;
+  justify-content: center;
+  cursor: pointer;
   &:hover {
     color: #3C7AF7;
   }
 `;
 
+const Container = styled.div`
+  padding: 0px 12px;
+  position: relative;
+  &:before{
+    content: '';
+    position: absolute;
+    width: 1px;
+    height: 20px;
+    left: 0px;
+    background: #CED2D8;
+    top: 50%;
+    margin-top: -10px;
+  }
+`;
 
 const CloseBtn = ({closeOthers, closeAll}: { closeOthers: () => void; closeAll: () => void; }) => {
   const items: MenuProps['items'] = [
@@ -44,9 +60,11 @@ const CloseBtn = ({closeOthers, closeAll}: { closeOthers: () => void; closeAll: 
     },
   ];
   return (
-    <Dropdown menu={ {items} } placement="bottomRight">
-      <CloseIconButton><CloseOutlined/></CloseIconButton>
-    </Dropdown>
+    <Container>
+      <Dropdown menu={ {items} } placement="bottomRight">
+        <CloseIconButton/>
+      </Dropdown>
+    </Container>
   )
 }
 
