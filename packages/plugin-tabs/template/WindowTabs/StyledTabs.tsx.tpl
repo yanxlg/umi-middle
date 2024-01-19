@@ -24,8 +24,9 @@ export const StyledTabs = styled(Tabs)`
 
   &.{{{antdPrefix}}}-tabs >.{{{antdPrefix}}}-tabs-nav .{{{antdPrefix}}}-tabs-nav-list .{{{antdPrefix}}}-tabs-tab{
     border-radius: 2px 2px 0 0; // 怎么强制呢
-    border-color: #E7E8EB;
     background-color: #E7E8EB;
+    border: 0;
+    padding: 9px 17px;
 
     &.{{{antdPrefix}}}-tabs-tab-active {
       background-color: #FFF
