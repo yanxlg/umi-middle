@@ -13,6 +13,7 @@ import ReloadOutlined from '@ant-design/icons/ReloadOutlined';
 import { Menu, useContextMenu } from "react-contexify";
 import styled from 'styled-components';
 import { StyledTabs } from './StyledTabs';
+import CloseOutlined from '@ant-design/icons/CloseOutlined';
 import "react-contexify/dist/ReactContexify.css";
 
 const MENU_ID = "tab_context_menu";
@@ -276,6 +277,7 @@ export default function WindowTabs(props: IWindowTabsProps & {
             closable: win.closeable??closeable,
           }
         })}
+        tabBarExtraContent={<Button><CloseOutlined/></Button>}
         onContextMenu={rightMenu ? handleContextMenu : null}
       >
         {
