@@ -22,6 +22,9 @@ declare module 'react-router-dom' {
     /** 重定向路由 */
     redirect?: boolean;
 
+    /** 支持多个路由页面按照replaceKey进行替换，确保只存在一个Tab, 例如编辑页面和详情页面 */
+    tabReplaceKey?: string;
+
     /** 全局布局组件 umi 会自动加上该属性用于区分 */
     isLayout?: string;
   }
@@ -98,7 +101,7 @@ function searchToObject(search?: string) {
  * @param params
  * @param search
  */
-function getDynamicTabName(pattern: string, params: object, search?: string) {
+function getDynamicString(pattern: string, params: object, search?: string) {
   const searchParams = searchToObject(search);
   return parseTemplateString(pattern, { ...params, ...searchParams });
 }
@@ -134,13 +137,14 @@ function createWindow(routes: RouteObject[], pathname: string, search?: string, 
   const matchRoute = getMatchRoute(routes, pathname);
   if (matchRoute) {
     const { route, params } = matchRoute;
-    const { tabMode, title, tabTemplate, tabKey, redirect, element } = route;
+    const { tabMode, title, tabTemplate, tabKey, redirect, element, tabReplaceKey } = route;
     if (!!redirect || getReactNodeName(element) === 'NavigateWithParams') {
       return undefined; // 不创建Window,仅作为临时中间页面触发跳转
     }
     return {
-      title: tabTemplate ? getDynamicTabName(tabTemplate, params, search) : (title || (route.id === '404'? '404' : 'unknown')),
+      title: tabTemplate ? getDynamicString(tabTemplate, params, search) : (title || (route.id === '404'? '404' : 'unknown')),
       key: getPathKey(pathname, search),
+      replaceKey: tabReplaceKey ? getDynamicString(tabReplaceKey, params, search): undefined,
       closeable: closeable,
       freeze: tabMode !== 'inner',
       route: omit(route, 'element'),
@@ -156,17 +160,23 @@ function createWindow(routes: RouteObject[], pathname: string, search?: string, 
 }
 
 /**
- * 添加Window 到Window队列中，检查是否可以替换
- * @param windows
- * @param win
- */
-function addWindowToList(windows: IWindow[], win?: IWindow) {
+   * 添加Window 到Window队列中，检查是否可以替换
+   * @param windows
+   * @param win
+   */
+function addWindowToList(windows: IWindow[], win?: IWindow, clean?: boolean) {
   if (!win) {
-    return windows;
+    return { windows, dropKey: undefined };
   }
   const { route, key } = win;
+  let dropKey: string | undefined = undefined;
   const existIndex = windows.findIndex(old => {
     if(old.key === key){
+      return true;
+    }
+    if(old.replaceKey === win.replaceKey && !!old.replaceKey && !!win.replaceKey){
+      // 需要清除旧页面的缓存
+      dropKey = old.key;
       return true;
     }
     return !old.freeze && (!old.route && !route && old.key === key || old.route && route && old.route.path === route.path);
@@ -177,7 +187,7 @@ function addWindowToList(windows: IWindow[], win?: IWindow) {
   } else {
     windows.push(win);
   }
-  return windows;
+  return { windows, dropKey };
 }
 
 /**
@@ -185,7 +195,7 @@ function addWindowToList(windows: IWindow[], win?: IWindow) {
  * @param configList
  * @param routes
  */
-function getWindowTabList(configList: Array<DefaultWindowConfigType>, routes: RouteObject[]) {
+function getWindowTabList(configList: Array<DefaultWindowConfigType>, routes: RouteObject[]){
   let windowTabList: IWindow[] = [];
   for (let i = 0; i < configList.length; i++) {
     const config = configList[i];
@@ -215,7 +225,7 @@ const useTabs = (defaultTabs: Array<string | DefaultWindowConfigType> = []) => {
       const { pathname, search } = location;
       const newWindow = createWindow(clientRoutes as unknown as RouteObject[], pathname!, search);
       return {
-        wins: addWindowToList(wins, newWindow),
+        wins: addWindowToList(wins, newWindow).windows,
         activeKey: getPathKey(pathname, search), // Tab 不选中
       };
     },
@@ -224,10 +234,10 @@ const useTabs = (defaultTabs: Array<string | DefaultWindowConfigType> = []) => {
       const initTabConfigList = defaultTabs.map(item => {
         return typeof item === 'string' ? { key: item } : item;
       });
-      const defaultWindowList = getWindowTabList(initTabConfigList, clientRoutes as unknown as RouteObject[]);
+      const defaultWindowList = getWindowTabList(initTabConfigList, clientRoutes as unknown as RouteObject[], dropScope);
       const newWindow = createWindow(clientRoutes as unknown as RouteObject[], pathname!, search);
       return {
-        wins: addWindowToList(defaultWindowList, newWindow),
+        wins: addWindowToList(defaultWindowList, newWindow).windows,
         activeKey: getPathKey(pathname, search),
       };
     },
@@ -237,9 +247,16 @@ const useTabs = (defaultTabs: Array<string | DefaultWindowConfigType> = []) => {
     const nextWindow = createWindow(clientRoutes as unknown as RouteObject[], pathname, search);
     setTabState((tabState) => {
       const { wins, activeKey } = tabState!;
+      const { windows, dropKey } = addWindowToList(wins, nextWindow);
+      if(dropKey){
+        // 清除缓存
+        setTimeout(() => {
+          dropScope(dropKey);
+        }, 100);
+      }
       return {
         activeKey: getPathKey(pathname, search),
-        wins: addWindowToList(wins, nextWindow),
+        wins: windows,
       };
     });
   }, []);
@@ -270,7 +287,9 @@ const useTabs = (defaultTabs: Array<string | DefaultWindowConfigType> = []) => {
         setTabState({ activeKey, wins: [...wins] });
       }
       // 清除缓存
-      dropScope(key);
+      setTimeout(() => {
+        dropScope(key);
+      }, 100);
     },
     [tabState],
   );

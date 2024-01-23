@@ -79,6 +79,7 @@ export default (api: IApi) => {
           rightMenu: zod.boolean().optional(),
           reloadIcon: zod.boolean().optional(),
           overflowCount: zod.number().optional(),
+          remarkMaxLength: zod.number().optional(),
         })]);
       },
       onChange: api.ConfigChangeType.regenerateTmpFiles,
@@ -100,7 +101,7 @@ export default (api: IApi) => {
       const route = memo[id];
       const content = route.__content;// 内容
       if (content) { // 解析内容
-        const properties = getConfigPropertiesFromSource(content, route.file,['title', 'tabTemplate', 'tabMode', 'saveScrollPosition', 'tabKey']);
+        const properties = getConfigPropertiesFromSource(content, route.file!,['title', 'tabTemplate', 'tabMode', 'saveScrollPosition', 'tabKey', 'tabReplaceKey']);
         Object.assign(route,properties);
       }
     });
