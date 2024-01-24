@@ -1,12 +1,11 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback } from 'react';
 import { useAliveController } from 'react-activation';
 import type { RouteObject } from 'react-router-dom';
 import { history, matchRoutes, useAppData, useLocation } from 'umi';
 import useSessionStorageState from 'ahooks/es/useSessionStorageState';
-import useMemoizedFn from 'ahooks/es/useMemoizedFn';
 import { createSearchParams } from 'react-router-dom';
 import omit from 'lodash/omit';
-import useUpdateEffect from './useUpdateEffect';
+import useUpdateLayoutEffect from 'ahooks/es/useUpdateLayoutEffect';
 
 declare module 'react-router-dom' {
   interface RouteObject {
@@ -262,7 +261,7 @@ const useTabs = (defaultTabs: Array<string | DefaultWindowConfigType> = []) => {
     });
   }, []);
 
-  useUpdateEffect(() => {
+  useUpdateLayoutEffect(() => {
      const {pathname, search} = location;
      onPathChange(pathname, search);
   }, [location]);
