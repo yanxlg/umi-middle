@@ -103,6 +103,8 @@ const BlockBadge = styled(Badge)`
   span&{
     display: block;
     color: inherit;
+    font-feature-settings: normal;
+    font-variant: none;
   }
 `;
 
