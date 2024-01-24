@@ -1,5 +1,4 @@
 import { useEffect, useRef, DependencyList, EffectCallback } from 'react';
-import { useRef } from 'react';
 
 function createUpdateEffect(hook: (effect: EffectCallback, deps?: DependencyList) => void) {
   return function (effect: EffectCallback, deps: DependencyList) {
