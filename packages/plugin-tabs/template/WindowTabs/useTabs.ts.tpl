@@ -6,6 +6,7 @@ import useSessionStorageState from 'ahooks/es/useSessionStorageState';
 import useMemoizedFn from 'ahooks/es/useMemoizedFn';
 import { createSearchParams } from 'react-router-dom';
 import omit from 'lodash/omit';
+import useUpdateEffect from './useUpdateEffect';
 
 declare module 'react-router-dom' {
   interface RouteObject {
@@ -244,15 +245,10 @@ const useTabs = (defaultTabs: Array<string | DefaultWindowConfigType> = []) => {
     });
   }, []);
 
-  useEffect(() => {
-    history.listen(function(updater){ // 比 location Effect 提前一些，会快一点
-      const {action, location} = updater;
-      if(action !== 'POP'){
-         const {pathname, search} = location;
-         onPathChange(pathname, search);
-      }
-    });
-  }, []);
+  useUpdateEffect(() => {
+     const {pathname, search} = location;
+     onPathChange(pathname, search);
+  }, [location]);
 
   const removeTabByIndex = useCallback(
     (index: number) => {
