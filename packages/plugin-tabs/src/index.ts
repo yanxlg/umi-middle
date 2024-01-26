@@ -80,6 +80,8 @@ export default (api: IApi) => {
           reloadIcon: zod.boolean().optional(),
           overflowCount: zod.number().optional(),
           remarkMaxLength: zod.number().optional(),
+          remarkEllipsisType: zod.union([zod.literal('middle'), zod.literal('start'), zod.literal('end')]).optional(),
+          remarkShowEllipsis: zod.boolean().optional(),
         })]);
       },
       onChange: api.ConfigChangeType.regenerateTmpFiles,
