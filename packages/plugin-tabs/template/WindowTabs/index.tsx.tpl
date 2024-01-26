@@ -123,10 +123,10 @@ function TabLabel({index, widthType, title, badge, onReload, overflowCount, rema
           return '(' +$1.substr(0,halfSize) + (remarkShowEllipsis?'...':'') + $1.substr(-halfSize) + ')';
       }
       if(remarkEllipsisType === 'start'){
-         return '(' +$1.substr(0,remarkMaxLength-1) + (remarkShowEllipsis?'...':'') + ')';
+         return '(' +$1.substr(0,remarkMaxLength) + (remarkShowEllipsis?'...':'') + ')';
       }
-      if(remarkEllipsisType === 'start'){
-         return '(' + (remarkShowEllipsis?'...':'') + $1.substr(-remarkMaxLength+1) + ')';
+      if(remarkEllipsisType === 'end'){
+         return '(' + (remarkShowEllipsis?'...':'') + $1.substr(-remarkMaxLength) + ')';
       }
     }
     return value;
