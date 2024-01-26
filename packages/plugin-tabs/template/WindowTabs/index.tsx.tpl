@@ -97,7 +97,7 @@ export interface IWindowTabsProps {
   /** 可以显示的remark最大长度，不配置会全部显示，配置后对()中内容进行截断 */
   remarkMaxLength?: number;
   /** remark截断位置 */
-  remarkEllipsisType?: 'start' | ''middle' | 'end';
+  remarkEllipsisType?: 'start' | 'middle' | 'end';
   /** remark截断后是否显示... */
   remarkShowEllipsis?: boolean;
 }
