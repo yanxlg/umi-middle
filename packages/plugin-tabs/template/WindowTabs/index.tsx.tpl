@@ -113,7 +113,7 @@ const BlockBadge = styled(Badge)`
 `;
 
 
-function TabLabel({index, widthType, title, badge, onReload, overflowCount, remarkMaxLength}:{index:number; widthType: IWindowTabsProps['widthType']; title: string; badge?: number; onReload?: Function; overflowCount?: number; remarkMaxLength?: number;  remarkEllipsisType?: 'start' | 'middle' | 'end'; remarkShowEllipsis?: boolean;}) {
+function TabLabel({index, widthType, title, badge, onReload, overflowCount, remarkMaxLength, remarkEllipsisType, remarkShowEllipsis}:{index:number; widthType: IWindowTabsProps['widthType']; title: string; badge?: number; onReload?: Function; overflowCount?: number; remarkMaxLength?: number;  remarkEllipsisType?: 'start' | 'middle' | 'end'; remarkShowEllipsis?: boolean;}) {
   // 对于()中内容进行截断溢出处理
   const showLabel = remarkMaxLength ? title.replace(/\((\S+)\)/,function(value,$1){
     if($1.length > remarkMaxLength){
