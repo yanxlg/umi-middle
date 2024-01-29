@@ -132,8 +132,8 @@ function TabLabel({index, widthType, title, badge, onReload, overflowCount, rema
     return value;
   }): title;
   const content = widthType === 'fit-content' ?
-    <Tooltip title={title}><span style={ {fontFeatureSettings: 'normal',fontVariant: 'none', fontWeight: 'normal', textShadow: '0 0 0.5px currentcolor'} }>{showLabel}</span></Tooltip> :
-    <Tooltip title={title}><div style={ {[widthType!.type]: widthType!.width, textOverflow: 'ellipsis', overflow: 'hidden', fontFeatureSettings: 'normal',fontVariant: 'none', fontWeight: 'normal', textShadow: '0 0 0.5px currentcolor'} }>{showLabel}</div></Tooltip>;
+    <Tooltip title={title}><span style={ {fontFeatureSettings: 'normal',fontVariant: 'none', fontWeight: 'normal'} }>{showLabel}</span></Tooltip> :
+    <Tooltip title={title}><div style={ {[widthType!.type]: widthType!.width, textOverflow: 'ellipsis', overflow: 'hidden', fontFeatureSettings: 'normal',fontVariant: 'none', fontWeight: 'normal'} }>{showLabel}</div></Tooltip>;
   return (
     <>
       { badge === void 0 ? content:<BlockBadge count={badge} overflowCount={overflowCount} style={ {position: 'absolute', left:0, right:'unset', transform: 'translate(-50%,-50%)', marginLeft: -5, pointerEvents: 'none', background: 'rgba(255,77,79,0.9)', zIndex: 5} }>{content}</BlockBadge>}

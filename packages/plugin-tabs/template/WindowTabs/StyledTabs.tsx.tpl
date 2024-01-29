@@ -32,6 +32,10 @@ export const StyledTabs = styled(Tabs)`
       background-color: #FFF
     }
 
+    &.{{{antdPrefix}}}-tabs-tab-active .{{{antdPrefix}}}-tabs-tab-btn{
+      text-shadow: 0 0 0.5px currentcolor;
+    }
+
     &.{{{antdPrefix}}}-tabs-tab-active:before, &.{{{antdPrefix}}}-tabs-tab-active:after{
       display: none;
     }
