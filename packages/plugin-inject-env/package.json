@@ -1,6 +1,6 @@
 {
   "name": "@middle-cli/plugin-inject-env",
-  "version": "0.6.0",
+  "version": "1.0.0-alpha.0",
   "description": "runtime env plugin for middle cli",
   "keywords": [],
   "license": "MIT",

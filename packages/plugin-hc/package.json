@@ -1,6 +1,6 @@
 {
   "name": "@middle-cli/plugin-hc",
-  "version": "0.7.5",
+  "version": "1.0.0-alpha.0",
   "description": "hc plugin for project",
   "keywords": [],
   "license": "MIT",
@@ -16,7 +16,7 @@
     "dev": "father dev"
   },
   "devDependencies": {
-    "@middle-cli/utils": "^0.0.7",
+    "@middle-cli/utils": "1.0.0-alpha.0",
     "@yh/yh-design": "*"
   },
   "authors": {
