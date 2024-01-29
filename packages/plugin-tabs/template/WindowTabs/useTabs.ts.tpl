@@ -268,33 +268,36 @@ const useTabs = (defaultTabs: Array<string | DefaultWindowConfigType> = []) => {
   }, [location]);
 
   const removeTabByIndex = useMemoizedFn(
-    (index: number) => {
-      const { activeKey, wins } = tabState!;
-      const removeWin = wins[index];
-      const key = removeWin.key;
-      wins.splice(index, 1);
+    (index: number, silent?: boolean) => {
+      setTabState((tabState) => {
+        const { activeKey, wins } = tabState!;
+        const removeWin = wins[index];
+        const key = removeWin.key;
+        wins.splice(index, 1);
 
-      if (activeKey === key) {
-        // next 优先激活前一个标签，如果没有则激活后一个标签
-        const nextIndex = index === 0 ? 0: index-1;
-        const lastWin = wins[nextIndex]; // 最后一个
-        history.push(lastWin ? lastWin.key : '/');
-      } else {
-        setTabState({ activeKey, wins: [...wins] });
-      }
-      // 清除缓存
-      setTimeout(() => {
-        dropScope(key);
-      }, 100);
+        // 清除缓存
+        setTimeout(() => {
+          dropScope(key);
+        }, 100);
+
+        if (activeKey === key && !silent) {
+          // next 优先激活前一个标签，如果没有则激活后一个标签
+          const nextIndex = index === 0 ? 0: index-1;
+          const lastWin = wins[nextIndex]; // 最后一个
+          history.push(lastWin ? lastWin.key : '/');
+          return { activeKey: lastWin ? lastWin.key : '/', wins: [...wins] };
+        }
+        return { activeKey, wins: [...wins] };
+      });
     }
   );
 
   const removeTab = useMemoizedFn(
-    (key: string) => {
+    (key: string, silent?: boolean) => {
       const { wins } = tabState!;
       const index = wins.findIndex((win) => win.key === key);
       if (index > -1) {
-        removeTabByIndex(index);
+        removeTabByIndex(index, silent);
       }
     }
   );
