@@ -36,7 +36,7 @@ export const StyledTabs = styled(Tabs)`
       display: none;
     }
 
-    &.{{{antdPrefix}}}-tabs-tab-active ~ .{{{antdPrefix}}}-tabs-tab::before{
+    &.{{{antdPrefix}}}-tabs-tab-active + .{{{antdPrefix}}}-tabs-tab::before{
       display: none;
     }
 
