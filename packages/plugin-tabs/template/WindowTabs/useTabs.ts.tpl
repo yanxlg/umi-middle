@@ -3,9 +3,10 @@ import { useAliveController } from 'react-activation';
 import type { RouteObject } from 'react-router-dom';
 import { history, matchRoutes, useAppData, useLocation } from 'umi';
 import useSessionStorageState from 'ahooks/es/useSessionStorageState';
+import useUpdateLayoutEffect from 'ahooks/es/useUpdateLayoutEffect';
+import useMemoizedFn from 'ahooks/es/useMemoizedFn';
 import { createSearchParams } from 'react-router-dom';
 import omit from 'lodash/omit';
-import useUpdateLayoutEffect from 'ahooks/es/useUpdateLayoutEffect';
 
 declare module 'react-router-dom' {
   interface RouteObject {
@@ -266,7 +267,7 @@ const useTabs = (defaultTabs: Array<string | DefaultWindowConfigType> = []) => {
      onPathChange(pathname, search);
   }, [location]);
 
-  const removeTabByIndex = useCallback(
+  const removeTabByIndex = useMemoizedFn(
     (index: number) => {
       const { activeKey, wins } = tabState!;
       const removeWin = wins[index];
@@ -285,25 +286,23 @@ const useTabs = (defaultTabs: Array<string | DefaultWindowConfigType> = []) => {
       setTimeout(() => {
         dropScope(key);
       }, 100);
-    },
-    [tabState],
+    }
   );
 
-  const removeTab = useCallback(
+  const removeTab = useMemoizedFn(
     (key: string) => {
       const { wins } = tabState!;
       const index = wins.findIndex((win) => win.key === key);
       if (index > -1) {
         removeTabByIndex(index);
       }
-    },
-    [tabState],
+    }
   );
 
 
 
   // 不需要重制页面地址
-  const removeOthers = useCallback(
+  const removeOthers = useMemoizedFn(
     (currentIndex?: number) => {
       setTabState((tabState) => {
         const { wins, activeKey } = tabState!;
@@ -333,8 +332,7 @@ const useTabs = (defaultTabs: Array<string | DefaultWindowConfigType> = []) => {
           wins: nextWins,
         };
       });
-    },
-    [],
+    }
   );
 
   const removeAll = useCallback((currentIndex?: number) => {
@@ -368,12 +366,11 @@ const useTabs = (defaultTabs: Array<string | DefaultWindowConfigType> = []) => {
     });
   }, []);
 
-  const refreshPage = useCallback(
+  const refreshPage = useMemoizedFn(
     (index: number) => {
       const activeWin = tabState!.wins[index];
       refresh(activeWin.key);
-    },
-    [tabState],
+    }
   );
 
   return {

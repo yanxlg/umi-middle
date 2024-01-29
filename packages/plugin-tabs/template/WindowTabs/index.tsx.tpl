@@ -179,6 +179,11 @@ export default function WindowTabs(props: IWindowTabsProps & {
     refreshPage,
   } = useTabs(defaultTabs);
 
+  useMemo(()=>{
+    // attach to window
+    window.__tabs__ = {removeTab, removeTabByIndex, removeOthers, removeAll, refreshPage};
+  },[]);
+
   const [menuConfig, setMenuConfig] = useState(undefined); // 右键菜单显示的items
 
   const handleContextMenu = (event: React.MouseEvent<Element, MouseEvent>) => {
