@@ -32,20 +32,28 @@ export const StyledTabs = styled(Tabs)`
       background-color: #FFF
     }
 
-    &.{{{antdPrefix}}}-tabs-tab-active:after{
+    &.{{{antdPrefix}}}-tabs-tab-active:before, &.{{{antdPrefix}}}-tabs-tab-active:after{
       display: none;
     }
 
-    &:after{
+    &.{{{antdPrefix}}}-tabs-tab-active ~ .{{{antdPrefix}}}-tabs-tab::before{
+      display: none;
+    }
+
+    &:before{
       content: '';
       position: absolute;
       width: 1px;
       height: 20px;
-      right: 0px;
+      left: -0.5px;
       z-index: 2;
       background: #CED2D8;
       top: 50%;
       margin-top: -10px;
+    }
+
+    &:first-of-type::before{
+      display: none;
     }
   }
   &.{{{antdPrefix}}}-tabs >.{{{antdPrefix}}}-tabs-nav .{{{antdPrefix}}}-tabs-tab.{{{antdPrefix}}}-tabs-tab-active .{{{antdPrefix}}}-tabs-tab-btn {
