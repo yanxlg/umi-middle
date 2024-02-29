@@ -51,6 +51,7 @@ function Layout({menuBadge, siderMinWidth, siderMaxWidth, contentPadding, header
             countMap={menuBadge}
             onCollapse={onCollapse}
             patchClientMenus={patchClientMenus}
+            headerHeight={headerHeight}
           />
         )}
         <BasicLayout>
