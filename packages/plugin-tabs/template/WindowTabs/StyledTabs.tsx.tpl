@@ -18,7 +18,9 @@ export const StyledTabs = styled(Tabs)`
   &.{{{antdPrefix}}}-tabs {
     background: #E7E8EB;
     box-shadow: 0 10px 38px -6px #e7e9f23d;
+    -webkit-box-shadow: 0 10px 38px -6px #e7e9f23d;
     padding-top: 4px;
+    min-height: 44px;
   }
 
 
