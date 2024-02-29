@@ -54,7 +54,7 @@ function Layout({menuBadge, siderMinWidth, siderMaxWidth, contentPadding, header
             headerHeight={headerHeight}
           />
         )}
-        <BasicLayout>
+        <BasicLayout style={ {overflow: 'hidden'} }>
             {{#useTabs}}
             <WindowTabs badgeMap={menuBadge} />
             {{/useTabs}}
