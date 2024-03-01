@@ -13,6 +13,7 @@ import {IApi} from "umi";
 import {winPath} from "umi/plugin-utils";
 import { checkDependence} from '@middle-cli/utils';
 import fs from "fs";
+import {Env} from "@umijs/core/dist/types";
 
 export function withTmpPath(opts: {
   api: IApi;
@@ -61,21 +62,19 @@ function copyDirectory(baseTemplateDir: string, api: IApi, context: object, dire
 export default (api: IApi) => {
   api.describe({
     key: "antd5-fix-chrome49",
-    config: {
-      onChange: api.ConfigChangeType.regenerateTmpFiles,
+    config:{
+      onChange: api.ConfigChangeType.reload
     },
-    enableBy: api.EnableBy.register,
+    enableBy: ({userConfig, env: Env})=> {
+      const chrome = userConfig?.targets?.chrome;
+      const { useAntd, antdVersion} = checkDependence();
+      return chrome === 49 && useAntd && parseInt(antdVersion) ===5;
+    },
   });
 
-  const { useAntd, antdVersion} = checkDependence();
-
-  if(!(useAntd && parseInt(antdVersion) ===5)){
-    return;
-  }
-
-  // config.targets.chrome ==== 49
-
-  api.addExtraBabelPlugins(()=>withTmpPath({api, path: "babel-plugin"}));
+  api.addExtraBabelPlugins(()=> {
+    return withTmpPath({ api, path: "babel-plugin" });
+  });
 
   api.onGenerateFiles(() => {
     api.writeTmpFile({
