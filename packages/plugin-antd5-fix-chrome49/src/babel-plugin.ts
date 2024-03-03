@@ -81,6 +81,7 @@ export default function FixChrome49InAntd5(babel: typeof babelCore): babelCore.P
           // 遍历插入
           if (importAlias.length) {
             importAlias.forEach(({origin, alia}) => {
+              console.log(`组件【${origin}】被替换：${state.filename.replace(process.cwd(), '')} ==> ${join(__dirname, origin)}`);
               addAliasImport(path, t, origin, alia);
             })
           }

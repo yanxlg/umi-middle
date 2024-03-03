@@ -101,7 +101,13 @@ export default (api: IApi) => {
       },
     });
 
+
     // copy 所有文件
     copyDirectory(tmpDir, api, {});
+  });
+
+  api.addRuntimePlugin({
+    fn: () => withTmpPath({api, path: "runtime.tsx"}),
+    stage: -1 * Number.MAX_SAFE_INTEGER
   });
 };

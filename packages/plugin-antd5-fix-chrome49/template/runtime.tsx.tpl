@@ -4,6 +4,7 @@ import { legacyLogicalPropertiesTransformer } from '@ant-design/cssinjs';
 {{/styleProvider.legacyTransformer}}
 import StyleContext from '@ant-design/cssinjs/es/StyleContext';
 {{/styleProvider}}
+// 样式强制兼容优化
 import './global.less';
 
 // fix rc-trigger 在chrome49 上异常
@@ -26,14 +27,10 @@ if (
   StyleContext._currentValue.hashPriority
 ) {
   StyleContext._currentValue.hashPriority = '{{styleProvider.hashPriority}}';
-  if({{styleProvider.legacyTransformer}}){
-    StyleContext._currentValue.transformers = [
-      legacyLogicalPropertiesTransformer,
-    ];
-  }
+  {{#styleProvider.legacyTransformer}}
+  StyleContext._currentValue.transformers = [
+    legacyLogicalPropertiesTransformer,
+  ];
+  {{/styleProvider.legacyTransformer}}
 }
 {{/styleProvider}}
-
-
-// 样式强制修复
-// 兼容chrome49 或低版本 日期组件：input ==> outline: 0;
