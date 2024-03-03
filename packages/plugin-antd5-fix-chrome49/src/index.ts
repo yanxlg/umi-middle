@@ -123,6 +123,13 @@ export default (api: IApi) => {
       },
     });
 
+    api.writeTmpFile({
+      path: "prefixer.ts",
+      tplPath: join(__dirname, "..", "template", "prefixer.ts.tpl"),
+      context: {
+      },
+    });
+
 
     // copy 所有文件
     copyDirectory(tmpDir, api, {});
