@@ -7,6 +7,7 @@ import StyleContext from '@ant-design/cssinjs/es/StyleContext';
 import './global.less';
 import React from 'react';
 import prefixer from './prefixer';
+import { StyleSheetManager } from 'styled-components';
 
 // fix rc-trigger 在chrome49 上异常
 const originGetBoundingClientRect = Element.prototype.getBoundingClientRect;
@@ -44,7 +45,9 @@ export function rootContainer(container: React.ReactNode) {
         ]
       }
     >
-     {container}
+     <StyleSheetManager disableCSSOMInjection enableVendorPrefixes>
+      {container}
+     </StyleSheetManager>
     </StyleProvider>
   );
 }
