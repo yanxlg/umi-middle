@@ -62,6 +62,9 @@ export default (api: IApi) => {
   api.describe({
     key: "chrome49", // 适配chrome 49
     config:{
+      schema({zod}) {
+        return zod.boolean().optional();
+      },
       onChange: api.ConfigChangeType.reload
     },
     enableBy: api.EnableBy.config, // chrome49兼容
