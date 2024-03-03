@@ -31,7 +31,7 @@ export function withTmpPath(opts: {
   );
 }
 
-const tmpDir = winPath(join(__dirname, "..", "template")); // 模版目录
+const tmpDir = winPath(join(__dirname, "..", "template","components")); // 模版目录
 
 function copyDirectory(baseTemplateDir: string, api: IApi, context: object, directoryPath?: string) {
   // 读取指定路径下的所有文件和子目录
@@ -81,6 +81,24 @@ export default (api: IApi) => {
       path: "babel-plugin.js",
       tplPath: join(__dirname, "babel-plugin.js"),
       context: {},
+    });
+
+    const styleProvider = api.config.antd?.styleProvider;
+    api.writeTmpFile({
+      path: "runtime.tsx",
+      tplPath: join(__dirname, "..", "template", "runtime.tsx.tpl"),
+      context: {
+        styleProvider: styleProvider,
+      },
+    });
+
+    const prefixCls = api.config.antd?.configProvider?.prefixCls ?? 'ant';
+    api.writeTmpFile({
+      path: "global.less",
+      tplPath: join(__dirname, "..", "template", "global.less.tpl"),
+      context: {
+        prefixCls: prefixCls,
+      },
     });
 
     // copy 所有文件
