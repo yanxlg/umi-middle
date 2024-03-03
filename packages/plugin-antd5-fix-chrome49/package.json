@@ -16,7 +16,8 @@
     "dev": "father dev"
   },
   "dependencies": {
-    "@middle-cli/utils": "^1.0.0"
+    "@middle-cli/utils": "^1.0.0",
+    "inline-style-prefixer": "7.0.0"
   },
   "devDependencies": {
     "@types/node": "^18.15.11",

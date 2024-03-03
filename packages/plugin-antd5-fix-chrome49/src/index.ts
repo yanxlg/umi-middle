@@ -13,7 +13,6 @@ import {IApi} from "umi";
 import {winPath} from "umi/plugin-utils";
 import { checkDependence} from '@middle-cli/utils';
 import fs from "fs";
-import {Env} from "@umijs/core/dist/types";
 
 export function withTmpPath(opts: {
   api: IApi;
@@ -61,16 +60,35 @@ function copyDirectory(baseTemplateDir: string, api: IApi, context: object, dire
 
 export default (api: IApi) => {
   api.describe({
-    key: "antd5-fix-chrome49",
+    key: "chrome49", // 适配chrome 49
     config:{
       onChange: api.ConfigChangeType.reload
     },
-    enableBy: ({userConfig, env: Env})=> {
-      const chrome = userConfig?.targets?.chrome;
-      const { useAntd, antdVersion} = checkDependence();
-      return chrome === 49 && useAntd && parseInt(antdVersion) ===5;
-    },
+    enableBy: api.EnableBy.config, // chrome49兼容
   });
+
+  const {antdVersion} = checkDependence();
+  if(!(parseInt(antdVersion) >=5)){
+    throw new Error('chrome 49 兼容插件仅支持ant@5');
+  }
+
+  api.modifyConfig((memo, {paths}) => {
+    memo.jsMinifier = memo.jsMinifier || 'terser';
+    memo.cssMinifier = memo.cssMinifier || 'cssnano';
+    memo.targets = { ...memo.targets || {},chrome: 49 };
+    memo.autoprefixer = {
+      ...memo.autoprefixer || {},
+      // flexbox: true, // 好像没什么用
+    };
+    if(memo.antd){
+      memo.antd = {
+        ...memo.antd,
+        styleProvider: undefined,// styleProvider 需要删除，手动添加rootContainer
+      }
+    }
+
+    return memo;
+  })
 
   api.addExtraBabelPlugins(()=> {
     return withTmpPath({ api, path: "babel-plugin" });
@@ -83,12 +101,13 @@ export default (api: IApi) => {
       context: {},
     });
 
-    const styleProvider = api.config.antd?.styleProvider;
     api.writeTmpFile({
       path: "runtime.tsx",
       tplPath: join(__dirname, "..", "template", "runtime.tsx.tpl"),
       context: {
-        styleProvider: styleProvider,
+        styleProvider: {
+          hashPriority: 'high'
+        },
       },
     });
 

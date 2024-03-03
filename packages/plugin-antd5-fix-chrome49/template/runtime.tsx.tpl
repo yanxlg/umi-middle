@@ -1,11 +1,12 @@
-{{#styleProvider}}
-{{#styleProvider.legacyTransformer}}
-import { legacyLogicalPropertiesTransformer } from '@ant-design/cssinjs';
-{{/styleProvider.legacyTransformer}}
+import {
+  StyleProvider,
+  legacyLogicalPropertiesTransformer
+} from '@ant-design/cssinjs';
 import StyleContext from '@ant-design/cssinjs/es/StyleContext';
-{{/styleProvider}}
 // 样式强制兼容优化
 import './global.less';
+import React from 'react';
+import prefixer from './prefixer';
 
 // fix rc-trigger 在chrome49 上异常
 const originGetBoundingClientRect = Element.prototype.getBoundingClientRect;
@@ -19,7 +20,6 @@ if (originGetBoundingClientRect) {
   };
 }
 
-{{#styleProvider}}
 // 兼容message 等组件where 样式降级
 if (
   StyleContext &&
@@ -27,10 +27,25 @@ if (
   StyleContext._currentValue.hashPriority
 ) {
   StyleContext._currentValue.hashPriority = '{{styleProvider.hashPriority}}';
-  {{#styleProvider.legacyTransformer}}
   StyleContext._currentValue.transformers = [
     legacyLogicalPropertiesTransformer,
+    prefixer
   ];
-  {{/styleProvider.legacyTransformer}}
 }
-{{/styleProvider}}
+
+export function rootContainer(container: React.ReactNode) {
+  return (
+    <StyleProvider
+      hashPriority='{{styleProvider.hashPriority}}'
+      transformers={
+        [
+          legacyLogicalPropertiesTransformer,
+          prefixer
+        ]
+      }
+    >
+     {container}
+    </StyleProvider>
+  );
+}
+
