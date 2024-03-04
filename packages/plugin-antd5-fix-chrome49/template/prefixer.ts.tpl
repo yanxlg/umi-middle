@@ -1,5 +1,7 @@
 /**
  * autoprefixer 处理样式兼容
+ * 需要兼容postcss 和 styled-components
+ * styled-components 会自动转 clip-path
  */
 
 const hacks = ['clipPath'];

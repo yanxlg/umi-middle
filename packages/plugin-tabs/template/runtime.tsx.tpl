@@ -3,6 +3,33 @@ import { AliveScope, NodeKey, autoFixContext, createContext } from 'react-activa
 import { KeepAliveWrapper } from './KeepAliveWrapper';
 
 
+// antd 部分弹出层默认值需要强制修正，否则会出现从显示到隐藏的issue
+{{#hasTrigger}}
+import Trigger from '@rc-component/trigger';
+{{/hasTrigger}}
+{{#useAntd}}
+import {Tooltip, Popconfirm, Popover, Drawer} from 'antd';
+{{/useAntd}}
+{{#useYhDesign}}
+import {YHTooltip, YHPopconfirm, YHPopover, YHDrawer} from '@yh/yh-design';
+{{/useYhDesign}}
+{{#hasTrigger}}
+Trigger.defaultProps={...Trigger.defaultProps, autoDestroy: true};
+{{/hasTrigger}}
+{{#useAntd}}
+Tooltip.defaultProps = {...Tooltip.defaultProps, destroyTooltipOnHide: true};
+Popconfirm.defaultProps = {...Popconfirm.defaultProps, destroyTooltipOnHide: true};
+Popover.defaultProps = {...Popover.defaultProps, destroyTooltipOnHide: true};
+Drawer.defaultProps = {...Drawer.defaultProps, destroyOnClose: true};
+{{/useAntd}}
+{{#useYhDesign}}
+YHTooltip.defaultProps = {...YHTooltip.defaultProps, destroyTooltipOnHide: true};
+YHPopconfirm.defaultProps = {...YHPopconfirm.defaultProps, destroyTooltipOnHide: true};
+YHPopover.defaultProps = {...YHPopover.defaultProps, destroyTooltipOnHide: true};
+YHDrawer.defaultProps = {...YHDrawer.defaultProps, destroyOnClose: true};
+{{/useYhDesign}}
+
+
 {{#reactExternal}}
 // 全局React 修复, umd 引入问题
 if(window && window.React && !window.React['_react_activation_fix_context']) {
@@ -22,7 +49,7 @@ NodeKey.defaultProps.onHandleNode = (node, mark) => {
   return mark;
 };
 
-export function rootContainer(container: React.ReactNode, clientProps: any) {    
+export function rootContainer(container: React.ReactNode, clientProps: any) {
   return (
     <AliveScope>{container}</AliveScope>
   );

@@ -27,3 +27,6 @@ TODO
 ## LICENSE
 
 MIT
+
+
+所有dropdown 都会从显示再到隐藏，需要处理下。
