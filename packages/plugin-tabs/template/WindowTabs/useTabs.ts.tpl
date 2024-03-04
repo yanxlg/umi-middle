@@ -3,9 +3,10 @@ import { useAliveController } from 'react-activation';
 import type { RouteObject } from 'react-router-dom';
 import { history, matchRoutes, useAppData, useLocation } from 'umi';
 import useSessionStorageState from 'ahooks/es/useSessionStorageState';
+import useUpdateLayoutEffect from 'ahooks/es/useUpdateLayoutEffect';
+import useMemoizedFn from 'ahooks/es/useMemoizedFn';
 import { createSearchParams } from 'react-router-dom';
 import omit from 'lodash/omit';
-import useUpdateLayoutEffect from 'ahooks/es/useUpdateLayoutEffect';
 
 declare module 'react-router-dom' {
   interface RouteObject {
@@ -266,44 +267,45 @@ const useTabs = (defaultTabs: Array<string | DefaultWindowConfigType> = []) => {
      onPathChange(pathname, search);
   }, [location]);
 
-  const removeTabByIndex = useCallback(
-    (index: number) => {
-      const { activeKey, wins } = tabState!;
-      const removeWin = wins[index];
-      const key = removeWin.key;
-      wins.splice(index, 1);
+  const removeTabByIndex = useMemoizedFn(
+    (index: number, silent?: boolean) => {
+      setTabState((tabState) => {
+        const { activeKey, wins } = tabState!;
+        const removeWin = wins[index];
+        const key = removeWin.key;
+        wins.splice(index, 1);
 
-      if (activeKey === key) {
-        // next 优先激活前一个标签，如果没有则激活后一个标签
-        const nextIndex = index === 0 ? 0: index-1;
-        const lastWin = wins[nextIndex]; // 最后一个
-        history.push(lastWin ? lastWin.key : '/');
-      } else {
-        setTabState({ activeKey, wins: [...wins] });
-      }
-      // 清除缓存
-      setTimeout(() => {
-        dropScope(key);
-      }, 100);
-    },
-    [tabState],
+        // 清除缓存
+        setTimeout(() => {
+          dropScope(key);
+        }, 100);
+
+        if (activeKey === key && !silent) {
+          // next 优先激活前一个标签，如果没有则激活后一个标签
+          const nextIndex = index === 0 ? 0: index-1;
+          const lastWin = wins[nextIndex]; // 最后一个
+          history.push(lastWin ? lastWin.key : '/');
+          return { activeKey: lastWin ? lastWin.key : '/', wins: [...wins] };
+        }
+        return { activeKey, wins: [...wins] };
+      });
+    }
   );
 
-  const removeTab = useCallback(
-    (key: string) => {
+  const removeTab = useMemoizedFn(
+    (key: string, silent?: boolean) => {
       const { wins } = tabState!;
       const index = wins.findIndex((win) => win.key === key);
       if (index > -1) {
-        removeTabByIndex(index);
+        removeTabByIndex(index, silent);
       }
-    },
-    [tabState],
+    }
   );
 
 
 
   // 不需要重制页面地址
-  const removeOthers = useCallback(
+  const removeOthers = useMemoizedFn(
     (currentIndex?: number) => {
       setTabState((tabState) => {
         const { wins, activeKey } = tabState!;
@@ -333,8 +335,7 @@ const useTabs = (defaultTabs: Array<string | DefaultWindowConfigType> = []) => {
           wins: nextWins,
         };
       });
-    },
-    [],
+    }
   );
 
   const removeAll = useCallback((currentIndex?: number) => {
@@ -368,12 +369,11 @@ const useTabs = (defaultTabs: Array<string | DefaultWindowConfigType> = []) => {
     });
   }, []);
 
-  const refreshPage = useCallback(
+  const refreshPage = useMemoizedFn(
     (index: number) => {
       const activeWin = tabState!.wins[index];
       refresh(activeWin.key);
-    },
-    [tabState],
+    }
   );
 
   return {

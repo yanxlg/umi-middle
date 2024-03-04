@@ -54,12 +54,12 @@ const CloseBtn = ({closeOthers, closeAll}: { closeOthers: () => void; closeAll: 
     {
       key: '1',
       label: '关闭其他页签',
-      onClick: closeOthers
+      onClick: ()=>closeOthers()
     },
     {
       key: '2',
       label: '关闭全部页签',
-      onClick: closeAll
+      onClick: ()=>closeAll()
     },
   ];
   return (

@@ -80,6 +80,8 @@ export default (api: IApi) => {
           reloadIcon: zod.boolean().optional(),
           overflowCount: zod.number().optional(),
           remarkMaxLength: zod.number().optional(),
+          remarkEllipsisType: zod.union([zod.literal('middle'), zod.literal('start'), zod.literal('end')]).optional(),
+          remarkShowEllipsis: zod.boolean().optional(),
         })]);
       },
       onChange: api.ConfigChangeType.regenerateTmpFiles,
@@ -141,11 +143,25 @@ export default (api: IApi) => {
     });
 
     const reactExternal = api.config.externals?.react; // umd 加载React
+
+    const hasTrigger = (() => {
+      try {
+        require('@rc-component/trigger/package.json');
+        return true;
+      } catch (e) {
+        return false
+      }
+    })();
+    const { useYhDesign, useAntd } = checkDependence();
+
     api.writeTmpFile({
       path: "runtime.tsx",
       tplPath: join(tmpDir, "runtime.tsx.tpl"),
       context: {
         reactExternal: reactExternal,
+        hasTrigger,
+        useYhDesign,
+        useAntd
       },
     });
 
@@ -156,7 +172,6 @@ export default (api: IApi) => {
     const themePrefixCls = config.theme?.['@ant-prefix'];
     // 获取配置的antd样式前缀
     const antdPrefix = prefixCls || themePrefixCls || "ant";
-    const { useYhDesign} = checkDependence();
 
     const tabsConfig = config.tabs === true?{}:config.tabs;
 

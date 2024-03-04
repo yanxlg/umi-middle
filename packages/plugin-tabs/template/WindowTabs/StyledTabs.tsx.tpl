@@ -18,7 +18,9 @@ export const StyledTabs = styled(Tabs)`
   &.{{{antdPrefix}}}-tabs {
     background: #E7E8EB;
     box-shadow: 0 10px 38px -6px #e7e9f23d;
+    -webkit-box-shadow: 0 10px 38px -6px #e7e9f23d;
     padding-top: 4px;
+    min-height: 44px;
   }
 
 
@@ -32,20 +34,32 @@ export const StyledTabs = styled(Tabs)`
       background-color: #FFF
     }
 
-    &.{{{antdPrefix}}}-tabs-tab-active:after{
+    &.{{{antdPrefix}}}-tabs-tab-active .{{{antdPrefix}}}-tabs-tab-btn{
+      text-shadow: 0 0 0.5px currentcolor;
+    }
+
+    &.{{{antdPrefix}}}-tabs-tab-active:before, &.{{{antdPrefix}}}-tabs-tab-active:after{
       display: none;
     }
 
-    &:after{
+    &.{{{antdPrefix}}}-tabs-tab-active + .{{{antdPrefix}}}-tabs-tab::before{
+      display: none;
+    }
+
+    &:before{
       content: '';
       position: absolute;
       width: 1px;
       height: 20px;
-      right: 0px;
+      left: -0.5px;
       z-index: 2;
       background: #CED2D8;
       top: 50%;
       margin-top: -10px;
+    }
+
+    &:first-of-type::before{
+      display: none;
     }
   }
   &.{{{antdPrefix}}}-tabs >.{{{antdPrefix}}}-tabs-nav .{{{antdPrefix}}}-tabs-tab.{{{antdPrefix}}}-tabs-tab-active .{{{antdPrefix}}}-tabs-tab-btn {

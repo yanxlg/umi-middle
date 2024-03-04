@@ -142,11 +142,13 @@ const Sider = ({
   sizes = { min: 48, max: 208 },
   onCollapse,
   patchClientMenus,
+  headerHeight
 }: {
   countMap?: { [key: string]: number };
   sizes?: { min: number; max: number };
   onCollapse?: (collapsed: boolean, width: number) => void;
   patchClientMenus?: (menus: MenuItem[])=> MenuItem[];
+  headerHeight: number;
 }) => {
   const [collapsed, setCollapsed] = useState(false);
   const { loading, menus } = useMenu('work-order');
@@ -210,6 +212,7 @@ const Sider = ({
       collapsedWidth={sizes.min}
       width={sizes.max}
       theme={'light'}
+      style={ {height: `calc(100vh - ${headerHeight}px)`} }
     >
       <SiderContent>
         <Title collapsed={collapsed}>工单系统</Title>

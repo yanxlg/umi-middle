@@ -96,6 +96,10 @@ export interface IWindowTabsProps {
   overflowCount?: number;
   /** 可以显示的remark最大长度，不配置会全部显示，配置后对()中内容进行截断 */
   remarkMaxLength?: number;
+  /** remark截断位置 */
+  remarkEllipsisType?: 'start' | 'middle' | 'end';
+  /** remark截断后是否显示... */
+  remarkShowEllipsis?: boolean;
 }
 
 
@@ -109,18 +113,27 @@ const BlockBadge = styled(Badge)`
 `;
 
 
-function TabLabel({index, widthType, title, badge, onReload, overflowCount, remarkMaxLength}:{index:number; widthType: IWindowTabsProps['widthType']; title: string; badge?: number; onReload?: Function; overflowCount?: number; remarkMaxLength?: number}) {
+function TabLabel({index, widthType, title, badge, onReload, overflowCount, remarkMaxLength, remarkEllipsisType, remarkShowEllipsis}:{index:number; widthType: IWindowTabsProps['widthType']; title: string; badge?: number; onReload?: Function; overflowCount?: number; remarkMaxLength?: number;  remarkEllipsisType?: 'start' | 'middle' | 'end'; remarkShowEllipsis?: boolean;}) {
   // 对于()中内容进行截断溢出处理
   const showLabel = remarkMaxLength ? title.replace(/\((\S+)\)/,function(value,$1){
     if($1.length > remarkMaxLength){
-      const halfSize = Math.floor(remarkMaxLength/2);
-      return '(' +$1.substr(0,halfSize) + '...' + $1.substr(-halfSize) + ')';
+      // 支持不同的截断方式
+      if(remarkEllipsisType === 'middle'){
+          const halfSize = Math.floor(remarkMaxLength/2);
+          return '(' +$1.substr(0,halfSize) + (remarkShowEllipsis?'...':'') + $1.substr(-halfSize) + ')';
+      }
+      if(remarkEllipsisType === 'start'){
+         return '(' +$1.substr(0,remarkMaxLength) + (remarkShowEllipsis?'...':'') + ')';
+      }
+      if(remarkEllipsisType === 'end'){
+         return '(' + (remarkShowEllipsis?'...':'') + $1.substr(-remarkMaxLength) + ')';
+      }
     }
     return value;
   }): title;
   const content = widthType === 'fit-content' ?
-    <Tooltip title={title}><span style={ {fontFeatureSettings: 'normal',fontVariant: 'none'} }>{showLabel}</span></Tooltip> :
-    <Tooltip title={title}><div style={ {[widthType!.type]: widthType!.width, textOverflow: 'ellipsis', overflow: 'hidden', fontFeatureSettings: 'normal',fontVariant: 'none'} }>{showLabel}</div></Tooltip>;
+    <Tooltip title={title}><span style={ {fontFeatureSettings: 'normal',fontVariant: 'none', fontWeight: 'normal'} }>{showLabel}</span></Tooltip> :
+    <Tooltip title={title}><div style={ {[widthType!.type]: widthType!.width, textOverflow: 'ellipsis', overflow: 'hidden', fontFeatureSettings: 'normal',fontVariant: 'none', fontWeight: 'normal'} }>{showLabel}</div></Tooltip>;
   return (
     <>
       { badge === void 0 ? content:<BlockBadge count={badge} overflowCount={overflowCount} style={ {position: 'absolute', left:0, right:'unset', transform: 'translate(-50%,-50%)', marginLeft: -5, pointerEvents: 'none', background: 'rgba(255,77,79,0.9)', zIndex: 5} }>{content}</BlockBadge>}
@@ -153,7 +166,7 @@ export default function WindowTabs(props: IWindowTabsProps & {
     return {...defaultConfig, ...runtimeConfig, props};
   },[]);
 
-  const { defaultTabs, overflowCount, remarkMaxLength, closeable = true, widthType = defaultWidthConfig, showWhenEmptyTabs = true, style, className, theme, rightMenu = true, reloadIcon = false } = config;
+  const { defaultTabs, overflowCount, remarkMaxLength, remarkEllipsisType = 'middle', remarkShowEllipsis = true, closeable = true, widthType = defaultWidthConfig, showWhenEmptyTabs = true, style, className, theme, rightMenu = true, reloadIcon = false } = config;
   const badgeMap = props.badgeMap;
 
   const {
@@ -165,6 +178,11 @@ export default function WindowTabs(props: IWindowTabsProps & {
     removeAll,
     refreshPage,
   } = useTabs(defaultTabs);
+
+  useMemo(()=>{
+    // attach to window
+    window.__tabs__ = {removeTab, removeTabByIndex, removeOthers, removeAll, refreshPage};
+  },[]);
 
   const [menuConfig, setMenuConfig] = useState(undefined); // 右键菜单显示的items
 
@@ -251,7 +269,7 @@ export default function WindowTabs(props: IWindowTabsProps & {
         items={!!TabPanel ? undefined : wins.map((win, index) => {
           return {
             key: win.key,
-            label: <TabLabel remarkMaxLength={remarkMaxLength} overflowCount={overflowCount} index={index} widthType={widthType} title={win.title} badge={badgeMap?badgeMap[win.key]:win.badge} onReload={reloadIcon ? refreshPage: undefined}/>,
+            label: <TabLabel remarkMaxLength={remarkMaxLength} remarkShowEllipsis={remarkShowEllipsis} remarkEllipsisType={remarkEllipsisType} overflowCount={overflowCount} index={index} widthType={widthType} title={win.title} badge={badgeMap?badgeMap[win.key]:win.badge} onReload={reloadIcon ? refreshPage: undefined}/>,
             closable: win.closeable??closeable,
           }
         })}
@@ -267,6 +285,8 @@ export default function WindowTabs(props: IWindowTabsProps & {
                 tab={
                   <TabLabel
                     remarkMaxLength={remarkMaxLength}
+                    remarkShowEllipsis={remarkShowEllipsis}
+                    remarkEllipsisType={remarkEllipsisType}
                     overflowCount={overflowCount}
                     index={index}
                     widthType={widthType as any}

@@ -4,7 +4,15 @@ import interceptor from '@/interceptors/response.interceptor';
 
 function fetchPermissions(){
   return new Promise((resolve,reject)=>{
+    const fromCache = sessionStorage.getItem('alliedPermissions');// 缓存，传进来的。
     const xhr = new XMLHttpRequest();
+    if(fromCache){
+      resolve({
+         permissions: fromCache.split(','),
+         responseXHR: xhr
+      });
+      return;
+    }
     xhr.open('get', `/user/permissions`);
     xhr.onload = function () {
       let responseText = xhr.responseText;

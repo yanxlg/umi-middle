@@ -8,7 +8,7 @@
  * Copyright (c) 2022 by yanxlg, All Rights Reserved.
  */
 
-const nextVersion = "0.6.0-alpha.0";
+const nextVersion = "1.0.0-alpha.0";
 
 const fs = require("fs-extra");
 const _path = require("path");
@@ -29,20 +29,18 @@ fs.readdir(dir, function (err, paths) {
       if (st.isDirectory()) {
         const packageFile = _path.join(_dirPath, "package.json");
         let packageJson = JSON.parse(fs.readFileSync(packageFile, "utf8"));
+        packageJson.version = nextVersion;
         // 所有的相关版本全部更新
-        if(!/^release-check/.test(path)){
-          packageJson.version = nextVersion;
-        }
         if (packageJson.devDependencies) {
           Object.keys(packageJson.devDependencies).forEach(function (key) {
-            if (/^\@middle-cli/.test(key)) {
+            if (/^\@middle-cli/.test(key) || /^release-check/.test(key)) {
               packageJson.devDependencies[key] = nextVersion;
             }
           });
         }
         if (packageJson.dependencies) {
           Object.keys(packageJson.dependencies).forEach(function (key) {
-            if (/^\@middle-cli/.test(key)) {
+            if (/^\@middle-cli/.test(key) || /^release-check/.test(key)) {
               packageJson.dependencies[key] = nextVersion;
             }
           });
