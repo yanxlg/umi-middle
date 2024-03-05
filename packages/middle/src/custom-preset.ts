@@ -29,6 +29,7 @@ export default () => {
       require.resolve("@middle-cli/plugin-material"),
       require.resolve("@middle-cli/plugin-html-css-property"),
       require.resolve("@middle-cli/plugin-antd5-fix-chrome49"),
+      require.resolve("@middle-cli/plugin-modify-default-props")
     ],
   };
 };

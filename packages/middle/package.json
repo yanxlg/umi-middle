@@ -33,6 +33,7 @@
     "@middle-cli/plugin-tabs": "^1.0.2",
     "@middle-cli/plugin-umd": "^1.0.0",
     "@middle-cli/plugin-watermark": "^1.0.0",
+    "@middle-cli/plugin-modify-default-props": "0.0.1",
     "@umijs/max": "^4.0.67",
     "commander": "^9.4.0",
     "father": "^4.1.8"
