@@ -61,8 +61,8 @@ export const Space = (props: SpaceProps) => {
   return (
     <StyledSpace>
       <AntSpace
-        size={0}
         {...props}
+        size={0}
         style={style}
         styles={{ item: itemStyle }}
       />

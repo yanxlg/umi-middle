@@ -28,16 +28,16 @@ import {IApi} from "umi";
 //   );
 // }
 
-
+// 构建时间大大增加
 export default (api: IApi) => {
   api.describe({
-    key: "modify-default-props",
+    key: "modifyDefaultProps",
     config: {
       schema({zod}) {
         return zod.array(zod.object({
           match: zod.string(),
           identifier: zod.string(),
-          defaultProps: zod.map(zod.string(), zod.union([zod.null(), zod.number(), zod.string(), zod.boolean()]))
+          defaultProps: zod.any()
         }));
       },
       onChange: api.ConfigChangeType.regenerateTmpFiles,
@@ -45,11 +45,12 @@ export default (api: IApi) => {
     enableBy: api.EnableBy.config,
   });
   api.addExtraBabelPlugins(() => [
-    join(__dirname, 'babel'),
-    // withTmpPath({api, path: "babel"}),
-    {
-      modifies: api.config.modifyDefaultProps
-    }
+    [
+      join(__dirname, 'babel'),
+      {
+        modifies: api.config.modifyDefaultProps
+      }
+    ]
   ]);
   api.onGenerateFiles(() => {
     api.writeTmpFile({
