@@ -1,6 +1,6 @@
 {
   "name": "@middle-cli/middle",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "工程化启动包",
   "main": "lib/index.js",
   "bin": {
@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@middle-cli/plugin-alias": "^1.0.1",
-    "@middle-cli/plugin-antd5-fix-chrome49": "^1.0.3",
+    "@middle-cli/plugin-antd5-fix-chrome49": "^1.0.4",
     "@middle-cli/plugin-body-scripts": "^1.0.1",
     "@middle-cli/plugin-click-to-component": "^1.0.1",
     "@middle-cli/plugin-default-config": "^1.0.1",
@@ -26,7 +26,7 @@
     "@middle-cli/plugin-html-css-property": "^1.0.1",
     "@middle-cli/plugin-inject-env": "^1.0.1",
     "@middle-cli/plugin-material": "^1.0.1",
-    "@middle-cli/plugin-modify-default-props": "^0.0.2",
+    "@middle-cli/plugin-modify-default-props": "^0.0.3",
     "@middle-cli/plugin-release-check": "^1.0.1",
     "@middle-cli/plugin-route-props": "^1.0.1",
     "@middle-cli/plugin-sauron": "^1.0.1",
