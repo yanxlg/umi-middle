@@ -12,7 +12,7 @@ import { PropsWithChildren } from 'react';
 export const Container = ({ children, headerHeight }: PropsWithChildren<{headerHeight:number}>) => {
   return (
     <Layout
-      style={{ width: '100vw', height: `calc(100vh - ${headerHeight}px)` }}
+      style={{ width: '100%', height: `calc(100vh - ${headerHeight}px)` }}
     >
       {children}
     </Layout>
