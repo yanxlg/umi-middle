@@ -15,7 +15,7 @@ import styled from 'styled-components';
 
 
 export const StyledTabs = styled(Tabs)`
-  &.{{{antdPrefix}}}-tabs {
+  &.{{{antdPrefix}}}-tabs.{{{antdPrefix}}}-tabs-top {
     background: #E7E8EB;
     box-shadow: 0 10px 38px -6px #e7e9f23d;
     -webkit-box-shadow: 0 10px 38px -6px #e7e9f23d;
