@@ -149,10 +149,6 @@ function TabLabel({index, widthType, title, badge, onReload, overflowCount, rema
   );
 }
 
-const TabPanel = Tabs.TabPane;
-
-
-
 export default function WindowTabs(props: IWindowTabsProps & {
   badgeMap?: {[key:string]: number}
 }) {
@@ -266,18 +262,21 @@ export default function WindowTabs(props: IWindowTabsProps & {
         onEdit={onEdit}
         animated={false}
         tabBarGutter={0}
-        items={!!TabPanel ? undefined : wins.map((win, index) => {
+        {{#isAntdV5}}
+        items={wins.map((win, index) => {
           return {
             key: win.key,
             label: <TabLabel remarkMaxLength={remarkMaxLength} remarkShowEllipsis={remarkShowEllipsis} remarkEllipsisType={remarkEllipsisType} overflowCount={overflowCount} index={index} widthType={widthType} title={win.title} badge={badgeMap?badgeMap[win.key]:win.badge} onReload={reloadIcon ? refreshPage: undefined}/>,
             closable: win.closeable??closeable,
           }
         })}
+        {{/isAntdV5}}
         tabBarExtraContent={showExtraClose?<CloseBtn closeOthers={removeOthers} closeAll={removeAll} />:null}
         onContextMenu={rightMenu ? handleContextMenu : null}
       >
+      {{#isNotAntdV5}}
         {
-          !!TabPanel ? wins.map((win, index) => {
+          wins.map((win, index) => {
             return (
               <Tabs.TabPane
                 closable={win.closeable??closeable}
@@ -297,8 +296,9 @@ export default function WindowTabs(props: IWindowTabsProps & {
                 }
               />
             )
-          }) : null
+          })
         }
+        {{/isNotAntdV5}}
       </StyledTabs>
     </Dropdown>
   );

@@ -152,7 +152,7 @@ export default (api: IApi) => {
         return false
       }
     })();
-    const { useYhDesign, useAntd } = checkDependence();
+    const { useYhDesign, useAntd, antdVersion } = checkDependence();
 
     api.writeTmpFile({
       path: "runtime.tsx",
@@ -181,6 +181,9 @@ export default (api: IApi) => {
     copyDirectory(tmpDir, api, {
       antdPrefix,
       useYhDesign,
+      useAntd,
+      isAntdV5: useAntd && parseInt(antdVersion) >= 5,
+      isNotAntdV5: !(useAntd && parseInt(antdVersion) >= 5),
       defaultConfig: JSON.stringify(tabsConfig),
       base,
     },'WindowTabs');
