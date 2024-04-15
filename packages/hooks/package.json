@@ -1,0 +1,27 @@
+{
+  "name": "@middle-cli/hooks",
+  "version": "1.0.1",
+  "license": "MIT",
+  "main": "./cjs/index.js",
+  "module": "./esm/index.js",
+  "typings": "./esm/index.d.ts",
+  "files": [
+    "cjs",
+    "esm"
+  ],
+  "scripts": {
+    "build": "father build"
+  },
+  "dependencies": {
+    "ahooks": "^3.7.8"
+  },
+  "devDependencies": {
+  },
+  "engines": {
+    "npm": ">=3.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "gitHead": "fb3ee8a1c3c08acfe37be3f5eea339adb7157738"
+}
