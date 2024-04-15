@@ -72,10 +72,8 @@ function usePagination<TData extends Data, TParams extends Params>(service: Serv
   return {
     run,
     params,
-    pagination: {
-      ...pagination,
-      onChange,
-    },
+    pagination: pagination,
+    onChange,
     ...extras
   };
 }
