@@ -12,7 +12,7 @@ import type {Options} from "ahooks/es/useRequest/src/types";
 import type {FilterValue, SorterResult, TableCurrentDataSource} from 'antd/es/table/interface';
 
 
-type Params = Array<{
+export type Params = Array<{
   current: number;
   pageSize: number;
   order?: string;
@@ -20,15 +20,15 @@ type Params = Array<{
   [key: string]: any;
 }>
 
-type Service<TData extends Data, TParams extends Params> = (...args: TParams) => Promise<TData>;
+export type Service<TData extends Data, TParams extends Params> = (...args: TParams) => Promise<TData>;
 
-interface PaginationOptions<TData extends Data, TParams extends Params> extends Options<TData, TParams> {
+export interface PaginationOptions<TData extends Data, TParams extends Params> extends Options<TData, TParams> {
   defaultPageSize?: number;
   defaultCurrent?: number;
 }
 
 
-type PageOptions<TData extends Data, TParams extends Params> = PaginationOptions<TData, TParams> & {
+export type PageOptions<TData extends Data, TParams extends Params> = PaginationOptions<TData, TParams> & {
   sortOrders?: [string, string];// 排序字段解析
 }
 
