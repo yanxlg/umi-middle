@@ -58,7 +58,7 @@ export async function run() {
       return '';
     }).filter(Boolean);
     const releaseSortBranches = releaseBranches.sort((prev: string, next: string) => {
-      return dayjs(getDate(prev)).isBefore(dayjs(getDate(next))) ? -1 : 1;
+      return dayjs(getDate(prev)).valueOf() - dayjs(getDate(next)).valueOf();
     });
     if (releaseSortBranches.length > 0) {
       const lastBranch = releaseSortBranches[releaseSortBranches.length - 1];
