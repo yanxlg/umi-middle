@@ -15,8 +15,7 @@ import {
   ToolOutlined,
 } from '@ant-design/icons';
 import { MenuDataItem } from '@umijs/route-utils';
-import { Layout } from 'antd';
-import type { ItemType } from 'antd/lib/menu/hooks/useItems';
+import { YHLayout as Layout, YHMenu as Menu } from '@yh/yh-design';
 import React, {useEffect, useMemo, useRef, useState} from 'react';
 import { history, useMenu, useLocation } from 'umi';
 import { MenuSpin } from './MenuSpin';
@@ -52,7 +51,7 @@ function getNavMenuItems(
   isChildren: boolean,
   collapsed?: boolean,
   countMap?: { [key: string]: number },
-): ItemType[] {
+) {
   return menusData.map((item) => {
     const { icon, title, url, key, children } = item;
     const iconNode = isChildren ? null : getIcon(icon);
@@ -60,12 +59,11 @@ function getNavMenuItems(
     const count = countMap?.[menuKey];
 
     if (Array.isArray(children) && children.length > 0) {
-      return {
-        key: menuKey,
-        icon: iconNode && collapsed?<IconWithBadge iconNode={iconNode} count={count}/>:iconNode,
-        children: getNavMenuItems(item.children, true, collapsed, countMap),
-        label: <MenuLabel label={title} collapsed={collapsed} badge={count}/>,
-      };
+      return (
+        <Menu.SubMenu key={menuKey} icon={iconNode && collapsed?<IconWithBadge iconNode={iconNode} count={count}/>:iconNode} title={<MenuLabel label={title} collapsed={collapsed} badge={count}/>}>
+          {getNavMenuItems(item.children, true, collapsed, countMap)}
+        </Menu.SubMenu>
+      )
     }
 
     const itemPath = conversionPath(url || '/');
@@ -81,12 +79,9 @@ function getNavMenuItems(
       }
     };
 
-    return {
-      label: <MenuLabel label={title} badge={count} collapsed={collapsed} tooltip={true}/>,
-      key: menuKey,
-      icon: iconNode && collapsed?<IconWithBadge iconNode={iconNode} count={count}/>:iconNode,
-      onClick: onClick,
-    };
+    return (
+      <Menu.Item title={<MenuLabel label={title} badge={count} collapsed={collapsed} tooltip={true}/>} key={menuKey} icon={iconNode && collapsed?<IconWithBadge iconNode={iconNode} count={count}/>:iconNode} onClick={onClick}></Menu.Item>
+    )
   });
 }
 
@@ -192,7 +187,6 @@ const Sider = ({
     onCollapse?.(collapse, collapse ? sizes.min : sizes.max);
   };
 
-
   const onCollapseButtonClick = (collapse: boolean)=>{
     // 需要缓存
     onCollapseHandle(collapse);
@@ -215,7 +209,7 @@ const Sider = ({
       style={ {height: `calc(100vh - ${headerHeight}px)`} }
     >
       <SiderContent>
-        <Title collapsed={collapsed}>工单系统</Title>
+        <Title collapsed={collapsed}>{{{antPrefix}}}</Title>
         <Scroll>
           {loading && <MenuSpin />}
           <StyledMenu
@@ -227,8 +221,11 @@ const Sider = ({
             onSelect={(info) => {
               setSelectedKeys(info.selectedKeys);
             }}
-            items={getNavMenuItems(withStaticMenus, false, collapsed, countMap)}
-          />
+          >
+          {
+            getNavMenuItems(withStaticMenus, false, collapsed, countMap)
+          }
+          </StyledMenu>
         </Scroll>
       </SiderContent>
       <CollapsedButton collapsed={collapsed} onCollapse={onCollapseButtonClick} />

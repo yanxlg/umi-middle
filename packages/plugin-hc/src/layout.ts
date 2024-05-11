@@ -32,13 +32,15 @@ function writeDirectory(templateDir: string, directoryPath: string, api: IApi, a
     if (fs.statSync(itemPath).isFile()) {
       if(/\.tpl$/.test(itemPath)){
         const useTabs = api.config.tabs;
+        const title = api.config.title || '';
         api.writeTmpFile({
           path: itemPath.replace(templateDir, 'layout').replace(/\.tpl$/,''),
           tplPath: itemPath,
           context: {
             isDevelopment,
             useTabs,
-            antPrefix
+            antPrefix,
+            title
           }
         })
       }else{

@@ -236,7 +236,7 @@ const Sider = (
       style={ {height: `calc(100vh - ${headerHeight}px)`} }
     >
       <SiderContent>
-        <Title collapsed={collapsed}>工单系统</Title>
+        <Title collapsed={collapsed}>{{{antPrefix}}}</Title>
         <Scroll>
           {loading && <MenuSpin/>}
           <StyledMenu
