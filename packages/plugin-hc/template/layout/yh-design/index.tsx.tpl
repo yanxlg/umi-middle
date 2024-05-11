@@ -34,9 +34,10 @@ type LayoutProps = {
   headerHeight: number;
   patchClientMenus?: (menus: MenuItem[])=> MenuItem[];
   menuAppCode?: string;
+  renderIcon?: (icon: string) => React.ReactNode; // 图标渲染
 }
 
-function Layout({menuBadge, siderMinWidth, siderMaxWidth, contentPadding, headerHeight, patchClientMenus, menuAppCode}: LayoutProps) {
+function Layout({menuBadge, siderMinWidth, siderMaxWidth, contentPadding, headerHeight, patchClientMenus, menuAppCode, renderIcon}: LayoutProps) {
   const onCollapse = (collapse: boolean, width: number) => {
     root.style.setProperty('--sider-width', `${width}px`);
     root.style.setProperty('--content-fixed-left', `${width + contentPadding}px`);
@@ -54,6 +55,7 @@ function Layout({menuBadge, siderMinWidth, siderMaxWidth, contentPadding, header
             patchClientMenus={patchClientMenus}
             headerHeight={headerHeight}
             menuAppCode={menuAppCode}
+            renderIcon={renderIcon}
           />
         )}
         <BasicLayout style={ {overflow: 'hidden'} }>

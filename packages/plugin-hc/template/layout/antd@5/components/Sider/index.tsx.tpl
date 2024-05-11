@@ -56,10 +56,11 @@ function getNavMenuItems(
   isChildren: boolean,
   collapsed?: boolean,
   countMap?: { [key: string]: number },
+  renderIcon: (icon: string) => React.ReactNode = getIcon, // 图标渲染
 ): ItemType[] {
   return menusData.map((item) => {
     const {icon, title, url, key, children} = item;
-    const iconNode = isChildren ? null : getIcon(icon);
+    const iconNode = isChildren ? null : renderIcon(icon);
     const menuKey = key || url;
     const count = countMap?.[menuKey];
 
@@ -70,7 +71,7 @@ function getNavMenuItems(
       return {
         key: menuKey,
         icon: iconNode && collapsed?<IconWithBadge iconNode={iconNode} count={count}/>:iconNode,
-        children: getNavMenuItems(item.children, true, collapsed, countMap),
+        children: getNavMenuItems(item.children, true, collapsed, countMap, renderIcon),
         label: <MenuLabel label={title} collapsed={collapsed} badge={count}/>,
       };
     }
@@ -152,7 +153,8 @@ const Sider = (
     onCollapse,
     patchClientMenus,
     headerHeight,
-    menuAppCode = 'work-order'
+    menuAppCode = 'work-order',
+    renderIcon,
   }: {
     countMap?: { [key: string]: number };
     sizes?: { min: number; max: number };
@@ -160,6 +162,7 @@ const Sider = (
     patchClientMenus?: (menus: MenuItem[]) => MenuItem[];
     headerHeight: number;
     menuAppCode?: string;
+    renderIcon?: (icon: string) => React.ReactNode; // 图标渲染
   }) => {
   const [collapsed, setCollapsed] = useState(false);
   const {loading, menus} = useMenu(menuAppCode);
@@ -250,7 +253,7 @@ const Sider = (
             onSelect={(info) => {
               setSelectedKeys(info.selectedKeys);
             }}
-            items={getNavMenuItems(withStaticMenus, false, collapsed, countMap)}
+            items={getNavMenuItems(withStaticMenus, false, collapsed, countMap, renderIcon)}
           />
         </Scroll>
       </SiderContent>
