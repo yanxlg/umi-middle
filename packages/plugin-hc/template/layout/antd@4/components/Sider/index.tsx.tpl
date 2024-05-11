@@ -142,16 +142,18 @@ const Sider = ({
   sizes = { min: 48, max: 208 },
   onCollapse,
   patchClientMenus,
-  headerHeight
+  headerHeight,
+  menuAppCode = 'work-order'
 }: {
   countMap?: { [key: string]: number };
   sizes?: { min: number; max: number };
   onCollapse?: (collapsed: boolean, width: number) => void;
   patchClientMenus?: (menus: MenuItem[])=> MenuItem[];
   headerHeight: number;
+  menuAppCode?: string;
 }) => {
   const [collapsed, setCollapsed] = useState(false);
-  const { loading, menus } = useMenu('work-order');
+  const { loading, menus } = useMenu(menuAppCode);
   const location = useLocation();
 
   const withStaticMenus = useMemo(() => {

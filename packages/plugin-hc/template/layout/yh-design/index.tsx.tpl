@@ -33,9 +33,10 @@ type LayoutProps = {
   contentPadding: number;
   headerHeight: number;
   patchClientMenus?: (menus: MenuItem[])=> MenuItem[];
+  menuAppCode?: string;
 }
 
-function Layout({menuBadge, siderMinWidth, siderMaxWidth, contentPadding, headerHeight, patchClientMenus}: LayoutProps) {
+function Layout({menuBadge, siderMinWidth, siderMaxWidth, contentPadding, headerHeight, patchClientMenus, menuAppCode}: LayoutProps) {
   const onCollapse = (collapse: boolean, width: number) => {
     root.style.setProperty('--sider-width', `${width}px`);
     root.style.setProperty('--content-fixed-left', `${width + contentPadding}px`);
@@ -52,6 +53,7 @@ function Layout({menuBadge, siderMinWidth, siderMaxWidth, contentPadding, header
             onCollapse={onCollapse}
             patchClientMenus={patchClientMenus}
             headerHeight={headerHeight}
+            menuAppCode={menuAppCode}
           />
         )}
         <BasicLayout style={ {overflow: 'hidden'} }>
