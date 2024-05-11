@@ -27,10 +27,12 @@ export function checkDependence(){
     }
   })();
 
+  const useAntd = !!antdVersion;
+
   return {
-    useAntd: !!antdVersion,
+    useAntd: useAntd,
     antdVersion,
-    useYhDesign,
+    useYhDesign: !useAntd && useYhDesign, // 优先使用antd，其次使用yh-design
     buildWithNginx: !fs.existsSync(`${process.cwd()}/Dockerfile`)
   }
 }
