@@ -138,8 +138,8 @@ function createWindow(routes: RouteObject[], pathname: string, search?: string, 
   const matchRoute = getMatchRoute(routes, pathname);
   if (matchRoute) {
     const { route, params } = matchRoute;
-    const { tabMode, title, tabTemplate, tabKey, redirect, element, tabReplaceKey } = route;
-    if (!!redirect || getReactNodeName(element) === 'NavigateWithParams') {
+    const { tabMode, title, tabTemplate, tabKey, redirect, element, tabReplaceKey, isLayout } = route;
+    if (!!redirect || getReactNodeName(element) === 'NavigateWithParams' || isLayout) {
       return undefined; // 不创建Window,仅作为临时中间页面触发跳转
     }
     return {
