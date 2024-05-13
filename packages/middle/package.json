@@ -1,6 +1,6 @@
 {
   "name": "@middle-cli/middle",
-  "version": "1.0.15",
+  "version": "1.0.16",
   "description": "工程化启动包",
   "main": "lib/index.js",
   "bin": {
@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@middle-cli/plugin-alias": "^1.0.1",
-    "@middle-cli/plugin-antd5-fix-chrome49": "^1.0.5",
+    "@middle-cli/plugin-antd5-fix-chrome49": "^1.0.6",
     "@middle-cli/plugin-body-scripts": "^1.0.1",
     "@middle-cli/plugin-click-to-component": "^1.0.1",
     "@middle-cli/plugin-default-config": "^1.0.2",
