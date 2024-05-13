@@ -34,13 +34,14 @@ function getPresetSize(size: string | number | undefined, token: GlobalToken) {
 }
 
 export const Space = (props: SpaceProps) => {
+  const direction = props.direction;
   const {
     space,
   } = useContext(ConfigProvider.ConfigContext);
   const token = useToken()[3];
 
   const {styles} = useStyles({
-    direction: props.direction,
+    direction: direction,
   });
 
   const { size = (space === null || space === void 0 ? void 0 : space.size) || 'small' } = props;
@@ -52,20 +53,20 @@ export const Space = (props: SpaceProps) => {
   const verticalSpace = getPresetSize(verticalSize, token);
 
   const style = useMemo(() => {
-    return Object.assign({...customStyle}, horizontalSpace ? {
+    return Object.assign({...customStyle}, horizontalSpace && direction!=='vertical' ? {
       marginLeft: -horizontalSpace,
     } : {}, verticalSpace ? {
       marginTop: -verticalSpace,
     } : {});
-  }, [horizontalSpace, verticalSpace]);
+  }, [horizontalSpace, verticalSpace, direction]);
 
   const itemStyle = useMemo(() => {
-    return Object.assign({}, horizontalSpace ? {
+    return Object.assign({}, horizontalSpace && direction!=='vertical' ? {
       marginLeft: horizontalSpace,
     } : {}, verticalSpace ? {
       marginTop: verticalSpace,
     } : {});
-  }, [horizontalSpace, verticalSpace]);
+  }, [horizontalSpace, verticalSpace, direction]);
 
   return (
     <div className={styles.container}>
