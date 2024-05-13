@@ -6,14 +6,19 @@
  * Copyright (c) 2024 by yanxianliang, All Rights Reserved.
  */
 import { Space as AntSpace, SpaceProps, ConfigProvider, GlobalToken } from 'antd';
-import styled from 'styled-components';
 import { useContext, useMemo } from 'react';
 import { isValidGapNumber } from 'antd/es/_util/gapSize';
 import useToken from 'antd/es/theme/useToken';
+import { createStyles, cx } from 'antd-style';
+import React from 'react';
 
-const StyledSpace = styled.div`
-  display: inline-flex;
-`;
+const useStyles = createStyles(({ css },{direction}:{direction?: SpaceProps['direction']}) => {
+  return {
+    container: css`
+      display: ${direction === 'vertical'? 'flex': 'inline-flex'};
+    `,
+  };
+});
 
 function getPresetSize(size: string | number | undefined, token: GlobalToken) {
   switch (size) {
@@ -33,6 +38,10 @@ export const Space = (props: SpaceProps) => {
     space,
   } = useContext(ConfigProvider.ConfigContext);
   const token = useToken()[3];
+
+  const {styles} = useStyles({
+    direction: props.direction,
+  });
 
   const { size = (space === null || space === void 0 ? void 0 : space.size) || 'small' } = props;
   const customStyle = props.style;
@@ -59,14 +68,14 @@ export const Space = (props: SpaceProps) => {
   }, [horizontalSpace, verticalSpace]);
 
   return (
-    <StyledSpace>
+    <div className={styles.container}>
       <AntSpace
         {...props}
         size={0}
         style={style}
         styles={{ item: itemStyle }}
       />
-    </StyledSpace>
+    </div>
   );
 };
 
