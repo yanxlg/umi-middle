@@ -82,6 +82,7 @@ export default (api: IApi) => {
           remarkMaxLength: zod.number().optional(),
           remarkEllipsisType: zod.union([zod.literal('middle'), zod.literal('start'), zod.literal('end')]).optional(),
           remarkShowEllipsis: zod.boolean().optional(),
+          cacheKey: zod.string().optional(),
         })]);
       },
       onChange: api.ConfigChangeType.regenerateTmpFiles,
@@ -185,6 +186,7 @@ export default (api: IApi) => {
       isAntdV5: useAntd && parseInt(antdVersion) >= 5,
       isNotAntdV5: !(useAntd && parseInt(antdVersion) >= 5),
       defaultConfig: JSON.stringify(tabsConfig),
+      cacheKey: tabsConfig.cacheKey || '__window_tabs_cache__',
       base,
     },'WindowTabs');
   });

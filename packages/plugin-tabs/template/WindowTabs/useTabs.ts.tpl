@@ -219,7 +219,7 @@ const useTabs = (defaultTabs: Array<string | DefaultWindowConfigType> = []) => {
   const [tabState, setTabState] = useSessionStorageState<{
     activeKey: string;
     wins: IWindow[];
-  }>('__window_tabs_cache__', {
+  }>('{{{cacheKey}}}', {
     deserializer: (value) => {
       const state: { wins: IWindow[]; activeKey: string; } = JSON.parse(value); // wins
       const wins = state.wins || [];
