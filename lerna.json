@@ -10,6 +10,12 @@
     "repo": " lowcode modules",
     "cacheDir": ".changelog"
   },
+  "command": {
+    "publish": {
+      "graphType": "all",
+      "registry": "http://registry.npmmirror.org"
+    }
+  },
   "npmClient": "npm",
   "version": "independent"
 }
