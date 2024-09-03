@@ -1,6 +1,6 @@
 {
   "name": "@middle-cli/plugin-sauron",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "keywords": [],
   "license": "MIT",
   "author": "libk <libk1@yonghui.cn>",
@@ -14,7 +14,7 @@
     "dev": "father dev"
   },
   "dependencies": {
-    "@middle-cli/plugin-sentry": "^1.0.1",
+    "@middle-cli/plugin-sentry": "^1.1.0",
     "@yh/yh-sauron": "^4.1.2"
   },
   "authors": {

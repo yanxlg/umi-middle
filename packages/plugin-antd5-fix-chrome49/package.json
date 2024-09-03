@@ -1,6 +1,6 @@
 {
   "name": "@middle-cli/plugin-antd5-fix-chrome49",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "keywords": [],
   "license": "MIT",
   "author": "yanxlg <yanxlg2@yonghui.cn>",
@@ -16,7 +16,7 @@
     "dev": "father dev"
   },
   "dependencies": {
-    "@middle-cli/utils": "^1.0.1",
+    "@middle-cli/utils": "^1.1.0",
     "inline-style-prefixer": "7.0.0"
   },
   "devDependencies": {
