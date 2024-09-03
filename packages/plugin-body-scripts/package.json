@@ -1,6 +1,6 @@
 {
   "name": "@middle-cli/plugin-body-scripts",
-  "version": "1.0.1",
+  "version": "1.0.0-alpha.0",
   "description": "支持插入scripts 到body，放在.umi.js之前",
   "keywords": [],
   "license": "MIT",
