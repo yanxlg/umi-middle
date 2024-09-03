@@ -10,12 +10,6 @@
     "repo": " lowcode modules",
     "cacheDir": ".changelog"
   },
-  "command": {
-    "publish": {
-      "graphType": "all",
-      "registry": "http://npm.yonghuivip.com"
-    }
-  },
   "npmClient": "npm",
   "version": "independent"
 }
