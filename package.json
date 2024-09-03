@@ -1,7 +1,6 @@
 {
   "name": "middle-modules",
   "version": "0.0.1",
-  "private": true,
   "description": "check release",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
