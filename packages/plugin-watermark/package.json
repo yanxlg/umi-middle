@@ -1,6 +1,6 @@
 {
   "name": "@middle-cli/plugin-watermark",
-  "version": "1.0.0-alpha.0",
+  "version": "1.0.0",
   "keywords": [],
   "license": "MIT",
   "author": "yanxlg <yanxlg2@yonghui.cn>",
