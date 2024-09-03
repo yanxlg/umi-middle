@@ -1,6 +1,6 @@
 {
   "name": "@middle-cli/plugin-route-props",
-  "version": "1.0.0-alpha.0",
+  "version": "1.0.0",
   "keywords": [],
   "license": "MIT",
   "author": "yanxlg <yanxlg2@yonghui.cn>",
@@ -15,7 +15,7 @@
     "dev": "father dev"
   },
   "dependencies": {
-    "@middle-cli/utils": "1.0.0-alpha.0"
+    "@middle-cli/utils": "^1.0.0"
   },
   "devDependencies": {
     "@types/node": "^18.15.11",
