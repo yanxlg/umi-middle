@@ -1,6 +1,6 @@
 {
   "name": "@middle-cli/plugin-modify-default-props",
-  "version": "0.0.3",
+  "version": "1.0.0-alpha.0",
   "keywords": [],
   "license": "MIT",
   "author": "yanxlg <yanxlg2@yonghui.cn>",
