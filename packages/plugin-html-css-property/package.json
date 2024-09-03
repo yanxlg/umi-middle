@@ -1,6 +1,6 @@
 {
   "name": "@middle-cli/plugin-html-css-property",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "html css property plugin for middle cli",
   "keywords": [],
   "license": "MIT",

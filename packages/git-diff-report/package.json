@@ -1,6 +1,6 @@
 {
   "name": "@middle-cli/git-diff-report",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "对比测试分支与主分支，生成公共代码影响范围表格，通过机器人进行推送",
   "main": "lib/index.js",
   "files": [

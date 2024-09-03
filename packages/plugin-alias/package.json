@@ -1,6 +1,6 @@
 {
   "name": "@middle-cli/plugin-alias",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "alias 自动适配",
   "keywords": [],
   "license": "MIT",
