@@ -1,6 +1,6 @@
 {
   "name": "@middle-cli/release-check",
-  "version": "1.0.0-alpha.0",
+  "version": "1.0.0",
   "description": "工程化启动包",
   "main": "lib/index.js",
   "bin": {
