@@ -1,5 +1,5 @@
 {
-  "name": "git-diff-report",
+  "name": "@middle-cli/git-diff-report",
   "version": "1.0.0",
   "description": "对比测试分支与主分支，生成公共代码影响范围表格，通过机器人进行推送",
   "main": "lib/index.js",
@@ -22,5 +22,6 @@
   },
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "gitHead": "73dbd648079b1086e4d094ce89737694479ff68c"
 }

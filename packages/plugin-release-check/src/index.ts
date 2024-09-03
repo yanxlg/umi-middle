@@ -10,7 +10,7 @@
  * Copyright (c) 2023 by yanxlg, All Rights Reserved.
  */
 
-import { run } from "release-check";
+import { run } from "@middle-cli/release-check";
 import { IApi } from "umi";
 
 const isProduction = process.env.NODE_ENV === "production";
